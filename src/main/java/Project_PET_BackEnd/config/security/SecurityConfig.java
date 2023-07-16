@@ -20,12 +20,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users/login").permitAll()
-                .and()
-                .formLogin()
-                .and()
-                .logout()
-                .permitAll();
+                .antMatchers("/user/login").permitAll();
     }
     @Bean
     @Override
