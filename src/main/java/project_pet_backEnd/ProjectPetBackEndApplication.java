@@ -1,4 +1,4 @@
-package Project_PET_BackEnd;
+package project_pet_backEnd;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

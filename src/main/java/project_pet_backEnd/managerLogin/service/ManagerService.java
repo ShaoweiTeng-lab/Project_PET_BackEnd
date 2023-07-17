@@ -1,6 +1,6 @@
-package Project_PET_BackEnd.managerLogin.service;
+package project_pet_backEnd.managerLogin.service;
 
-import Project_PET_BackEnd.managerLogin.dao.ManagerDao;
+import project_pet_backEnd.managerLogin.dao.ManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

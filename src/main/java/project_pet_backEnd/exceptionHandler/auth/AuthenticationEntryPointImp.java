@@ -1,4 +1,4 @@
-package Project_PET_BackEnd.exceptionHandler.auth;
+package project_pet_backEnd.exceptionHandler.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;

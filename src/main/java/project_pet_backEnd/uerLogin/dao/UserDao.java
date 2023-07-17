@@ -1,4 +1,4 @@
-package Project_PET_BackEnd.uerLogin.dao;
+package project_pet_backEnd.uerLogin.dao;
 
 import org.springframework.stereotype.Repository;
 

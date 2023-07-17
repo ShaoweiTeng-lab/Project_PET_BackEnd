@@ -1,6 +1,6 @@
-package Project_PET_BackEnd.managerLogin.controller;
+package project_pet_backEnd.managerLogin.controller;
 
-import Project_PET_BackEnd.managerLogin.service.ManagerService;
+import project_pet_backEnd.managerLogin.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
