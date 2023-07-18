@@ -1,6 +1,6 @@
-package project_pet_backEnd.uerLogin.service;
+package project_pet_backEnd.userLogin.service;
 
-import project_pet_backEnd.uerLogin.dao.UserDao;
+import project_pet_backEnd.userLogin.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

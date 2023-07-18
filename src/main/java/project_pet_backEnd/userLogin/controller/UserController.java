@@ -1,6 +1,6 @@
-package project_pet_backEnd.uerLogin.controller;
+package project_pet_backEnd.userLogin.controller;
 
-import project_pet_backEnd.uerLogin.service.UserService;
+import project_pet_backEnd.userLogin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
