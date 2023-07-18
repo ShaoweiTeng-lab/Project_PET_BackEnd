@@ -1,15 +1,12 @@
-package ecpay.payment.integration;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+package project_pet_backEnd.ecpay.payment.integration;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import ecpay.payment.integration.ecpayOperator.EcpayFunction;
-import ecpay.payment.integration.errorMsg.ErrorMessage;
-import ecpay.payment.integration.exception.EcpayException;
+import project_pet_backEnd.ecpay.payment.integration.ecpayOperator.EcpayFunction;
+import project_pet_backEnd.ecpay.payment.integration.errorMsg.ErrorMessage;
+import project_pet_backEnd.ecpay.payment.integration.exception.EcpayException;
 
 public class AllInOneBase {
 	protected static String operatingMode;
