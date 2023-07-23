@@ -5,6 +5,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.smtp.EmailService;
+import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.userLogin.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class UserService {
 
     @Autowired
     RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    EmailService emailService;
 
     @Autowired
     @Qualifier("bCryptPasswordEncoder")
@@ -56,9 +61,15 @@ public class UserService {
         redisTemplate.opsForValue().set(key,authCode);
         redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
         ResponseResult rs=new ResponseResult();
+        sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br>"+authCode+"<br>請於十分中內輸入");
         rs.setMessage("generate_success");
         System.out.println(authCode);
         return  rs;
+    }
+
+    public  void  sendEmail(String to, String subject, String body){
+        EmailResponse emailResponse =new EmailResponse(to,subject,body);
+        emailService.sendEmail(emailResponse);
     }
 
     private User getUserProfile(Integer userId){

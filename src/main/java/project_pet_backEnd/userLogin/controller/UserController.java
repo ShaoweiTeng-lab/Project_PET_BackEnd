@@ -1,6 +1,7 @@
 package project_pet_backEnd.userLogin.controller;
 
 import org.springframework.security.core.parameters.P;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.userLogin.dto.ResponseResult;
 import project_pet_backEnd.userLogin.dto.UserLoginRequest;
@@ -11,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @RestController
+@Validated
 public class UserController {
 
     @Autowired
@@ -34,7 +37,7 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("使用者訊息");
     }
     @PostMapping("/user/generateCaptcha")
-    public  ResponseEntity<ResponseResult> generateCaptcha(@RequestParam String email){
+    public  ResponseEntity<ResponseResult> generateCaptcha(@RequestParam @Email String email){
         ResponseResult rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
