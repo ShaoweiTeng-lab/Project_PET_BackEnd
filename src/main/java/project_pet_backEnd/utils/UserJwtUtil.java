@@ -1,4 +1,4 @@
-package project_pet_backEnd.userLogin.util;
+package project_pet_backEnd.utils;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;

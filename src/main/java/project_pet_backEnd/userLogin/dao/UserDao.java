@@ -62,4 +62,12 @@ public class UserDao {
             return  userList.get(0);
         return  null;
     }
+
+    public User getUserById(Integer id){
+        String sql ="select * from USER where USER_ID =:id";
+        Map<String ,Object> map =new HashMap<>();
+        map.put("id",id);
+        User user=namedParameterJdbcTemplate.queryForObject(sql, map,new UserRowMapper());
+        return  user;
+    }
 }

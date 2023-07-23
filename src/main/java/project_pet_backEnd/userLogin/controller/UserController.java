@@ -1,6 +1,8 @@
 package project_pet_backEnd.userLogin.controller;
 
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import project_pet_backEnd.userLogin.dto.ResponseResult;
 import project_pet_backEnd.userLogin.dto.UserLoginRequest;
 import project_pet_backEnd.userLogin.dto.UserSignUpRequest;
 import project_pet_backEnd.userLogin.service.UserService;
@@ -16,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("/user/login")
-    public ResponseEntity<?> login(){
+    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
         return  ResponseEntity.status(HttpStatus.OK).body("登入成功" );
     }
@@ -31,4 +33,11 @@ public class UserController {
 
         return  ResponseEntity.status(HttpStatus.OK).body("使用者訊息");
     }
+    @PostMapping("/user/generateCaptcha")
+    public  ResponseEntity<ResponseResult> generateCaptcha(@RequestParam String email){
+        ResponseResult rs =userService.generateCaptcha(email);
+        return  ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+
+
 }

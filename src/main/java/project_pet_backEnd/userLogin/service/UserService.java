@@ -1,14 +1,21 @@
 package project_pet_backEnd.userLogin.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.userLogin.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project_pet_backEnd.userLogin.dto.ResponseResult;
 import project_pet_backEnd.userLogin.dto.UserSignUpRequest;
 import project_pet_backEnd.userLogin.model.IdentityProvider;
+import project_pet_backEnd.userLogin.model.User;
+import project_pet_backEnd.utils.AllDogCatUtils;
+
+import javax.validation.constraints.Email;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
@@ -16,13 +23,18 @@ public class UserService {
     private UserDao userDao;
 
     @Autowired
+    RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
     @Qualifier("bCryptPasswordEncoder")
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有帳號註冊");//確認有無此帳號
-        if(!validatedCaptcha(userSignUpRequest.getCaptcha()))
+        if(!validatedCaptcha(userSignUpRequest.getUserEmail(),userSignUpRequest.getCaptcha()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"驗證碼異常，請從新確認驗證碼");//確認驗證碼
         String encodePwd=bCryptPasswordEncoder.encode(userSignUpRequest.getUserPassword());
         userSignUpRequest.setUserPassword(encodePwd);
@@ -30,8 +42,28 @@ public class UserService {
         userDao.localSignUp(userSignUpRequest);
     }
 
-    private boolean  validatedCaptcha(String captcha){
-        //從redis 確認
+    private boolean  validatedCaptcha(String email,String captcha){
+        String redisCapt= redisTemplate.opsForValue().get("MEMBER:"+ email);
+        if(redisCapt==null || !redisCapt.equals(captcha))
+            return  false;
         return  true;
     }
+
+
+    public ResponseResult generateCaptcha(String email){
+        String authCode=AllDogCatUtils.returnAuthCode();
+        String  key ="MEMBER:"+ email;
+        redisTemplate.opsForValue().set(key,authCode);
+        redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
+        ResponseResult rs=new ResponseResult();
+        rs.setMessage("generate_success");
+        System.out.println(authCode);
+        return  rs;
+    }
+
+    private User getUserProfile(Integer userId){
+        return  userDao.getUserById(userId);
+    }
+
+
 }

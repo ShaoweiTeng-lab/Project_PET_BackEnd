@@ -33,6 +33,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/customerSignUp").permitAll()
+                .antMatchers("/user/generateCaptcha").permitAll()
                 .antMatchers("/test/**").permitAll()
                 .anyRequest().authenticated();
         //配置異常處理
