@@ -61,7 +61,7 @@ public class UserService {
         redisTemplate.opsForValue().set(key,authCode);
         redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
         ResponseResult rs=new ResponseResult();
-        sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br>"+authCode+"<br>請於十分中內輸入");
+        sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br><p>"+authCode+"</p><br>請於十分鐘內輸入");
         rs.setMessage("generate_success");
         System.out.println(authCode);
         return  rs;

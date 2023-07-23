@@ -19,15 +19,7 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
-    //普通的寄信
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
 
-        mailSender.send(message);
-    }
     //格式為html 渲染
     public  void sendEmail(EmailResponse emailResponse){
         MimeMessage msg =mailSender.createMimeMessage();
