@@ -9,7 +9,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.PortResolver;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import project_pet_backEnd.filter.UserJWTFilter;
+import project_pet_backEnd.utils.UserJwtUtil;
 
 @Configuration
 public class SecurityConfig   extends WebSecurityConfigurerAdapter {
@@ -18,6 +22,8 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AccessDeniedHandler accessDeniedHandler;
+    @Autowired
+    private UserJWTFilter userJWTFilter;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder(){
@@ -36,6 +42,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/generateCaptcha").permitAll()
                 .antMatchers("/test/**").permitAll()
                 .anyRequest().authenticated();
+        http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         //配置異常處理
         http.exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)

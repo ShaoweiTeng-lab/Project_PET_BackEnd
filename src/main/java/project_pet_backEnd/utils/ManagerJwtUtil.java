@@ -1,0 +1,83 @@
+package project_pet_backEnd.utils;
+
+import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+@Component
+public class ManagerJwtUtil {
+    private static final long EXPIRATION_TIME = TimeUnit.DAYS.toMillis(5);
+    /**
+     * JWT SECRET KEY
+     */
+    @Value("${UserJwt-SECRET}")
+    private String secret;
+
+
+    /**
+     * 簽發JWT
+     */
+    public String generateToken(Map<String, String> userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put( "managerId", userDetails.get("managerId") );
+        return Jwts.builder()
+                .setClaims( claims )
+                .setExpiration( new Date( Instant.now().toEpochMilli() + EXPIRATION_TIME  ) )
+                .signWith(SignatureAlgorithm.HS256, secret )
+                .compact();//返回的 JwtBuilder 物件的一個方法。
+    }
+    /**
+     * 驗證JWT
+     */
+    public Claims validateToken(String token) {
+        System.out.println(token);
+        try {
+            return Jwts.parser()
+                    .setSigningKey( secret )
+                    .parseClaimsJws( token )
+                    .getBody();
+
+        } catch (SignatureException e) {
+            System.out.println("SignatureException");
+            //throw new SignatureException("Invalid JWT signature.");
+        }
+        catch (MalformedJwtException e) {
+            System.out.println("MalformedJwtException");
+            // throw new MalformedJwtException("Invalid JWT token.");
+        }
+        catch (ExpiredJwtException e) {
+            System.out.println("ExpiredJwtException");
+            // throw e;
+        }
+        catch (UnsupportedJwtException e) {
+            System.out.println("UnsupportedJwtException");
+            // throw new UnsupportedJwtException("Unsupported JWT token");
+        }
+        catch (IllegalArgumentException e) {
+            //  throw new IllegalArgumentException("JWT token compact of handler are invalid");
+        }
+        return null;
+    }
+
+    public  String getUserName(String jwt){
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(jwt)
+                .getBody();
+        return  claims.get("managerId",String.class);
+    }
+
+    public String createJwt(String sub){
+        return Jwts.builder()
+                .setSubject(sub)
+                .setExpiration( new Date( Instant.now().toEpochMilli() + EXPIRATION_TIME  ) )
+                .signWith(SignatureAlgorithm.HS256, secret )
+                .compact();
+    }
+}
