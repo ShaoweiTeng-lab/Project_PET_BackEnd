@@ -1,7 +1,6 @@
-package project_pet_backEnd.userLogin.model;
+package project_pet_backEnd.user.model;
 
 import lombok.Data;
-import org.springframework.data.relational.core.sql.In;
 
 import java.sql.Date;
 @Data

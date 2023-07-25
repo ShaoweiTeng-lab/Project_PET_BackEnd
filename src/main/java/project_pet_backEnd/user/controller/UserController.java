@@ -1,12 +1,11 @@
-package project_pet_backEnd.userLogin.controller;
+package project_pet_backEnd.user.controller;
 
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.userLogin.dto.ResponseResult;
-import project_pet_backEnd.userLogin.dto.UserLoginRequest;
-import project_pet_backEnd.userLogin.dto.UserSignUpRequest;
-import project_pet_backEnd.userLogin.service.UserService;
+import project_pet_backEnd.user.dto.ResponseResult;
+import project_pet_backEnd.user.dto.UserLoginRequest;
+import project_pet_backEnd.user.dto.UserSignUpRequest;
+import project_pet_backEnd.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
