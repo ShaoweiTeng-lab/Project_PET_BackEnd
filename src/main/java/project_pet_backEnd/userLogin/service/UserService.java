@@ -8,15 +8,16 @@ import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.smtp.EmailService;
 import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.userLogin.dao.UserDao;
+import project_pet_backEnd.userLogin.dao.imp.UserDaoImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.userLogin.dto.ResponseResult;
+import project_pet_backEnd.userLogin.dto.UserLoginRequest;
 import project_pet_backEnd.userLogin.dto.UserSignUpRequest;
 import project_pet_backEnd.userLogin.model.IdentityProvider;
 import project_pet_backEnd.userLogin.model.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
-import javax.validation.constraints.Email;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -45,6 +46,10 @@ public class UserService {
         userSignUpRequest.setUserPassword(encodePwd);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Local);
         userDao.localSignUp(userSignUpRequest);
+    }
+
+    public  void localSignIn(UserLoginRequest userLoginRequest){
+
     }
 
     private boolean  validatedCaptcha(String email,String captcha){
