@@ -22,7 +22,8 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
-        return  ResponseEntity.status(HttpStatus.OK).body("登入成功" );
+        ResponseResult responseResult= userService.localSignIn(userLoginRequest);
+        return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
     }
     @PostMapping("/user/customerSignUp")
     public ResponseEntity<?> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
@@ -31,9 +32,9 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
     @GetMapping("/user/profile")
-    public ResponseEntity<?> getUserProfile(@RequestAttribute String userId){
+    public ResponseEntity<?> getUserProfile(@RequestAttribute(name = "userId") String userId){
 
-        return  ResponseEntity.status(HttpStatus.OK).body("使用者訊息");
+        return  ResponseEntity.status(HttpStatus.OK).body("使用者訊息"+userId);
     }
     @PostMapping("/user/generateCaptcha")
     public  ResponseEntity<ResponseResult> generateCaptcha(@RequestParam @Email String email){

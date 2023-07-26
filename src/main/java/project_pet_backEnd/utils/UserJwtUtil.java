@@ -1,8 +1,10 @@
 package project_pet_backEnd.utils;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
@@ -15,8 +17,8 @@ public class UserJwtUtil {
     /**
      * JWT SECRET KEY
      */
-    @Value("${UserJwt-SECRET}")
-    private String secret;
+    @Value("${User_Jwt_SECRET}")
+    private String secret ;
 
 
     /**
@@ -35,7 +37,7 @@ public class UserJwtUtil {
      * 驗證JWT
      */
     public Claims validateToken(String token) {
-        System.out.println(token);
+        System.out.println( secret);
         try {
             return Jwts.parser()
                     .setSigningKey( secret )

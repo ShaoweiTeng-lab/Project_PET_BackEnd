@@ -1,5 +1,6 @@
 package project_pet_backEnd.user.service;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import project_pet_backEnd.user.dto.UserSignUpRequest;
 import project_pet_backEnd.user.model.IdentityProvider;
 import project_pet_backEnd.user.model.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
+import project_pet_backEnd.utils.UserJwtUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +36,8 @@ public class UserService {
     @Qualifier("bCryptPasswordEncoder")
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
+    @Autowired
+    UserJwtUtil userJwtUtil;
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
@@ -47,7 +50,20 @@ public class UserService {
         userDao.localSignUp(userSignUpRequest);
     }
 
-    public  void localSignIn(UserLoginRequest userLoginRequest){
+    public  ResponseResult localSignIn(UserLoginRequest userLoginRequest){
+        User validUser=userDao.getUserByEmail(userLoginRequest.getEmail());
+        if(validUser==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號
+        boolean isPasswordMatch  =bCryptPasswordEncoder.matches(userLoginRequest.getPassword(),validUser.getUserPassword());
+        if(!isPasswordMatch)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"密碼錯誤");//驗證錯誤
+
+
+
+        String jwt=userJwtUtil.createJwt(validUser.getUserId().toString());
+        ResponseResult responseResult=new ResponseResult();
+        responseResult.setMessage(jwt);
+        return  responseResult;
 
     }
 

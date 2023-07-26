@@ -16,7 +16,7 @@ public class ManagerJwtUtil {
     /**
      * JWT SECRET KEY
      */
-    @Value("${UserJwt-SECRET}")
+    //@Value("${UserJwt-SECRET}")
     private String secret;
 
 
