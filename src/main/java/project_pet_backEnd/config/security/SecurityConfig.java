@@ -40,6 +40,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/customerSignUp").permitAll()
                 .antMatchers("/user/generateCaptcha").permitAll()
+                .antMatchers("/customer/**").permitAll()
                 .antMatchers("/test/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);

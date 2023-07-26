@@ -25,6 +25,12 @@ public class UserJWTFilter extends OncePerRequestFilter {
     UserJwtUtil userJwtUtil;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String requestURI =request.getRequestURI();
+        if (!requestURI.startsWith("/user/")) {
+            filterChain.doFilter(request,response);
+            return;
+        }
+
         String token = request.getHeader("Authorization");
         if(!StringUtils.hasText(token)) {
             filterChain.doFilter(request,response);
