@@ -117,15 +117,11 @@ public class UserService {
         userProfileResponse.setUserAddress(user.getUserAddress());
         userProfileResponse.setUserBirthday(user.getUserBirthday());
         userProfileResponse.setUserPoint(user.getUserPoint());
-        userProfileResponse.setUserPic(base64Encode(user.getUserPic()));
+        userProfileResponse.setUserPic(AllDogCatUtils.base64Encode(user.getUserPic()));
         userProfileResponse.setIdentityProvider(userProfileResponse.getIdentityProvider());
         userProfileResponse.setUserCreated(user.getUserCreated());
         return  userProfileResponse;
     }
 
-    private  String base64Encode(byte[] byteArray){
-        if(byteArray==null)
-            return  null;
-        return Base64.getEncoder().encodeToString(byteArray);
-    }
+
 }

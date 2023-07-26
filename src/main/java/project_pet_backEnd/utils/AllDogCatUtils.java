@@ -1,6 +1,11 @@
 package project_pet_backEnd.utils;
 
+import java.util.Base64;
+
 public class AllDogCatUtils {
+    /**
+     * 生成驗證碼
+     */
     public static String returnAuthCode() {
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= 8; i++) {
@@ -19,5 +24,15 @@ public class AllDogCatUtils {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     *  byte[]轉base 64
+     */
+
+    public static  String base64Encode(byte[] byteArray){
+        if(byteArray==null)
+            return  null;
+        return Base64.getEncoder().encodeToString(byteArray);
     }
 }
