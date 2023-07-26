@@ -19,8 +19,6 @@ public class UserJwtUtil {
      */
     @Value("${User_Jwt_SECRET}")
     private String secret ;
-
-
     /**
      * 簽發JWT
      */
@@ -37,7 +35,6 @@ public class UserJwtUtil {
      * 驗證JWT
      */
     public Claims validateToken(String token) {
-        System.out.println( secret);
         try {
             return Jwts.parser()
                     .setSigningKey( secret )

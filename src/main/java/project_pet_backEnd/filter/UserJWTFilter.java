@@ -10,8 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.user.dao.UserDao;
 import project_pet_backEnd.user.dto.UserAuthentication;
 import project_pet_backEnd.utils.UserJwtUtil;
 
@@ -33,13 +31,11 @@ public class UserJWTFilter extends OncePerRequestFilter {
             return;
         }
         String  userId=null;
-
-
         Claims claims= userJwtUtil.validateToken(token);
         if(claims==null){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().println("Token null");
+            response.getWriter().println("Token Auth Error");
             return;
         }
         userId=claims.getSubject();
@@ -47,7 +43,6 @@ public class UserJWTFilter extends OncePerRequestFilter {
         userAuthentication.setUserId(userId);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
         request.setAttribute("userId",userId);
-        System.out.println("setAttribute : "+ request.getAttribute("userId"));
         filterChain.doFilter(request,response);
     }
 }

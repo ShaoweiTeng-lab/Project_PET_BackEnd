@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dto.ResponseResult;
 import project_pet_backEnd.user.dto.UserLoginRequest;
+import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
 import project_pet_backEnd.user.model.IdentityProvider;
 import project_pet_backEnd.user.model.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.UserJwtUtil;
 
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -92,9 +94,38 @@ public class UserService {
         emailService.sendEmail(emailResponse);
     }
 
-    private User getUserProfile(Integer userId){
-        return  userDao.getUserById(userId);
+    public UserProfileResponse getUserProfile(String userId){
+
+        User user=userDao.getUserById(Integer.parseInt(userId));
+        if(user==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到使用者");
+        UserProfileResponse userProfileResponse =new UserProfileResponse();
+        userProfileResponse.setUserName(user.getUserName());
+        userProfileResponse.setUserNickName(user.getUserNickName());
+        int gender=user.getUserGender();
+        switch (gender){
+            case 0:
+                userProfileResponse.setUserGender("女性");
+                break;
+            case 1:
+                userProfileResponse.setUserGender("男性");
+                break;
+            case 2:
+                userProfileResponse.setUserGender("尚未設定");
+                break;
+        }
+        userProfileResponse.setUserAddress(user.getUserAddress());
+        userProfileResponse.setUserBirthday(user.getUserBirthday());
+        userProfileResponse.setUserPoint(user.getUserPoint());
+        userProfileResponse.setUserPic(base64Encode(user.getUserPic()));
+        userProfileResponse.setIdentityProvider(userProfileResponse.getIdentityProvider());
+        userProfileResponse.setUserCreated(user.getUserCreated());
+        return  userProfileResponse;
     }
 
-
+    private  String base64Encode(byte[] byteArray){
+        if(byteArray==null)
+            return  null;
+        return Base64.getEncoder().encodeToString(byteArray);
+    }
 }

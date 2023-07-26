@@ -4,6 +4,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.user.dto.ResponseResult;
 import project_pet_backEnd.user.dto.UserLoginRequest;
+import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
 import project_pet_backEnd.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,9 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
     @GetMapping("/user/profile")
-    public ResponseEntity<?> getUserProfile(@RequestAttribute(name = "userId") String userId){
-
-        return  ResponseEntity.status(HttpStatus.OK).body("使用者訊息"+userId);
+    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") String userId){
+        UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
+        return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
     }
     @PostMapping("/user/generateCaptcha")
     public  ResponseEntity<ResponseResult> generateCaptcha(@RequestParam @Email String email){
