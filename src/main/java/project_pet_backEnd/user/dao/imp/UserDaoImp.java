@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.user.dao.UserDao;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
-import project_pet_backEnd.user.model.User;
+import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.user.rowMapper.UserRowMapper;
 
 import java.util.HashMap;

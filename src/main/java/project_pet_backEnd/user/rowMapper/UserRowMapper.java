@@ -1,8 +1,8 @@
 package project_pet_backEnd.user.rowMapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import project_pet_backEnd.user.model.IdentityProvider;
-import project_pet_backEnd.user.model.User;
+import project_pet_backEnd.user.vo.IdentityProvider;
+import project_pet_backEnd.user.vo.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

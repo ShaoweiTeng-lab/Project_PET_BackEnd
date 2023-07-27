@@ -1,7 +1,7 @@
 package project_pet_backEnd.user.dao;
 
 import project_pet_backEnd.user.dto.UserSignUpRequest;
-import project_pet_backEnd.user.model.User;
+import project_pet_backEnd.user.vo.User;
 
 public interface UserDao  {
     void localSignUp(UserSignUpRequest userSignUpRequest);

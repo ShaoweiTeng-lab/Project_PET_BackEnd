@@ -1,6 +1,5 @@
 package project_pet_backEnd.user.service;
 
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -15,12 +14,11 @@ import project_pet_backEnd.user.dto.ResponseResult;
 import project_pet_backEnd.user.dto.UserLoginRequest;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
-import project_pet_backEnd.user.model.IdentityProvider;
-import project_pet_backEnd.user.model.User;
+import project_pet_backEnd.user.vo.IdentityProvider;
+import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.UserJwtUtil;
 
-import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 @Service

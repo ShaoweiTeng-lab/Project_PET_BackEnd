@@ -1,4 +1,4 @@
-package project_pet_backEnd.user.model;
+package project_pet_backEnd.user.vo;
 
 import lombok.Data;
 
