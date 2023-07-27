@@ -10,7 +10,7 @@ import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project_pet_backEnd.user.dto.ResponseResult;
+import project_pet_backEnd.user.dto.loginResponse;
 import project_pet_backEnd.user.dto.UserLoginRequest;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
@@ -50,18 +50,15 @@ public class UserService {
         userDao.localSignUp(userSignUpRequest);
     }
 
-    public  ResponseResult localSignIn(UserLoginRequest userLoginRequest){
+    public loginResponse localSignIn(UserLoginRequest userLoginRequest){
         User validUser=userDao.getUserByEmail(userLoginRequest.getEmail());
-        if(validUser==null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號
+        if(validUser==null || validUser.getIdentityProvider()!=IdentityProvider.Local)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號 或帳號屬於
         boolean isPasswordMatch  =bCryptPasswordEncoder.matches(userLoginRequest.getPassword(),validUser.getUserPassword());
         if(!isPasswordMatch)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"密碼錯誤");//驗證錯誤
-
-
-
         String jwt=userJwtUtil.createJwt(validUser.getUserId().toString());
-        ResponseResult responseResult=new ResponseResult();
+        loginResponse responseResult=new loginResponse();
         responseResult.setMessage(jwt);
         return  responseResult;
 
@@ -75,12 +72,12 @@ public class UserService {
     }
 
 
-    public ResponseResult generateCaptcha(String email){
+    public loginResponse generateCaptcha(String email){
         String authCode=AllDogCatUtils.returnAuthCode();
         String  key ="MEMBER:"+ email;
         redisTemplate.opsForValue().set(key,authCode);
         redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
-        ResponseResult rs=new ResponseResult();
+        loginResponse rs=new loginResponse();
         sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br><p>"+authCode+"</p><br>請於十分鐘內輸入");
         rs.setMessage("generate_success");
         System.out.println(authCode);

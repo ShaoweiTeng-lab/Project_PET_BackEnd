@@ -35,4 +35,12 @@ public class AllDogCatUtils {
             return  null;
         return Base64.getEncoder().encodeToString(byteArray);
     }
+    /**
+     *  base 64轉byte[]
+     */
+    public static  byte[] base64Decode(String  base64String ){
+        if(base64String==null)
+            return  null;
+        return Base64.getDecoder().decode(base64String);
+    }
 }
