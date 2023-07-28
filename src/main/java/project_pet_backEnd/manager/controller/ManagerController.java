@@ -26,6 +26,7 @@ public class ManagerController {
     }
     @PostMapping("/login")
     public ResponseEntity<loginResponse> managerLogin(@RequestBody @Valid ManagerLoginRequest managerLoginRequest){
-        return  null;
+        loginResponse rs =managerService.managerLogin(managerLoginRequest);
+        return  ResponseEntity.status(200).body(rs);
     }
 }
