@@ -11,6 +11,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+/**
+ * Jwt 生成器 請勿亂動
+ */
 @Component
 public class UserJwtUtil {
     private static final long EXPIRATION_TIME = TimeUnit.DAYS.toMillis(5);
