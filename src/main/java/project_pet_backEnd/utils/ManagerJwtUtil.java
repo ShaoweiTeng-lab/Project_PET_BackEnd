@@ -9,14 +9,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
+/**
+ * Jwt 生成器 請勿亂動
+ */
 @Component
 public class ManagerJwtUtil {
     private static final long EXPIRATION_TIME = TimeUnit.DAYS.toMillis(5);
     /**
      * JWT SECRET KEY
      */
-    //@Value("${UserJwt-SECRET}")
+    @Value("${Manager_Jwt_SECRET}")
     private String secret;
 
 

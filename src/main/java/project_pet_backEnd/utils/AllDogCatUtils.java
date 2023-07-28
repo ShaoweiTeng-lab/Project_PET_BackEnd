@@ -1,5 +1,10 @@
 package project_pet_backEnd.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Base64;
 
 public class AllDogCatUtils {
@@ -42,5 +47,42 @@ public class AllDogCatUtils {
         if(base64String==null)
             return  null;
         return Base64.getDecoder().decode(base64String);
+    }
+
+    public  static  byte[] downloadImageAsByteArray(String imageUrl)  {
+        URL url = null;
+        InputStream inputStream=null;
+        ByteArrayOutputStream outputStream=null;
+        try {
+            url = new URL(imageUrl);
+            inputStream = url.openStream();
+            outputStream = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            if(inputStream!=null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(outputStream!=null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return outputStream.toByteArray();
     }
 }
