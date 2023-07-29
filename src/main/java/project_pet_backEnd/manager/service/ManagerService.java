@@ -50,7 +50,6 @@ public class ManagerService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(managerDetailJson);
         redisTemplate.opsForValue().set("Manager_Login_"+managerDetail.getManager().getManagerId(),managerDetailJson);
         String jwt= managerJwtUtil.createJwt(managerId);
         loginResponse responseResult=new loginResponse();

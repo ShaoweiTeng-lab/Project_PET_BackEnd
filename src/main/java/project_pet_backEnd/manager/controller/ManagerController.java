@@ -20,7 +20,7 @@ public class ManagerController {
     @Autowired
     private ManagerService managerService;
     @PostMapping("/createManager")
-    @PreAuthorize("hasRole('管理員管理')")
+    @PreAuthorize("hasAnyAuthority('管理員管理')")
     public ResponseEntity<loginResponse> createManager(@RequestBody @Valid CreateManagerRequest createManagerRequest){
         return  ResponseEntity.status(201).body(null);
     }
