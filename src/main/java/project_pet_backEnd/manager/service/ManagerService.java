@@ -1,5 +1,8 @@
 package project_pet_backEnd.manager.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,9 +25,12 @@ public class ManagerService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private  ManagerJwtUtil managerJwtUtil;
-
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
     @Autowired
     private ManagerDaoImp managerDao;
+    @Autowired
+    private  ObjectMapper objectMapper;
     public loginResponse createManager(CreateManagerRequest createManagerRequest){
 
         return  null;
@@ -33,11 +39,19 @@ public class ManagerService {
     public loginResponse managerLogin(ManagerLoginRequest managerLoginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(managerLoginRequest.getManagerAccount(),managerLoginRequest.getManagerPassword());
         Authentication authentication= authenticationManager.authenticate(authenticationToken);
-        System.out.println(Objects.isNull(authentication));
         if(Objects.isNull(authentication))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         ManagerDetailsImp managerDetail = (ManagerDetailsImp) authentication.getPrincipal();
         String managerId =String.valueOf( managerDetail.getManager().getManagerId());
+        ObjectMapper objectMapper =new ObjectMapper();
+        String managerDetailJson=null;
+        try {
+            managerDetailJson=objectMapper.writeValueAsString(managerDetail);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(managerDetailJson);
+        redisTemplate.opsForValue().set("Manager_Login_"+managerDetail.getManager().getManagerId(),managerDetailJson);
         String jwt= managerJwtUtil.createJwt(managerId);
         loginResponse responseResult=new loginResponse();
         responseResult.setMessage(jwt);
