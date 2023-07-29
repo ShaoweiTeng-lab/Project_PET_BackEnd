@@ -1,7 +1,11 @@
 package project_pet_backEnd.manager.dao;
 
-import org.springframework.stereotype.Repository;
+import project_pet_backEnd.manager.vo.Function;
+import project_pet_backEnd.manager.vo.Manager;
 
-@Repository
-public class ManagerDao {
+import java.util.List;
+
+public interface ManagerDao {
+    Manager getUserByAccount(String username);
+    List<Function>  getManagerRolesByUserId(Integer managerId);
 }
