@@ -27,17 +27,17 @@ public class UserService {
     private UserDao userDao;
 
     @Autowired
-    RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String,String> redisTemplate;
 
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     @Autowired
     @Qualifier("bCryptPasswordEncoder")
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    UserJwtUtil userJwtUtil;
+    private UserJwtUtil userJwtUtil;
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
