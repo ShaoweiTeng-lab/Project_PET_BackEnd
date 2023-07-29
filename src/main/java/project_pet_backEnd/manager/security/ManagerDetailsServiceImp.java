@@ -19,11 +19,13 @@ public class ManagerDetailsServiceImp implements UserDetailsService {
     private ManagerDao managerDao;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Manager manager =managerDao.getUserByAccount(username);
+
+        Manager manager =managerDao.getManagerByAccount(username);
+
         if (manager == null) {
             throw new UsernameNotFoundException("無此Manager");
         }
-        List<Function> functions=managerDao.getManagerRolesByUserId(manager.getManagerId());
+        List<Function> functions=managerDao.getManagerRolesByManagerId(manager.getManagerId());
         List<String> permissionsList=new ArrayList();
         for (Function function: functions) {
             permissionsList.add(function.getFunctionName());

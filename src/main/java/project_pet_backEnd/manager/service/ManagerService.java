@@ -33,6 +33,7 @@ public class ManagerService {
     public loginResponse managerLogin(ManagerLoginRequest managerLoginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(managerLoginRequest.getManagerAccount(),managerLoginRequest.getManagerPassword());
         Authentication authentication= authenticationManager.authenticate(authenticationToken);
+        System.out.println(Objects.isNull(authentication));
         if(Objects.isNull(authentication))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         ManagerDetailsImp managerDetail = (ManagerDetailsImp) authentication.getPrincipal();

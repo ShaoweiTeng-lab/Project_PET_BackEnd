@@ -6,6 +6,6 @@ import project_pet_backEnd.manager.vo.Manager;
 import java.util.List;
 
 public interface ManagerDao {
-    Manager getUserByAccount(String username);
-    List<Function>  getManagerRolesByUserId(Integer managerId);
+    Manager getManagerByAccount(String username);
+    List<Function>  getManagerRolesByManagerId(Integer managerId);
 }
