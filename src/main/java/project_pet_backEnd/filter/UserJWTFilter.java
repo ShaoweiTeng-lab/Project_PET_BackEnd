@@ -39,6 +39,7 @@ public class UserJWTFilter extends OncePerRequestFilter {
         String  userId=null;
         Claims claims= userJwtUtil.validateToken(token);
         if(claims==null){
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().println("Token Auth Error");

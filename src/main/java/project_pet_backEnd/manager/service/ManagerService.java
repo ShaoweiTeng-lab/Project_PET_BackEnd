@@ -60,6 +60,8 @@ public class ManagerService {
         if(Objects.isNull(authentication))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         ManagerDetailsImp managerDetail = (ManagerDetailsImp) authentication.getPrincipal();
+        if(managerDetail.getManager().getManagerState()==0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);//被停權
         String managerId =String.valueOf( managerDetail.getManager().getManagerId());
         ObjectMapper objectMapper =new ObjectMapper();
         String managerDetailJson=null;
