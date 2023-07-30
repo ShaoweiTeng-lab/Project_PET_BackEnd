@@ -49,6 +49,13 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
         }
         managerId=claims.getSubject();
         String managerLoginJson=redisTemplate.opsForValue().get("Manager_Login_"+managerId);
+        if(managerLoginJson==null){
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().println("您的權限已被修改，請重新登入");
+            return;
+        }
         ManagerDetailsImp managerDetail=null;
         managerDetail=objectMapper.readValue(managerLoginJson,ManagerDetailsImp.class);
         if(managerDetail.getManager().getManagerState()==0){

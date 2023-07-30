@@ -88,6 +88,7 @@ public class ManagerService {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
         managerDao.deleteAllAuthoritiesById(managerId);
         managerDao.adjustPermission(managerId,adjustPermissionRequest);
+        redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
         rs.setMessage("更新完成");
         return  rs;
