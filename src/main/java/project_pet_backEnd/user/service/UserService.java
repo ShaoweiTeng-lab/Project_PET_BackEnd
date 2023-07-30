@@ -9,7 +9,7 @@ import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project_pet_backEnd.user.dto.LoginResponse;
+import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.user.dto.UserLoginRequest;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
@@ -48,7 +48,7 @@ public class UserService {
         userDao.localSignUp(userSignUpRequest);
     }
 
-    public LoginResponse localSignIn(UserLoginRequest userLoginRequest){
+    public ResultResponse localSignIn(UserLoginRequest userLoginRequest){
         User validUser=userDao.getUserByEmail(userLoginRequest.getEmail());
         if(validUser==null || validUser.getIdentityProvider()!=IdentityProvider.Local)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號 或帳號屬於
@@ -56,7 +56,7 @@ public class UserService {
         if(!isPasswordMatch)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"密碼錯誤");//驗證錯誤
         String jwt=userJwtUtil.createJwt(validUser.getUserId().toString());
-        LoginResponse responseResult=new LoginResponse();
+        ResultResponse responseResult=new ResultResponse();
         responseResult.setMessage(jwt);
         return  responseResult;
 
@@ -70,12 +70,12 @@ public class UserService {
     }
 
 
-    public LoginResponse generateCaptcha(String email){
+    public ResultResponse generateCaptcha(String email){
         String authCode=AllDogCatUtils.returnAuthCode();
         String  key ="MEMBER:"+ email;
         redisTemplate.opsForValue().set(key,authCode);
         redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
-        LoginResponse rs=new LoginResponse();
+        ResultResponse rs=new ResultResponse();
         sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br><p>"+authCode+"</p><br>請於十分鐘內輸入");
         rs.setMessage("generate_success");
         System.out.println(authCode);

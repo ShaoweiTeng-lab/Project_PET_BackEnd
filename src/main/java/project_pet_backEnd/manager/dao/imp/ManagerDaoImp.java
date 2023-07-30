@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.ManagerRepository;
 import project_pet_backEnd.manager.dto.CreateManagerRequest;
+import project_pet_backEnd.manager.dto.ManagerAuthorities;
 import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
 
@@ -73,5 +74,24 @@ public class ManagerDaoImp implements ManagerDao {
         map.put("account",createManagerData.getManagerAccount());
         map.put("password",createManagerData.getManagerPassword());
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public List<ManagerAuthorities> getManagerAuthorities(Integer managerId) {
+        String  sql ="select f.FUNCTION_NAME from \n" +
+                "manager m\n" +
+                "join permission  p on m.MANAGER_ID=p.MANAGER_ID\n" +
+                "join `function` f on p.FUNCTION_ID =f.FUNCTION_ID\n" +
+                "where m.MANAGER_ID = :managerId";
+        Map<String,Object> map =new HashMap<>();
+        map.put("managerId",managerId);
+        List<ManagerAuthorities>  managerAuthoritiesList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerAuthorities>() {
+            @Override
+            public ManagerAuthorities mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ManagerAuthorities managerAuthority =ManagerAuthorities.valueOf(rs.getString("FUNCTION_NAME"));
+                return managerAuthority;
+            }
+        });
+        return managerAuthoritiesList;
     }
 }
