@@ -3,11 +3,13 @@ package project_pet_backEnd.manager.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.imp.ManagerDaoImp;
@@ -76,15 +78,30 @@ public class ManagerService {
         responseResult.setMessage(jwt);
         return  responseResult;
     }
-
+    @Transactional
     public  ResultResponse adjustPermission(AdjustPermissionRequest adjustPermissionRequest){
-
-        return  null;
+        Integer managerId=managerDao.getManagerIdByAccount(adjustPermissionRequest.getAccount());
+        if(managerId==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
+        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(adjustPermissionRequest.getAccount());
+        if(managerAuthorities.contains(ManagerAuthorities.管理員管理))
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
+        managerDao.deleteAllAuthoritiesById(managerId);
+        managerDao.adjustPermission(managerId,adjustPermissionRequest);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("更新完成");
+        return  rs;
     }
 
-    public  ResultResponse getManagerAuthorities(Integer managerId){
+    public  ResultResponse getManagerAuthoritiesById(Integer managerId){
         ResultResponse rs =new ResultResponse();
-        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthorities(managerId);
+        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
+        rs.setMessage(managerAuthorities);
+        return  rs;
+    }
+    public  ResultResponse getManagerAuthoritiesByAccount(String account){
+        ResultResponse rs =new ResultResponse();
+        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
         rs.setMessage(managerAuthorities);
         return  rs;
     }

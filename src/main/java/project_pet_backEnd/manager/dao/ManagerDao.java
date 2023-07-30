@@ -1,6 +1,7 @@
 package project_pet_backEnd.manager.dao;
 
 import org.springframework.data.relational.core.sql.In;
+import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
 import project_pet_backEnd.manager.dto.CreateManagerRequest;
 import project_pet_backEnd.manager.dto.ManagerAuthorities;
 import project_pet_backEnd.manager.vo.Function;
@@ -15,5 +16,13 @@ public interface ManagerDao {
 
     void createManager(Manager createManagerData );
 
-    List<ManagerAuthorities> getManagerAuthorities(Integer managerId);
+    List<ManagerAuthorities> getManagerAuthoritiesById(Integer managerId);
+
+    List<ManagerAuthorities>  getManagerAuthoritiesByAccount(String account);
+
+    void deleteAllAuthoritiesById( Integer managerId);
+
+    void adjustPermission(Integer managerId,AdjustPermissionRequest adjustPermissionRequest);
+
+    Integer getManagerIdByAccount(String account);
 }

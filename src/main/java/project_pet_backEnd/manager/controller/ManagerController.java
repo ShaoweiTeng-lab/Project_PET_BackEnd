@@ -36,7 +36,7 @@ public class ManagerController {
     }
     @GetMapping("/authorities")
     public  ResponseEntity<ResultResponse> getManagerAuthorities(@RequestAttribute Integer managerId){
-        ResultResponse rs =managerService.getManagerAuthorities(managerId);
+        ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
 }
