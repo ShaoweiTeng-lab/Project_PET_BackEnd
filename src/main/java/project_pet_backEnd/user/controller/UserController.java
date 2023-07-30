@@ -2,7 +2,7 @@ package project_pet_backEnd.user.controller;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.user.dto.loginResponse;
+import project_pet_backEnd.user.dto.LoginResponse;
 import project_pet_backEnd.user.dto.UserLoginRequest;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
@@ -23,7 +23,7 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
-        loginResponse responseResult= userService.localSignIn(userLoginRequest);
+        LoginResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
     }
     @PostMapping("/user/customerSignUp")
@@ -38,8 +38,8 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
     }
     @PostMapping("/user/generateCaptcha")
-    public  ResponseEntity<loginResponse> generateCaptcha(@RequestParam @Email String email){
-        loginResponse rs =userService.generateCaptcha(email);
+    public  ResponseEntity<LoginResponse> generateCaptcha(@RequestParam @Email String email){
+        LoginResponse rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 

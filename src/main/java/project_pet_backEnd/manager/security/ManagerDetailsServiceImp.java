@@ -27,8 +27,10 @@ public class ManagerDetailsServiceImp implements UserDetailsService {
         }
         List<Function> functions=managerDao.getManagerRolesByManagerId(manager.getManagerId());
         List<String> permissionsList=new ArrayList();
-        for (Function function: functions) {
-            permissionsList.add(function.getFunctionName());
+        if(functions.size()>0){
+            for (Function function: functions) {
+                permissionsList.add(function.getFunctionName());
+            }
         }
         return new ManagerDetailsImp(manager,permissionsList);
     }

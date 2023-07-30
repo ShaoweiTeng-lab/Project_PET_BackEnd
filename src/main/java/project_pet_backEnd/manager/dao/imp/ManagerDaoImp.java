@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.ManagerRepository;
+import project_pet_backEnd.manager.dto.CreateManagerRequest;
 import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
 
@@ -28,7 +29,7 @@ public class ManagerDaoImp implements ManagerDao {
         String sql ="select * from manager where MANAGER_ACCOUNT =:managerAccount";
         Map map =new HashMap<>();
         map.put("managerAccount",managerAccount);
-        Manager manager=namedParameterJdbcTemplate.queryForObject(sql, map, new RowMapper<Manager>() {
+        List<Manager> managerList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<Manager>() {
             @Override
             public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Manager manager =new Manager();
@@ -40,9 +41,9 @@ public class ManagerDaoImp implements ManagerDao {
                 return manager;
             }
         });
-
-
-        return manager;
+        if(managerList.size()>0)
+            return managerList.get(0);
+        return null;
     }
 
     @Override
@@ -62,5 +63,15 @@ public class ManagerDaoImp implements ManagerDao {
             }
         });
         return rsList;
+    }
+
+    @Override
+    public void createManager(Manager createManagerData) {
+        //Manager manager =managerRepository.save(createManagerData);
+        String sql ="Insert into Manager(Manager_Account,Manager_Password) values(:account ,:password)";
+        Map<String,Object> map =new HashMap<>();
+        map.put("account",createManagerData.getManagerAccount());
+        map.put("password",createManagerData.getManagerPassword());
+        namedParameterJdbcTemplate.update(sql,map);
     }
 }

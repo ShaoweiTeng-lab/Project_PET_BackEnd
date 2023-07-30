@@ -54,7 +54,6 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken managerAuthentication =new UsernamePasswordAuthenticationToken(managerDetail,null,managerDetail.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(managerAuthentication);
         request.setAttribute("managerId",Integer.valueOf(managerId));
-        System.out.println(request.getAttribute("managerId"));
         filterChain.doFilter(request,response);
     }
 }
