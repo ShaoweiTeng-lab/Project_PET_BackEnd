@@ -113,7 +113,7 @@ public class UserService {
         userProfileResponse.setUserPoint(user.getUserPoint());
         userProfileResponse.setUserPic(AllDogCatUtils.base64Encode(user.getUserPic()));
         userProfileResponse.setIdentityProvider(userProfileResponse.getIdentityProvider());
-        userProfileResponse.setUserCreated(user.getUserCreated());
+        userProfileResponse.setUserCreated(AllDogCatUtils.timestampToDateFormat(user.getUserCreated()));
         return  userProfileResponse;
     }
 

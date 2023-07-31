@@ -16,5 +16,5 @@ public class UserProfileResponse {
     private Integer userPoint;
     private String userPic;
     private IdentityProvider identityProvider;
-    private java.util.Date userCreated;//util.date
+    private String userCreated;
 }
