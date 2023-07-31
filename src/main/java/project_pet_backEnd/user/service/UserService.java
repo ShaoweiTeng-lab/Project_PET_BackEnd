@@ -107,6 +107,7 @@ public class UserService {
                 userProfileResponse.setUserGender("尚未設定");
                 break;
         }
+        userProfileResponse.setUserPhone(user.getUserPhone());
         userProfileResponse.setUserAddress(user.getUserAddress());
         userProfileResponse.setUserBirthday(user.getUserBirthday());
         userProfileResponse.setUserPoint(user.getUserPoint());

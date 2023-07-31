@@ -11,6 +11,7 @@ public class User {
     private Integer userGender;
     private  String  userEmail;
     private String  userPassword;
+    private String  userPhone;
     private  String userAddress;
     private Date userBirthday;;//sql.date
     private Integer userPoint;
