@@ -1,18 +1,17 @@
-package project_pet_backEnd.groomer.vo;
+package project_pet_backEnd.groomer.dto;
 
 import lombok.Data;
+
 import java.sql.Date;
+
 @Data
-public class PetGroomer {
+public class PetGroomerInsertRequest {
     private int manId;
     private String pgName;
     private int pgGender;
-    private byte[] pgPic;
+    private String pgPic;//base64
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
     private Date pgBirthday;//sql.date
-
-    // 此處省略建構子、Getter 和 Setter 方法
 }
-
