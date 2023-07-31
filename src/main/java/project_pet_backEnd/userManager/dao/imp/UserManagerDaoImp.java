@@ -46,8 +46,6 @@ public class UserManagerDaoImp implements UserManagerDao {
             sql =sql + " AND USER_NAME LIKE :search or USER_NickNAME LIKE :search";
             map.put("search","%" + userQueryParameter.getSearch()+ "%");
         }
-        //排序
-        sql =sql +" ORDER BY  "+userQueryParameter.getOrder()+" "+userQueryParameter.getSort();
         Integer total =namedParameterJdbcTemplate.queryForObject(sql, map, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {

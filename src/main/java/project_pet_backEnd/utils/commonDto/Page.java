@@ -7,9 +7,9 @@ import lombok.Data;
  * */
 @Data
 public class Page<T>{
-    private  Integer limit;
-    private  Integer offset;
+    private  Integer limit;//限制欄位
+    private  Integer offset;//從第幾筆開始
 
-    private  Integer total;
+    private  Integer total;//總查詢數，可用於頁數顯示 total/limit
     private  T rs;
 }
