@@ -7,8 +7,6 @@ import project_pet_backEnd.groomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
 import project_pet_backEnd.groomer.vo.PetGroomer;
-import project_pet_backEnd.manager.vo.Function;
-import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
