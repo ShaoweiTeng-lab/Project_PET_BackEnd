@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Date;
 
 public class AllDogCatUtils {
     /**
@@ -48,7 +53,6 @@ public class AllDogCatUtils {
             return  null;
         return Base64.getDecoder().decode(base64String);
     }
-
     public  static  byte[] downloadImageAsByteArray(String imageUrl)  {
         URL url = null;
         InputStream inputStream=null;
@@ -84,5 +88,14 @@ public class AllDogCatUtils {
             }
         }
         return outputStream.toByteArray();
+    }
+
+    /**
+     * 日期轉換格式 date-> yyyy-MM-dd
+     * */
+    public  static String timestampToDateFormat(Date date){
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        String formattedDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return formattedDate;
     }
 }
