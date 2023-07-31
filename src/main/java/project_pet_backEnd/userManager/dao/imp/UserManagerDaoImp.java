@@ -25,8 +25,7 @@ public class UserManagerDaoImp implements UserManagerDao {
             sql =sql + " AND USER_NAME LIKE :search or USER_NickNAME LIKE :search";
             map.put("search","%" + userQueryParameter.getSearch()+ "%");
         }
-        sql =sql +" ORDER BY  "+userQueryParameter.getOrder();
-        sql =sql +" "+userQueryParameter.getSort();
+        sql =sql +" ORDER BY  "+userQueryParameter.getOrder()+" "+userQueryParameter.getSort();
         List<User> userList=namedParameterJdbcTemplate.query(sql,map,new UserRowMapper());
         return userList;
     }

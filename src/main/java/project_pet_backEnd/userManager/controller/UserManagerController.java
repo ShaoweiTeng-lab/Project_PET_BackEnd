@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.user.vo.User;
@@ -24,6 +25,9 @@ import java.util.List;
 public class UserManagerController {
     @Autowired
     private UserManagerService userManagerService;
+    /**
+     *
+     * */
     @PreAuthorize("hasAnyAuthority('會員管理')")
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>>  getUsers(
@@ -37,6 +41,6 @@ public class UserManagerController {
         List<UserProfileResponse> userList = userManagerService.getUsers(userQueryParameter);
         return ResponseEntity.status(200).body(userList);
     }
-
+//    public  ResponseEntity<ResultResponse> adjustUser
 
 }
