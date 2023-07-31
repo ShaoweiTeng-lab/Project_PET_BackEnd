@@ -87,9 +87,9 @@ public class UserService {
         emailService.sendEmail(emailResponse);
     }
 
-    public UserProfileResponse getUserProfile(String userId){
+    public UserProfileResponse getUserProfile(Integer userId){
 
-        User user=userDao.getUserById(Integer.parseInt(userId));
+        User user=userDao.getUserById(userId);
         if(user==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到使用者");
         UserProfileResponse userProfileResponse =new UserProfileResponse();

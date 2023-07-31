@@ -25,7 +25,12 @@ public class UserManagerDaoImp implements UserManagerDao {
             sql =sql + " AND USER_NAME LIKE :search or USER_NickNAME LIKE :search";
             map.put("search","%" + userQueryParameter.getSearch()+ "%");
         }
+        //排序
         sql =sql +" ORDER BY  "+userQueryParameter.getOrder()+" "+userQueryParameter.getSort();
+        //分頁
+        sql =sql +" LIMIT :limit OFFSET :offset ";
+        map.put("limit",userQueryParameter.getLimit());
+        map.put("offset",userQueryParameter.getOffset());
         List<User> userList=namedParameterJdbcTemplate.query(sql,map,new UserRowMapper());
         return userList;
     }

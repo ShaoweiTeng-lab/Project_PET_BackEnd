@@ -33,7 +33,7 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
     @GetMapping("/user/profile")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") String userId){
+    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") Integer userId){
         UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
         return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
     }
@@ -43,5 +43,8 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
-
+    @PostMapping("/user/adjustUserProfile")
+    public ResponseEntity<ResultResponse> adjustUserProfile(@RequestAttribute(name = "userId") Integer userId){
+        return  null;
+    }
 }
