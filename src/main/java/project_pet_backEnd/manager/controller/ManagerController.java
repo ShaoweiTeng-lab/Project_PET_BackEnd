@@ -37,13 +37,7 @@ public class ManagerController {
         ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
-    /**
-     * 搜尋會員
-     * */
-    @GetMapping("/users")
-    public ResponseEntity<?> getUsers(){
-        return  ResponseEntity.status(200).body("");
-    }
+
     /**
      * 修改管理員資料
      * */
