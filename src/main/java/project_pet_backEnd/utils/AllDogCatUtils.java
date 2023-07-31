@@ -53,6 +53,10 @@ public class AllDogCatUtils {
             return  null;
         return Base64.getDecoder().decode(base64String);
     }
+    /**
+     *  下載圖片
+     */
+
     public  static  byte[] downloadImageAsByteArray(String imageUrl)  {
         URL url = null;
         InputStream inputStream=null;
