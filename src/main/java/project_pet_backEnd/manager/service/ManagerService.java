@@ -15,10 +15,7 @@ import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.imp.ManagerDaoImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
-import project_pet_backEnd.manager.dto.CreateManagerRequest;
-import project_pet_backEnd.manager.dto.ManagerAuthorities;
-import project_pet_backEnd.manager.dto.ManagerLoginRequest;
+import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.vo.Manager;
 import project_pet_backEnd.user.dto.ResultResponse;
@@ -104,6 +101,22 @@ public class ManagerService {
         ResultResponse rs =new ResultResponse();
         List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
         rs.setMessage(managerAuthorities);
+        return  rs;
+    }
+    @Transactional
+    public ResultResponse adjustManager(AdjustManagerRequest adjustManagerRequest) {
+        Integer managerId =managerDao.getManagerIdByAccount(adjustManagerRequest.getOrgManagerAccount());
+        if (managerId==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
+        adjustManagerRequest.setManagerId(managerId);
+        if(adjustManagerRequest.getManagerPassword()==null){
+            String password= managerDao.getPasswordById(managerId);
+            adjustManagerRequest.setManagerPassword(password);
+        }
+        else
+            adjustManagerRequest.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
+        managerDao.updateManager(adjustManagerRequest);
+        ResultResponse rs =new ResultResponse();
         return  rs;
     }
 }

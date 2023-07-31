@@ -23,6 +23,7 @@ public class UserDaoImp implements UserDao {
                 "USER_GENDER," +
                 "USER_EMAIL," +
                 "USER_PASSWORD," +
+                "USER_PHONE," +
                 "USER_ADDRESS," +
                 "USER_BIRTHDAY," +
                 "USER_PROVIDER) " +
@@ -32,6 +33,7 @@ public class UserDaoImp implements UserDao {
                 ":userGender," +
                 ":userEmail," +
                 ":userPassword," +
+                ":userPhone," +
                 ":userAddress," +
                 ":userBirthday," +
                 ":identityProvider)";
@@ -42,6 +44,7 @@ public class UserDaoImp implements UserDao {
         map.put("userGender",userSignUpRequest.getUserGender());
         map.put("userEmail",userSignUpRequest.getUserEmail());
         map.put("userPassword",userSignUpRequest.getUserPassword());
+        map.put("userPhone",userSignUpRequest.getUserPhone());
         map.put("userAddress",userSignUpRequest.getUserAddress());
         map.put("userBirthday",userSignUpRequest.getUserBirthday());
         map.put("identityProvider",userSignUpRequest.getIdentityProvider().toString());

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.ManagerRepository;
+import project_pet_backEnd.manager.dto.AdjustManagerRequest;
 import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
 import project_pet_backEnd.manager.dto.CreateManagerRequest;
 import project_pet_backEnd.manager.dto.ManagerAuthorities;
@@ -153,5 +154,36 @@ public class ManagerDaoImp implements ManagerDao {
         if(managerIdList.size()>0)
             return managerIdList.get(0);
         return null;
+    }
+
+    @Override
+    public String getPasswordById(Integer managerId) {
+       String sql = "select MANAGER_PASSWORD from  manager where MANAGER_ID = :managerId";
+       Map<String,Object> map =new HashMap<>();
+       map.put("managerId",managerId);
+       List<String> passwordList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<String>() {
+           @Override
+           public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+               return rs.getString("MANAGER_PASSWORD");
+           }
+       });
+       if(passwordList.size()>0)
+           return passwordList.get(0);
+       return null;
+    }
+
+    @Override
+    public void updateManager(AdjustManagerRequest adjustManagerRequest) {
+        String sql="UPDATE manager\n" +
+                "SET MANAGER_ACCOUNT = :account,\n" +
+                "    MANAGER_PASSWORD = :password,\n" +
+                "    MANAGER_STATE= :state\n" +
+                "WHERE MANAGER_ID = :managerId ; ";
+        Map<String,Object>map =new HashMap<>();
+        map.put("account",adjustManagerRequest.getManagerAccount());
+        map.put("password",adjustManagerRequest.getManagerPassword());
+        map.put("state",adjustManagerRequest.getManagerState());
+        map.put("managerId",adjustManagerRequest.getManagerId());
+        namedParameterJdbcTemplate.update(sql,map);
     }
 }
