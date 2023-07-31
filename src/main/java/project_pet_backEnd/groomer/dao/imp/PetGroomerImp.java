@@ -38,7 +38,7 @@ public class PetGroomerImp implements PetGroomerDao {
     }
     @Override
     public void insert(PetGroomerInsertRequest petGroomerInsertRequest) {
-
+        //參數要改
         String sql ="INSERT INTO  PET_GROOMER(" +
                 "MAN_ID," +
                 "PG_NAME," +
