@@ -28,11 +28,11 @@ public class UserManagerController {
     @GetMapping("/users")
     public ResponseEntity<List<UserProfileResponse>>  getUsers(
             @RequestParam(required = false)String search,
-            @RequestParam(required = false, defaultValue = "USER_CREATED") UserOrderBy userOrderBy,
+            @RequestParam(required = false, defaultValue = "USER_CREATED") UserOrderBy orderBy,
             @RequestParam(required = false,defaultValue = "desc") Sort sort){
         UserQueryParameter userQueryParameter=new UserQueryParameter();
         userQueryParameter.setSearch(search);
-        userQueryParameter.setOrder(userOrderBy);
+        userQueryParameter.setOrder(orderBy);
         userQueryParameter.setSort(sort);
         List<UserProfileResponse> userList = userManagerService.getUsers(userQueryParameter);
         return ResponseEntity.status(200).body(userList);
