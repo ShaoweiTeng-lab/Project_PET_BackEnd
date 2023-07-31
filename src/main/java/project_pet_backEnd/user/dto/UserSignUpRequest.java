@@ -21,6 +21,8 @@ public class UserSignUpRequest {
     @NotBlank
     private String  userPassword;
     @NotBlank
+    private String  userPhone;
+    @NotBlank
     private  String userAddress;
     private Date userBirthday;
     private IdentityProvider identityProvider;
