@@ -17,6 +17,7 @@ import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.userManager.dto.UserOrderBy;
 import project_pet_backEnd.userManager.dto.UserQueryParameter;
 import project_pet_backEnd.userManager.service.UserManagerService;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.Max;
@@ -33,7 +34,7 @@ public class UserManagerController {
      *
      * */
     @GetMapping("/users")
-    public ResponseEntity<List<UserProfileResponse>>  getUsers(
+    public ResponseEntity<Page<List<UserProfileResponse>>>  getUsers(
             @RequestParam(required = false)String search,
             @RequestParam(required = false, defaultValue = "USER_CREATED") UserOrderBy orderBy,
             @RequestParam(required = false,defaultValue = "desc") Sort sort,
@@ -45,7 +46,7 @@ public class UserManagerController {
         userQueryParameter.setSort(sort);
         userQueryParameter.setLimit(limit);
         userQueryParameter.setOffset(offset);
-        List<UserProfileResponse> userList = userManagerService.getUsers(userQueryParameter);
+        Page<List<UserProfileResponse>> userList = userManagerService.getUsers(userQueryParameter);
         return ResponseEntity.status(200).body(userList);
     }
 //    public  ResponseEntity<ResultResponse> adjustUser
