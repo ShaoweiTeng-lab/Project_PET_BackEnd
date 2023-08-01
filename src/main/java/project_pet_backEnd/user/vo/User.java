@@ -37,6 +37,7 @@ public class User {
     @Column(name = "USER_PIC")
     private byte[] userPic;
     @Column(name = "USER_PROVIDER")
+    @Enumerated(EnumType.STRING)
     private IdentityProvider identityProvider;
     @Column(name = "USER_CREATED", columnDefinition = "TIMESTAMP  DEFAULT CURRENT_TIMESTAMP")
     private java.util.Date userCreated;//util.date

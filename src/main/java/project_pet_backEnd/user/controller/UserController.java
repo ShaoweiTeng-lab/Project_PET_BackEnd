@@ -2,10 +2,7 @@ package project_pet_backEnd.user.controller;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.user.dto.ResultResponse;
-import project_pet_backEnd.user.dto.UserLoginRequest;
-import project_pet_backEnd.user.dto.UserProfileResponse;
-import project_pet_backEnd.user.dto.UserSignUpRequest;
+import project_pet_backEnd.user.dto.*;
 import project_pet_backEnd.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +41,9 @@ public class UserController {
     }
 
     @PostMapping("/user/adjustUserProfile")
-    public ResponseEntity<ResultResponse> adjustUserProfile(@RequestAttribute(name = "userId") Integer userId){
-        return  null;
+    public ResponseEntity<ResultResponse> adjustUserProfile(@RequestAttribute(name = "userId") Integer userId, @RequestBody AdjustUserProfileRequest adjustUserProfileRequest){
+        userService.adjustUserProfile(userId,adjustUserProfileRequest);
+        ResultResponse rs =new ResultResponse();
+        return  ResponseEntity.status(200).body(rs);
     }
 }
