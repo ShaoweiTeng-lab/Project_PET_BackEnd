@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import project_pet_backEnd.groomer.dao.PetGroomerDao;
-import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
+import project_pet_backEnd.groomer.vo.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 
 import java.sql.ResultSet;
@@ -37,8 +37,7 @@ public class PetGroomerImp implements PetGroomerDao {
         return rsList;
     }
     @Override
-    public void insert(PetGroomerInsertRequest petGroomerInsertRequest) {
-        //參數要改
+    public void insert(PetGroomer petGroomer) {
         String sql ="INSERT INTO  PET_GROOMER(" +
                 "MAN_ID," +
                 "PG_NAME," +
@@ -58,17 +57,22 @@ public class PetGroomerImp implements PetGroomerDao {
                 ":pgAddress," +
                 ":pgBirthday)";
         Map<String,Object> map = new HashMap<>();
-        map.put("manID",petGroomerInsertRequest.getManId());
-        map.put("pgName",petGroomerInsertRequest.getPgName());
-        map.put("pgGender",petGroomerInsertRequest.getPgGender());
-        map.put("pgPic",petGroomerInsertRequest.getPgPic());
-        map.put("pgEmail",petGroomerInsertRequest.getPgEmail());
-        map.put("pgPh",petGroomerInsertRequest.getPgPh());
-        map.put("pgAddress",petGroomerInsertRequest.getPgAddress());
-        map.put("pgBirthday",petGroomerInsertRequest.getPgBirthday());
+        map.put("manID",petGroomer.getManId());
+        map.put("pgName",petGroomer.getPgName());
+        map.put("pgGender",petGroomer.getPgGender());
+        map.put("pgPic",petGroomer.getPgPic());
+        map.put("pgEmail",petGroomer.getPgEmail());
+        map.put("pgPh",petGroomer.getPgPh());
+        map.put("pgAddress",petGroomer.getPgAddress());
+        map.put("pgBirthday",petGroomer.getPgBirthday());
 
+        namedParameterJdbcTemplate.update(sql,map);
     }
 
+    @Override
+    public List<PetGroomer> getAllGroomer() {
+        return null;
+    }
 
 
     @Override
@@ -76,10 +80,7 @@ public class PetGroomerImp implements PetGroomerDao {
 
     }
 
-    @Override
-    public List<PetGroomer> getAll() {
-        return null;
-    }
+
 
     @Override
     public void getGroomerByPgIdOrPgName(Integer petGroomerId, String petGroomerName) {

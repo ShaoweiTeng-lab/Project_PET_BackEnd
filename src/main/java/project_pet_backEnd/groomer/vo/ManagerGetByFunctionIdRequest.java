@@ -1,9 +1,8 @@
-package project_pet_backEnd.groomer.dto;
+package project_pet_backEnd.groomer.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Column;
 @Data
 @AllArgsConstructor
 public class ManagerGetByFunctionIdRequest {
