@@ -16,9 +16,9 @@ public interface PetGroomerDao {
 
     public List<PetGroomer> getAllGroomer();//列出所有資料
 
-    public void updateByPgIdOrPgName(Integer petGroomerId , String petGroomerName);//修改美容師 by Id or Name
+    public void updateGroomerById(PetGroomer petGroomer);//後台先使用getAllGroomer後修改美容師 by pgId
 
-    public void getGroomerByPgIdOrPgName(Integer petGroomerId , String petGroomerName);
+    public List<PetGroomer> getGroomerByPgName(String petGroomerName);
 
 
 }

@@ -1,10 +1,12 @@
 package project_pet_backEnd.groomer.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.sql.Date;
 
 @Data
+@AllArgsConstructor
 public class PetGroomerInsertRequest {
     private int manId;
     private String pgName;
