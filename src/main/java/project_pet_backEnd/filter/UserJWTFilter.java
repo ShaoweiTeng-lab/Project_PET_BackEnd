@@ -49,7 +49,7 @@ public class UserJWTFilter extends OncePerRequestFilter {
         UserAuthentication userAuthentication =new UserAuthentication();
         userAuthentication.setUserId(userId);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
-        request.setAttribute("userId",userId);
+        request.setAttribute("userId",Integer.valueOf(userId));
         filterChain.doFilter(request,response);
     }
 }
