@@ -139,7 +139,7 @@ public class UserService {
         adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
         adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
         adjustUser.setUserPoint(user.getUserPoint());
-        adjustUser.setUserPic(user.getUserPic());
+        adjustUser.setUserPic(adjustUserProfileRequest.getUserPic()==null?user.getUserPic():adjustUserProfileRequest.getUserPic());
         adjustUser.setIdentityProvider(user.getIdentityProvider());
         adjustUser.setUserCreated(user.getUserCreated());
         userRepository.save(adjustUser);

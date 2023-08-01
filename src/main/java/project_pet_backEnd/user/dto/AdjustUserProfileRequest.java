@@ -20,4 +20,5 @@ public class AdjustUserProfileRequest {
     @NotBlank
     private  String userAddress;
     private Date userBirthday;
+    private byte[] userPic;
 }

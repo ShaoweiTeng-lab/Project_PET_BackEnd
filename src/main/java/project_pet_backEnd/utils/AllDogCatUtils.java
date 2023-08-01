@@ -1,5 +1,7 @@
 package project_pet_backEnd.utils;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,5 +103,17 @@ public class AllDogCatUtils {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         String formattedDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return formattedDate;
+    }
+    /**
+     * 將上傳的檔案轉成 byte[]
+     * */
+    public static byte[] convertMultipartFileToByteArray(MultipartFile file) {
+        try {
+            return file.getBytes();
+        } catch (IOException e) {
+            // 轉換失敗時的錯誤處理
+            e.printStackTrace();
+            return null;
+        }
     }
 }
