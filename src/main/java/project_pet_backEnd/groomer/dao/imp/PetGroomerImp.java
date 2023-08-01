@@ -3,6 +3,7 @@ package project_pet_backEnd.groomer.dao.imp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.vo.PetGroomer;
@@ -12,11 +13,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Repository
 public class PetGroomerImp implements PetGroomerDao {
 
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<ManagerGetByFunctionIdRequest> getManagerByFunctionId(Integer functionId) {
