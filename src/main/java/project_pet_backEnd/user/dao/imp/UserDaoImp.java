@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.user.dao.UserDao;
+import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.user.rowMapper.UserRowMapper;
@@ -14,8 +15,9 @@ import java.util.Map;
 
 @Repository
 public class UserDaoImp implements UserDao {
+
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     public void localSignUp(UserSignUpRequest userSignUpRequest){
         String sql ="INSERT INTO  USER(" +
                 "USER_NAME," +
@@ -49,7 +51,6 @@ public class UserDaoImp implements UserDao {
         map.put("userBirthday",userSignUpRequest.getUserBirthday());
         map.put("identityProvider",userSignUpRequest.getIdentityProvider().toString());
         namedParameterJdbcTemplate.update(sql,map);
-
     }
 
     public User getUserByEmail(String email){

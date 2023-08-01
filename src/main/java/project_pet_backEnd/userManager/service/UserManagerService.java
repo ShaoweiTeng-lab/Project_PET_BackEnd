@@ -10,6 +10,7 @@ import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.userManager.dao.UserManagerDao;
 import project_pet_backEnd.userManager.dto.UserQueryParameter;
 import project_pet_backEnd.utils.AllDogCatUtils;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class UserManagerService {
     @Autowired
     private UserManagerDao userManagerDao;
 
-    public List<UserProfileResponse> getUsers(UserQueryParameter userQueryParameter){
+    public Page<List<UserProfileResponse>> getUsers(UserQueryParameter userQueryParameter){
         List<User> userList=userManagerDao.getUsers(userQueryParameter);
         List<UserProfileResponse> rsList=new ArrayList<>();
         for(int i=0;i<userList.size();i++){
@@ -46,10 +47,18 @@ public class UserManagerService {
             userProfileResponse.setUserBirthday(user.getUserBirthday());
             userProfileResponse.setUserPoint(user.getUserPoint());
             userProfileResponse.setUserPic(AllDogCatUtils.base64Encode(user.getUserPic()));
-            userProfileResponse.setIdentityProvider(userProfileResponse.getIdentityProvider());
+            userProfileResponse.setIdentityProvider(user.getIdentityProvider());
             userProfileResponse.setUserCreated(AllDogCatUtils.timestampToDateFormat(user.getUserCreated()));
             rsList.add(userProfileResponse);
         }
-        return rsList;
+
+        Page page =new Page();
+        page.setLimit(userQueryParameter.getLimit());
+        page.setOffset(userQueryParameter.getOffset());
+        //得到總筆數，方便實作頁數
+        Integer total =  userManagerDao.countUser(userQueryParameter);
+        page.setTotal(total);
+        page.setRs(rsList);
+        return page;
     }
 }

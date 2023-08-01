@@ -9,10 +9,8 @@ import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import project_pet_backEnd.user.dto.ResultResponse;
-import project_pet_backEnd.user.dto.UserLoginRequest;
-import project_pet_backEnd.user.dto.UserProfileResponse;
-import project_pet_backEnd.user.dto.UserSignUpRequest;
+import project_pet_backEnd.user.dao.UserRepository;
+import project_pet_backEnd.user.dto.*;
 import project_pet_backEnd.user.vo.IdentityProvider;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
@@ -22,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserDao userDao;
 
@@ -87,9 +87,9 @@ public class UserService {
         emailService.sendEmail(emailResponse);
     }
 
-    public UserProfileResponse getUserProfile(String userId){
+    public UserProfileResponse getUserProfile(Integer userId){
 
-        User user=userDao.getUserById(Integer.parseInt(userId));
+        User user=userDao.getUserById(userId);
         if(user==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到使用者");
         UserProfileResponse userProfileResponse =new UserProfileResponse();
@@ -112,9 +112,38 @@ public class UserService {
         userProfileResponse.setUserBirthday(user.getUserBirthday());
         userProfileResponse.setUserPoint(user.getUserPoint());
         userProfileResponse.setUserPic(AllDogCatUtils.base64Encode(user.getUserPic()));
-        userProfileResponse.setIdentityProvider(userProfileResponse.getIdentityProvider());
+        userProfileResponse.setIdentityProvider(user.getIdentityProvider());
         userProfileResponse.setUserCreated(AllDogCatUtils.timestampToDateFormat(user.getUserCreated()));
         return  userProfileResponse;
+    }
+
+    public   ResultResponse adjustUserProfile(Integer userId,AdjustUserProfileRequest adjustUserProfileRequest){
+        User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
+        if(user==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        User adjustUser =new User();
+        adjustUser.setUserId(userId);
+        adjustUser.setUserName(adjustUserProfileRequest.getUserName()==null?user.getUserName():adjustUserProfileRequest.getUserName());
+        adjustUser.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
+        adjustUser.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
+        adjustUser.setUserEmail(user.getUserEmail());
+
+        String pwd =adjustUserProfileRequest.getUserPassword();
+        if(pwd!=null){
+            pwd=bCryptPasswordEncoder.encode(pwd);
+            adjustUser.setUserPassword(pwd);
+        }
+        else
+            adjustUser.setUserPassword(user.getUserPassword());
+        adjustUser.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
+        adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
+        adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
+        adjustUser.setUserPoint(user.getUserPoint());
+        adjustUser.setUserPic(user.getUserPic());
+        adjustUser.setIdentityProvider(user.getIdentityProvider());
+        adjustUser.setUserCreated(user.getUserCreated());
+        userRepository.save(adjustUser);
+        return  new ResultResponse();
     }
 
 
