@@ -77,7 +77,7 @@ public class PetGroomerImp implements PetGroomerDao {
         List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
             @Override
             public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                PetGroomer petGroomer = new PetGroomer();
+                PetGroomer petGroomer =  new PetGroomer();
                 petGroomer.setPgId(rs.getInt("PG_ID"));
                 petGroomer.setManId(rs.getInt("MAN_ID"));
                 petGroomer.setPgName(rs.getString("PG_NAME"));
