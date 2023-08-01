@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import project_pet_backEnd.groomer.dao.PetGroomerDao;
-import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
-import project_pet_backEnd.groomer.vo.ManagerGetByFunctionIdRequest;
+import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 
 import java.sql.ResultSet;

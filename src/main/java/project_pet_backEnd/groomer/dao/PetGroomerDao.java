@@ -1,7 +1,6 @@
 package project_pet_backEnd.groomer.dao;
 
-import project_pet_backEnd.groomer.vo.ManagerGetByFunctionIdRequest;
-import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
+import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.ds;
+package project_pet_backEnd.groomer.vo;
 
 import lombok.Data;
 
