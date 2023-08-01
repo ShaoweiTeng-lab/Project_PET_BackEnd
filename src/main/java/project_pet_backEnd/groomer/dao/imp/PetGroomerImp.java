@@ -37,7 +37,7 @@ public class PetGroomerImp implements PetGroomerDao {
         return rsList;
     }
     @Override
-    public void insert(PetGroomer petGroomer) {
+    public void insertGroomer(PetGroomer petGroomer) {
         String sql ="INSERT INTO  PET_GROOMER(" +
                 "MAN_ID," +
                 "PG_NAME," +
@@ -67,6 +67,11 @@ public class PetGroomerImp implements PetGroomerDao {
         map.put("pgBirthday",petGroomer.getPgBirthday());
 
         namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public PetGroomer getPetGroomerByManId(Integer manId) {
+        return null;
     }
 
     @Override
