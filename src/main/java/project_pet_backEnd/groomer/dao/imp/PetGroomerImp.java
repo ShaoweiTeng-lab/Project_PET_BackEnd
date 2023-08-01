@@ -98,7 +98,25 @@ public class PetGroomerImp implements PetGroomerDao {
 
     @Override
     public List<PetGroomer> getAllGroomer() {
-        return null;
+        String sql = "select * from pet_groomer";
+        Map map = new HashMap<>();
+        List<PetGroomer> petGroomerAllList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
+            @Override
+            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PetGroomer petGroomer =  new PetGroomer();
+                petGroomer.setPgId(rs.getInt("PG_ID"));
+                petGroomer.setManId(rs.getInt("MAN_ID"));
+                petGroomer.setPgName(rs.getString("PG_NAME"));
+                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
+                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
+                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
+                petGroomer.setPgPh(rs.getString("PG_PH"));
+                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
+                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
+                return petGroomer;
+            }
+        });
+        return petGroomerAllList;
     }
 
 
