@@ -1,4 +1,4 @@
-package project_pet_backEnd.user.service.imp;
+package project_pet_backEnd.user.service;
 
 import project_pet_backEnd.user.dto.*;
 
