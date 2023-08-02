@@ -2,14 +2,20 @@ package project_pet_backEnd.user.controller;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project_pet_backEnd.user.dto.*;
 import project_pet_backEnd.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import project_pet_backEnd.utils.AllDogCatUtils;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import java.sql.Date;
 
 @RestController
 @Validated
@@ -41,9 +47,27 @@ public class UserController {
     }
 
     @PostMapping("/user/adjustUserProfile")
-    public ResponseEntity<ResultResponse> adjustUserProfile(@RequestAttribute(name = "userId") Integer userId, @RequestBody AdjustUserProfileRequest adjustUserProfileRequest){
+    public ResponseEntity<ResultResponse> adjustUserProfile(
+            @RequestAttribute(name = "userId") Integer userId,
+            @RequestParam(required = false) @NotBlank String userName,
+            @RequestParam(required = false) @NotBlank  String userNickName,
+            @RequestParam(required = false) @Max(1) @Min(0) Integer userGender,
+            @RequestParam(required = false) @NotBlank  String userPassword,
+            @RequestParam(required = false) @NotBlank  String userAddress,
+            @RequestParam(required = false) Date userBirthday,
+            @RequestParam(required = false) MultipartFile userPic
+            ){
+        AdjustUserProfileRequest adjustUserProfileRequest=new AdjustUserProfileRequest();
+        adjustUserProfileRequest.setUserName(userName);
+        adjustUserProfileRequest.setUserNickName(userNickName);
+        adjustUserProfileRequest.setUserGender(userGender);
+        adjustUserProfileRequest.setUserPassword(userPassword);
+        adjustUserProfileRequest.setUserAddress(userAddress);
+        adjustUserProfileRequest.setUserBirthday(userBirthday);
+        adjustUserProfileRequest.setUserPic(AllDogCatUtils.convertMultipartFileToByteArray(userPic));
         userService.adjustUserProfile(userId,adjustUserProfileRequest);
         ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改完成");
         return  ResponseEntity.status(200).body(rs);
     }
 }

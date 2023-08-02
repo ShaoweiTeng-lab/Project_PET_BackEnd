@@ -35,6 +35,7 @@ public class User {
     @Column(name = "USER_POINT", columnDefinition = "INT DEFAULT 0")
     private Integer userPoint;
     @Column(name = "USER_PIC")
+    @Lob
     private byte[] userPic;
     @Column(name = "USER_PROVIDER")
     @Enumerated(EnumType.STRING)

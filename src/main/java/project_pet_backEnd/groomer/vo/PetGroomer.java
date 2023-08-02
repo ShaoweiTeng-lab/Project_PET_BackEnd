@@ -4,6 +4,7 @@ import lombok.Data;
 import java.sql.Date;
 @Data
 public class PetGroomer {
+    private int pgId;
     private int manId;
     private String pgName;
     private int pgGender;
