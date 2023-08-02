@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.dto.*;
+import project_pet_backEnd.user.service.imp.UserService;
 import project_pet_backEnd.user.vo.IdentityProvider;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
@@ -19,7 +20,7 @@ import project_pet_backEnd.utils.UserJwtUtil;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserService {
+public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -62,7 +63,7 @@ public class UserService {
 
     }
 
-    private boolean  validatedCaptcha(String email,String captcha){
+    public boolean  validatedCaptcha(String email,String captcha){
         String redisCapt= redisTemplate.opsForValue().get("MEMBER:"+ email);
         if(redisCapt==null || !redisCapt.equals(captcha))
             return  false;
