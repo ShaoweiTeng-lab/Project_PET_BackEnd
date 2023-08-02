@@ -1,7 +1,6 @@
 package project_pet_backEnd.userManager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -9,17 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.user.dto.UserProfileResponse;
-import project_pet_backEnd.user.service.UserService;
-import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.userManager.dto.UserOrderBy;
 import project_pet_backEnd.userManager.dto.UserQueryParameter;
-import project_pet_backEnd.userManager.service.UserManagerService;
+import project_pet_backEnd.userManager.service.imp.UserManagerServiceImp;
 import project_pet_backEnd.utils.commonDto.Page;
 
-import javax.annotation.PostConstruct;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -29,7 +24,7 @@ import java.util.List;
 @PreAuthorize("hasAnyAuthority('會員管理')")
 public class UserManagerController {
     @Autowired
-    private UserManagerService userManagerService;
+    private UserManagerServiceImp userManagerService;
     /**
      *
      * */
