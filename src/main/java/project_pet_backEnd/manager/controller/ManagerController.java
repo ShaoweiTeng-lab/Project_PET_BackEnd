@@ -1,6 +1,5 @@
 package project_pet_backEnd.manager.controller;
 
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +8,7 @@ import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
 import project_pet_backEnd.manager.dto.CreateManagerRequest;
 import project_pet_backEnd.manager.dto.ManagerLoginRequest;
 import project_pet_backEnd.manager.service.ManagerService;
+import project_pet_backEnd.manager.service.imp.ManagerServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import project_pet_backEnd.user.dto.ResultResponse;
 
