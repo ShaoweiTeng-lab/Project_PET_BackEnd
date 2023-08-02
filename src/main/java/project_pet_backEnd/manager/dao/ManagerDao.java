@@ -11,7 +11,7 @@ import project_pet_backEnd.manager.vo.Manager;
 import java.security.Permission;
 import java.util.List;
 
-public interface ManagerDao {
+public interface  ManagerDao {
     Manager getManagerByAccount(String username);
     List<Function>  getManagerRolesByManagerId(Integer managerId);
 
