@@ -38,7 +38,6 @@ public class ManagerJwtUtil {
      * 驗證JWT
      */
     public Claims validateToken(String token) {
-        System.out.println(token);
         try {
             return Jwts.parser()
                     .setSigningKey( secret )

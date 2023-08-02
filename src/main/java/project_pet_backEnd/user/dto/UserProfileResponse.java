@@ -11,9 +11,10 @@ public class UserProfileResponse {
     private  String userNickName;
     private  String userGender;
     private  String userAddress;
+    private  String userPhone;
     private Date userBirthday;//sql.date
     private Integer userPoint;
     private String userPic;
     private IdentityProvider identityProvider;
-    private java.util.Date userCreated;//util.date
+    private String userCreated;
 }

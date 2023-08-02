@@ -3,6 +3,6 @@ package project_pet_backEnd.user.dto;
 import lombok.Data;
 
 @Data
-public class loginResponse {
+public class ResultResponse {
     private  Object message;
 }
