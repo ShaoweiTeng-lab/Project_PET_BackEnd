@@ -28,7 +28,7 @@ public interface PetGroomerService {
     /**
      * 修改美容師資料 by Id for 管理員
      */
-    ResultResponse updateGroomerById(PetGroomer petGroomer);
+    ResultResponse updateGroomerByIdForMan(PetGroomer petGroomer);
 
 
     ResultResponse getGroomerByPgNameForMan(String PgName);

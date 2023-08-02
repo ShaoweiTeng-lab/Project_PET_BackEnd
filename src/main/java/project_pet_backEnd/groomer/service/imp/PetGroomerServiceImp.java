@@ -146,7 +146,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     /**
      * 修改美容師資料 by Id for 管理員
      */
-    public ResultResponse updateGroomerById(PetGroomer petGroomer) {
+    public ResultResponse updateGroomerByIdForMan(PetGroomer petGroomer) {
         ResultResponse rs = new ResultResponse();
         boolean found = false;
         try {
