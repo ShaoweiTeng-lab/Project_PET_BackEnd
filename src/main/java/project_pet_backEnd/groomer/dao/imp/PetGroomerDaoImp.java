@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 @Repository
-public class PetGroomerImp implements PetGroomerDao {
+public class PetGroomerDaoImp implements PetGroomerDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
