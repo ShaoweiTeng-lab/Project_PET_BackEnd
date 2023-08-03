@@ -5,6 +5,7 @@ import org.springframework.data.relational.core.sql.In;
 
 @Data
 public class QueryManagerParameter {
-   private Integer limit;
+    private  String search;
+    private Integer limit;
     private Integer offset;
 }

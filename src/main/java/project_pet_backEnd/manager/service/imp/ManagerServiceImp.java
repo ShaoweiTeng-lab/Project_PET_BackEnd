@@ -129,7 +129,8 @@ public class ManagerServiceImp  implements ManagerService {
 
     @Override
     public Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
-        List<Manager> managerList =managerRepository.findAll();
+        //List<Manager> managerList =managerRepository.findAll();
+        List<Manager> managerList =managerDao.getManagers(queryManagerParameter);
         List<ManagerQueryResponse> managerQueryResponseList=new ArrayList<>();
         for(int i =0 ;i<managerList.size();i++){
             Manager manager =managerList.get(i);
@@ -142,7 +143,7 @@ public class ManagerServiceImp  implements ManagerService {
         Page<List<ManagerQueryResponse>> rs =new Page<>();
         rs.setLimit(queryManagerParameter.getLimit());
         rs.setOffset(queryManagerParameter.getOffset());
-        rs.setTotal(managerList.size());
+        rs.setTotal(managerDao.getManagersCount(queryManagerParameter));
         rs.setRs(managerQueryResponseList);
         return rs;
     }

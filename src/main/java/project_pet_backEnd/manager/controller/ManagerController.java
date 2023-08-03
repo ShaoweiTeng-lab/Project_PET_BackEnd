@@ -38,9 +38,11 @@ public class ManagerController {
     }
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager")
-    public  ResponseEntity<Page<List<ManagerQueryResponse>>> getManagers(@RequestParam(defaultValue = "5") Integer limit,
+    public  ResponseEntity<Page<List<ManagerQueryResponse>>> getManagers(@RequestParam(required = false) String search,
+                                                                         @RequestParam(defaultValue = "5") Integer limit,
                                                                          @RequestParam(defaultValue = "0") Integer offset){
         QueryManagerParameter queryManagerParameter =new QueryManagerParameter();
+        queryManagerParameter.setSearch(search);
         queryManagerParameter.setLimit(limit);
         queryManagerParameter.setOffset(offset);
         Page<List<ManagerQueryResponse>> rs =managerService.getManagers(queryManagerParameter);

@@ -1,10 +1,7 @@
 package project_pet_backEnd.manager.dao;
 
 import org.springframework.data.relational.core.sql.In;
-import project_pet_backEnd.manager.dto.AdjustManagerRequest;
-import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
-import project_pet_backEnd.manager.dto.CreateManagerRequest;
-import project_pet_backEnd.manager.dto.ManagerAuthorities;
+import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
 
@@ -30,4 +27,8 @@ public interface  ManagerDao {
     String getPasswordById(Integer managerId);
 
     void updateManager(AdjustManagerRequest adjustManagerRequest);
+
+    List<Manager>getManagers(QueryManagerParameter queryManagerParameter);
+
+    Integer getManagersCount(QueryManagerParameter queryManagerParameter);
 }

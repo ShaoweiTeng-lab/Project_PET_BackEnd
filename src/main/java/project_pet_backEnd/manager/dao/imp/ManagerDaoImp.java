@@ -7,10 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import project_pet_backEnd.manager.dao.ManagerRepository;
-import project_pet_backEnd.manager.dto.AdjustManagerRequest;
-import project_pet_backEnd.manager.dto.AdjustPermissionRequest;
-import project_pet_backEnd.manager.dto.CreateManagerRequest;
-import project_pet_backEnd.manager.dto.ManagerAuthorities;
+import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
 
@@ -150,18 +147,18 @@ public class ManagerDaoImp implements ManagerDao {
 
     @Override
     public String getPasswordById(Integer managerId) {
-       String sql = "select MANAGER_PASSWORD from  manager where MANAGER_ID = :managerId";
-       Map<String,Object> map =new HashMap<>();
-       map.put("managerId",managerId);
-       List<String> passwordList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<String>() {
-           @Override
-           public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-               return rs.getString("MANAGER_PASSWORD");
-           }
-       });
-       if(passwordList.size()>0)
-           return passwordList.get(0);
-       return null;
+        String sql = "select MANAGER_PASSWORD from  manager where MANAGER_ID = :managerId";
+        Map<String,Object> map =new HashMap<>();
+        map.put("managerId",managerId);
+        List<String> passwordList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("MANAGER_PASSWORD");
+            }
+        });
+        if(passwordList.size()>0)
+            return passwordList.get(0);
+        return null;
     }
 
     @Override
@@ -178,4 +175,49 @@ public class ManagerDaoImp implements ManagerDao {
         map.put("managerId",adjustManagerRequest.getManagerId());
         namedParameterJdbcTemplate.update(sql,map);
     }
+
+    @Override
+    public List<Manager> getManagers(QueryManagerParameter queryManagerParameter) {
+        String sql ="select * from Manager where 1=1";
+        Map<String ,Object> map =new HashMap<>();
+        if(queryManagerParameter.getSearch()!=null){
+            sql = sql +" AND  MANAGER_ACCOUNT like :search";
+            map.put("search","%"+queryManagerParameter.getSearch()+"%");
+        }
+        sql = sql+" limit  :limit "+" offset :offset";
+        map.put("limit",queryManagerParameter.getLimit());
+        map.put("offset",queryManagerParameter.getOffset());
+        List<Manager> managerList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<Manager>() {
+            @Override
+            public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Manager manager =new Manager();
+                manager.setManagerId(rs.getInt("MANAGER_ID"));
+                manager.setManagerAccount(rs.getString("MANAGER_ACCOUNT"));
+                manager.setManagerPassword(rs.getString("Manager_PASSWORD"));
+                manager.setManagerCreated(rs.getTimestamp("MANAGER_CREATED"));
+                manager.setManagerState(rs.getInt("MANAGER_STATE"));
+                return manager;
+            }
+        });
+        return  managerList;
+    }
+
+    @Override
+    public Integer getManagersCount(QueryManagerParameter queryManagerParameter) {
+        String sql ="select count(*) from Manager where 1=1";
+        Map<String ,Object> map =new HashMap<>();
+        if(queryManagerParameter.getSearch()!=null){
+            sql = sql +" AND  MANAGER_ACCOUNT like :search";
+            map.put("search","%"+queryManagerParameter.getSearch()+"%");
+        }
+        Integer rs =namedParameterJdbcTemplate.queryForObject(sql,map, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("count(*)");
+            }
+        });
+        return rs;
+    }
+
+
 }
