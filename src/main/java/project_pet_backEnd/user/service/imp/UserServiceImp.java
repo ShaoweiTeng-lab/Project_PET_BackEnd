@@ -128,14 +128,15 @@ public class UserServiceImp implements UserService {
         adjustUser.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
         adjustUser.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
         adjustUser.setUserEmail(user.getUserEmail());
-
-        String pwd =adjustUserProfileRequest.getUserPassword();
-        if(pwd!=null){
-            pwd=bCryptPasswordEncoder.encode(pwd);
-            adjustUser.setUserPassword(pwd);
+        if(user.getIdentityProvider()==IdentityProvider.Local){
+            String pwd =adjustUserProfileRequest.getUserPassword();
+            if(pwd!=null){
+                pwd=bCryptPasswordEncoder.encode(pwd);
+                adjustUser.setUserPassword(pwd);
+            }
+            else
+                adjustUser.setUserPassword(user.getUserPassword());
         }
-        else
-            adjustUser.setUserPassword(user.getUserPassword());
         adjustUser.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
         adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
         adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
