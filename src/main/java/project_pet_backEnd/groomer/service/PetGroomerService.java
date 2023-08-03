@@ -1,8 +1,13 @@
 package project_pet_backEnd.groomer.service;
 
+import project_pet_backEnd.groomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
+import project_pet_backEnd.groomer.dto.PetGroomerQueryParameter;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.Page;
+
+import java.util.List;
 
 public interface PetGroomerService {
     /**
@@ -18,13 +23,13 @@ public interface PetGroomerService {
      */
     ResultResponse getPetGroomerByManId(Integer manId);
     /**
-     * 取得美容師列表 for 管理員
+     * w取得美容師列表 for 管理員
      */
-    ResultResponse getAllGroomerForMan();
+    Page<List<GetAllGroomers>> getAllGroomersForMan(PetGroomerQueryParameter petGroomerQueryParameter);
     /**
-     * 取得美容師列表 for User and guest
+     * w取得美容師列表 for User and guest
      */
-    ResultResponse getAllGroomerForUser();
+    ResultResponse getAllGroomersForUser();
     /**
      * 修改美容師資料 by Id for 管理員
      */
@@ -33,10 +38,10 @@ public interface PetGroomerService {
      * 取得美容師列表 By PgName for 管理員
      */
 
-    ResultResponse getGroomerByPgNameForMan(String PgName);
+//    ResultResponse getGroomerByPgNameForMan(String PgName);
 
     /**
      * 取得美容師列表 By PgName for User
      */
-    ResultResponse getGroomerByPgNameForUser (String PgName);
+//    ResultResponse getGroomerByPgNameForUser (String PgName);
 }

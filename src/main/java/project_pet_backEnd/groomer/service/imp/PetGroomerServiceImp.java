@@ -2,6 +2,7 @@ package project_pet_backEnd.groomer.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +12,7 @@ import project_pet_backEnd.groomer.service.PetGroomerService;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,42 +84,47 @@ public class PetGroomerServiceImp implements PetGroomerService {
     /**
      * W 取得美容師列表 for 管理員
      */
-    public ResultResponse getAllGroomerForMan() {
-        ResultResponse rs = new ResultResponse();
-        List<PetGroomer> allGroomer;
-        List<PetGroomerInsertRequest> PetGroomerInsertRequestList = new ArrayList<>();
-        try {
-            allGroomer = petGroomerDao.getAllGroomer();
+    public Page<List<GetAllGroomers>> getAllGroomersForMan(PetGroomerQueryParameter petGroomerQueryParameter) {
+        List<GetAllGroomers> allGroomers = petGroomerDao.getAllGroomers(petGroomerQueryParameter);
 
-        } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "獲取寵物美容師列表失敗，請稍後重試", e);
-        }
-
-        if (allGroomer == null || allGroomer.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "目前無美容師資料");
-        }
-
-        for (PetGroomer existingGroomer : allGroomer) {
-            PetGroomerInsertRequest petGroomerInsertRequest = new PetGroomerInsertRequest();
-            petGroomerInsertRequest.setManId(existingGroomer.getManId());
-            petGroomerInsertRequest.setPgName(existingGroomer.getPgName());
-            petGroomerInsertRequest.setPgGender(existingGroomer.getPgGender());
-            petGroomerInsertRequest.setPgPic(AllDogCatUtils.base64Encode(existingGroomer.getPgPic()));
-            petGroomerInsertRequest.setPgEmail(existingGroomer.getPgEmail());
-            petGroomerInsertRequest.setPgPh(existingGroomer.getPgPh());
-            petGroomerInsertRequest.setPgAddress(existingGroomer.getPgAddress());
-            petGroomerInsertRequest.setPgBirthday(existingGroomer.getPgBirthday());
-            PetGroomerInsertRequestList.add(petGroomerInsertRequest);
-        }
-
-        rs.setMessage(PetGroomerInsertRequestList);
-        return rs;
+        Pageable pageable =
     }
+//    public ResultResponse getAllGroomersForMan() {
+//        ResultResponse rs = new ResultResponse();
+//        List<PetGroomer> allGroomer;
+//        List<PetGroomerInsertRequest> PetGroomerInsertRequestList = new ArrayList<>();
+//        try {
+//            allGroomer = petGroomerDao.getAllGroomer();
+//
+//        } catch (DataAccessException e) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "獲取寵物美容師列表失敗，請稍後重試", e);
+//        }
+//
+//        if (allGroomer == null || allGroomer.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "目前無美容師資料");
+//        }
+//
+//        for (PetGroomer existingGroomer : allGroomer) {
+//            PetGroomerInsertRequest petGroomerInsertRequest = new PetGroomerInsertRequest();
+//            petGroomerInsertRequest.setManId(existingGroomer.getManId());
+//            petGroomerInsertRequest.setPgName(existingGroomer.getPgName());
+//            petGroomerInsertRequest.setPgGender(existingGroomer.getPgGender());
+//            petGroomerInsertRequest.setPgPic(AllDogCatUtils.base64Encode(existingGroomer.getPgPic()));
+//            petGroomerInsertRequest.setPgEmail(existingGroomer.getPgEmail());
+//            petGroomerInsertRequest.setPgPh(existingGroomer.getPgPh());
+//            petGroomerInsertRequest.setPgAddress(existingGroomer.getPgAddress());
+//            petGroomerInsertRequest.setPgBirthday(existingGroomer.getPgBirthday());
+//            PetGroomerInsertRequestList.add(petGroomerInsertRequest);
+//        }
+//
+//        rs.setMessage(PetGroomerInsertRequestList);
+//        return rs;
+//    }
 
     /**
      * W 取得美容師列表 for User and guest
      */
-    public ResultResponse getAllGroomerForUser() {
+    public ResultResponse getAllGroomersForUser() {
         ResultResponse rs = new ResultResponse();
         List<PetGroomer> allGroomer;
         List<GetAllGroomerResponse> allGroomerResponses = new ArrayList<>(); // Create a new list for GetAllGroomerResponse
