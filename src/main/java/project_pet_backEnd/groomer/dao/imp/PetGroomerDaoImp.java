@@ -5,7 +5,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.dao.PetGroomerDao;
+import project_pet_backEnd.groomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
+import project_pet_backEnd.groomer.dto.PetGroomerQueryParameter;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 
 import java.sql.ResultSet;
@@ -100,30 +102,68 @@ public class PetGroomerDaoImp implements PetGroomerDao {
     }
 
     @Override
-    public List<PetGroomer> getAllGroomer() {
-        String sql = "select PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY from pet_groomer\n" +
-                "join manager on pet_groomer.MAN_ID = manager.manager_id\n" +
-                "where MANAGER_STATE = 1;";
-        Map map = new HashMap<>();
-        List<PetGroomer> petGroomerAllList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
+    public List<GetAllGroomers> getAllGroomers(PetGroomerQueryParameter petGroomerQueryParameter) {
+        String sql = "SELECT pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY, COUNT(pet_groomer_appointment.PGA_NO) AS NUM_APPOINTMENTS " +
+                "FROM pet_groomer " +
+                "JOIN manager ON pet_groomer.MAN_ID = manager.manager_id " +
+                "LEFT JOIN pet_groomer_appointment ON pet_groomer.PG_ID = pet_groomer_appointment.PG_ID " +
+                "WHERE MANAGER_STATE = 1 ";
+
+        Map<String, Object> map = new HashMap<>();
+
+        if (petGroomerQueryParameter.getSearch() != null) {
+            sql += "AND PG_NAME LIKE :search ";
+            map.put("search", "%" + petGroomerQueryParameter.getSearch() + "%");
+        }
+
+        // Group by
+        sql += "GROUP BY pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY ";
+
+        // Sort
+        if (petGroomerQueryParameter.getOrder() != null) {
+            String orderBy;
+            switch (petGroomerQueryParameter.getOrder()) {
+                case NUM_APPOINTMENTS:
+                    orderBy = "NUM_APPOINTMENTS";
+                    break;
+                case PG_NAME:
+                    orderBy = "PG_NAME";
+                    break;
+                default:
+                    orderBy = "PG_ID"; // Default sorting by PG_ID
+            }
+            sql += "ORDER BY " + orderBy + " ";
+        }
+
+        // Sort
+        if (petGroomerQueryParameter.getSort() != null) {
+            sql += petGroomerQueryParameter.getSort() + " ";
+        }
+
+        // Limit and Offset
+        sql += "LIMIT :limit OFFSET :offset ";
+        map.put("limit", petGroomerQueryParameter.getLimit());
+        map.put("offset", petGroomerQueryParameter.getOffset());
+
+        List<GetAllGroomers> petGroomersAllList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<GetAllGroomers>() {
             @Override
-            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                PetGroomer petGroomer =  new PetGroomer();
-                petGroomer.setPgId(rs.getInt("PG_ID"));
-                petGroomer.setManId(rs.getInt("MAN_ID"));
-                petGroomer.setPgName(rs.getString("PG_NAME"));
-                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
-                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
-                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
-                petGroomer.setPgPh(rs.getString("PG_PH"));
-                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
-                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
-                return petGroomer;
+            public GetAllGroomers mapRow(ResultSet rs, int rowNum) throws SQLException {
+                GetAllGroomers getAllGroomers = new GetAllGroomers();
+                getAllGroomers.setPgId(rs.getInt("PG_ID"));
+                getAllGroomers.setManId(rs.getInt("MAN_ID"));
+                getAllGroomers.setPgName(rs.getString("PG_NAME"));
+                getAllGroomers.setPgGender(rs.getInt("PG_GENDER"));
+                getAllGroomers.setPgPic(rs.getBytes("PG_PIC"));
+                getAllGroomers.setPgEmail(rs.getString("PG_EMAIL"));
+                getAllGroomers.setPgPh(rs.getString("PG_PH"));
+                getAllGroomers.setPgAddress(rs.getString("PG_ADDRESS"));
+                getAllGroomers.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
+                getAllGroomers.setNumAppointments(rs.getInt("NUM_APPOINTMENTS"));
+                return getAllGroomers;
             }
         });
-        return petGroomerAllList;
+        return petGroomersAllList;
     }
-
 
     @Override
     public void updateGroomerById(PetGroomer petGroomer) {
@@ -144,31 +184,31 @@ public class PetGroomerDaoImp implements PetGroomerDao {
 
 
 
-    @Override
-    public List<PetGroomer> getGroomerByPgName(String petGroomerName) {
-        String sql = "SELECT pet_groomer.PG_ID, pet_groomer.MAN_ID, pet_groomer.PG_NAME, pet_groomer.PG_GENDER, pet_groomer.PG_PIC, " +
-                "pet_groomer.PG_EMAIL, pet_groomer.PG_PH, pet_groomer.PG_ADDRESS, pet_groomer.PG_BIRTHDAY " +
-                "FROM pet_groomer " +
-                "JOIN manager ON pet_groomer.MAN_ID = manager.manager_id " +
-                "WHERE pet_groomer.PG_NAME LIKE :pgName AND manager.MANAGER_STATE = 1";
-        Map<String, Object> map = new HashMap<>();
-        map.put("pgName", "%" + petGroomerName + "%");
-        List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
-            @Override
-            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                PetGroomer petGroomer = new PetGroomer();
-                petGroomer.setPgId(rs.getInt("PG_ID"));
-                petGroomer.setManId(rs.getInt("MAN_ID"));
-                petGroomer.setPgName(rs.getString("PG_NAME"));
-                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
-                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
-                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
-                petGroomer.setPgPh(rs.getString("PG_PH"));
-                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
-                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
-                return petGroomer;
-            }
-        });
-        return petGroomerList;
-    }
+//    @Override
+//    public List<PetGroomer> getGroomerByPgName(String petGroomerName) {
+//        String sql = "SELECT pet_groomer.PG_ID, pet_groomer.MAN_ID, pet_groomer.PG_NAME, pet_groomer.PG_GENDER, pet_groomer.PG_PIC, " +
+//                "pet_groomer.PG_EMAIL, pet_groomer.PG_PH, pet_groomer.PG_ADDRESS, pet_groomer.PG_BIRTHDAY " +
+//                "FROM pet_groomer " +
+//                "JOIN manager ON pet_groomer.MAN_ID = manager.manager_id " +
+//                "WHERE pet_groomer.PG_NAME LIKE :pgName AND manager.MANAGER_STATE = 1";
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("pgName", "%" + petGroomerName + "%");
+//        List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
+//            @Override
+//            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                PetGroomer petGroomer = new PetGroomer();
+//                petGroomer.setPgId(rs.getInt("PG_ID"));
+//                petGroomer.setManId(rs.getInt("MAN_ID"));
+//                petGroomer.setPgName(rs.getString("PG_NAME"));
+//                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
+//                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
+//                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
+//                petGroomer.setPgPh(rs.getString("PG_PH"));
+//                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
+//                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
+//                return petGroomer;
+//            }
+//        });
+//        return petGroomerList;
 }
+

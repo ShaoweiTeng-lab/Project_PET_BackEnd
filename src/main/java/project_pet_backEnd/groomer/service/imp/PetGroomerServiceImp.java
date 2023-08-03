@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.dao.PetGroomerDao;
-import project_pet_backEnd.groomer.dto.GetAllGroomerResponse;
-import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
-import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
+import project_pet_backEnd.groomer.dto.*;
 import project_pet_backEnd.groomer.service.PetGroomerService;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 import project_pet_backEnd.user.dto.ResultResponse;
@@ -39,10 +37,10 @@ public class PetGroomerServiceImp implements PetGroomerService {
     /**
      * 新增美容師 for 管理員
      */
-    public ResultResponse insertGroomer(PetGroomerInsertRequest petGroomerInsertRequest) {
+    public ResultResponse insertGroomer(PetGroomerInsertRequest petGroomerInsertRequest, PetGroomerQueryParameter petGroomerQueryParameter) {
 
-        List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
-        for (PetGroomer existingGroomer : allGroomer) {
+        List<GetAllGroomers> allGroomer = petGroomerDao.getAllGroomers(petGroomerQueryParameter);
+        for (GetAllGroomers existingGroomer : allGroomer) {
             if (existingGroomer.getManId() == petGroomerInsertRequest.getManId()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，管理員ID重複");
             }
