@@ -1,7 +1,10 @@
 package project_pet_backEnd.user.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.user.dao.UserDao;
 import project_pet_backEnd.user.dao.UserRepository;
@@ -18,7 +21,7 @@ public class UserDaoImp implements UserDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    public void localSignUp(UserSignUpRequest userSignUpRequest){
+    public Integer localSignUp(UserSignUpRequest userSignUpRequest){
         String sql ="INSERT INTO  USER(" +
                 "USER_NAME," +
                 "USER_NICKNAME," +
@@ -26,6 +29,7 @@ public class UserDaoImp implements UserDao {
                 "USER_EMAIL," +
                 "USER_PASSWORD," +
                 "USER_PHONE," +
+                "USER_PIC," +
                 "USER_ADDRESS," +
                 "USER_BIRTHDAY," +
                 "USER_PROVIDER) " +
@@ -36,6 +40,7 @@ public class UserDaoImp implements UserDao {
                 ":userEmail," +
                 ":userPassword," +
                 ":userPhone," +
+                ":userPic," +
                 ":userAddress," +
                 ":userBirthday," +
                 ":identityProvider)";
@@ -47,10 +52,14 @@ public class UserDaoImp implements UserDao {
         map.put("userEmail",userSignUpRequest.getUserEmail());
         map.put("userPassword",userSignUpRequest.getUserPassword());
         map.put("userPhone",userSignUpRequest.getUserPhone());
+        map.put("userPic",userSignUpRequest.getUserPic());
         map.put("userAddress",userSignUpRequest.getUserAddress());
         map.put("userBirthday",userSignUpRequest.getUserBirthday());
         map.put("identityProvider",userSignUpRequest.getIdentityProvider().toString());
-        namedParameterJdbcTemplate.update(sql,map);
+        KeyHolder keyHolder=new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(sql,new MapSqlParameterSource(map),keyHolder);
+        return  keyHolder.getKey().intValue();
     }
 
     public User getUserByEmail(String email){

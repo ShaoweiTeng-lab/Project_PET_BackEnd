@@ -81,9 +81,7 @@ public class UserController {
 
     @PostMapping("/user/googleLogin")
     public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
-        UserInfoResponse userInfoResponse =oAuthService.oAuthLogin(oAuthRequest);
-        ResultResponse rs =new ResultResponse();
-        rs.setMessage(userInfoResponse);
+        ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
         return ResponseEntity.ok().body(rs);
     }
 
