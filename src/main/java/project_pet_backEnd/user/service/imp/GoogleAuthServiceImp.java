@@ -52,6 +52,7 @@ public class GoogleAuthServiceImp implements OAuthService {
         UserSignUpRequest userSignUpRequest =new UserSignUpRequest();
         userSignUpRequest.setUserEmail(userInfoResponse.getEmail());
         userSignUpRequest.setUserName(userInfoResponse.getName());
+        userSignUpRequest.setUserNickName(userInfoResponse.getName());
         byte[] userPic = AllDogCatUtils.downloadImageAsByteArray(userInfoResponse.getPicture());
         userSignUpRequest.setUserPic(userPic);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Google);
