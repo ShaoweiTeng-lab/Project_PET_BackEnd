@@ -25,8 +25,6 @@ public class UserManagerServiceImp implements UserManagerService {
         List<UserProfileResponse> rsList=new ArrayList<>();
         for(int i=0;i<userList.size();i++){
             User user=userList.get(i);
-            if(user==null)
-                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到使用者");
             UserProfileResponse userProfileResponse =new UserProfileResponse();
             userProfileResponse.setUserName(user.getUserName());
             userProfileResponse.setUserNickName(user.getUserNickName());
