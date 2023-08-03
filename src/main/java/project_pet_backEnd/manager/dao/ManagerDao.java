@@ -15,7 +15,7 @@ public interface  ManagerDao {
     Manager getManagerByAccount(String username);
     List<Function>  getManagerRolesByManagerId(Integer managerId);
 
-    void createManager(Manager createManagerData );
+
 
     List<ManagerAuthorities> getManagerAuthoritiesById(Integer managerId);
 

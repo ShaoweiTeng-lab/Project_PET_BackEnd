@@ -69,15 +69,7 @@ public class ManagerDaoImp implements ManagerDao {
         return rsList;
     }
 
-    @Override
-    public void createManager(Manager createManagerData) {
-         Manager manager =managerRepository.save(createManagerData);
-//        String sql ="Insert into Manager(Manager_Account,Manager_Password) values(:account ,:password)";
-//        Map<String,Object> map =new HashMap<>();
-//        map.put("account",createManagerData.getManagerAccount());
-//        map.put("password",createManagerData.getManagerPassword());
-//        namedParameterJdbcTemplate.update(sql,map);
-    }
+
 
     @Override
     public List<ManagerAuthorities> getManagerAuthoritiesById(Integer managerId) {

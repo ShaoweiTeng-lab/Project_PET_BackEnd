@@ -13,13 +13,17 @@ import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.manager.dao.ManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project_pet_backEnd.manager.dao.ManagerRepository;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.service.ManagerService;
 import project_pet_backEnd.manager.vo.Manager;
 import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.ManagerJwtUtil;
+import project_pet_backEnd.utils.commonDto.Page;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,9 +38,13 @@ public class ManagerServiceImp  implements ManagerService {
     @Autowired
     private ManagerDao managerDao;
     @Autowired
+    private ManagerRepository managerRepository;
+    @Autowired
     private  ObjectMapper objectMapper;
     @Autowired
     private PasswordEncoder bcryptEncoder;
+
+
     public ResultResponse createManager(CreateManagerRequest createManagerRequest){
         Manager manager=managerDao.getManagerByAccount(createManagerRequest.getManagerAccount());
         if(manager!=null)
@@ -46,7 +54,7 @@ public class ManagerServiceImp  implements ManagerService {
         manager.setManagerAccount(createManagerRequest.getManagerAccount());
         String encodePwd=bcryptEncoder.encode(createManagerRequest.getManagerPassword());
         manager.setManagerPassword(encodePwd);
-        managerDao.createManager(manager);
+        managerRepository.save(manager);
         ResultResponse loginResponse=new ResultResponse();
         loginResponse.setMessage("新增成功");
         return loginResponse;
@@ -117,5 +125,25 @@ public class ManagerServiceImp  implements ManagerService {
         managerDao.updateManager(adjustManagerRequest);
         ResultResponse rs =new ResultResponse();
         return  rs;
+    }
+
+    @Override
+    public Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
+        List<Manager> managerList =managerRepository.findAll();
+        List<ManagerQueryResponse> managerQueryResponseList=new ArrayList<>();
+        for(int i =0 ;i<managerList.size();i++){
+            Manager manager =managerList.get(i);
+            ManagerQueryResponse managerQueryResponse =new ManagerQueryResponse();
+            managerQueryResponse.setManagerAccount(manager.getManagerAccount());
+            managerQueryResponse.setManagerCreated(AllDogCatUtils.timestampToDateFormat(manager.getManagerCreated()));
+            managerQueryResponse.setManagerState(manager.getManagerState()==1?"開啟":"停權");
+            managerQueryResponseList.add(managerQueryResponse);
+        }
+        Page<List<ManagerQueryResponse>> rs =new Page<>();
+        rs.setLimit(queryManagerParameter.getLimit());
+        rs.setOffset(queryManagerParameter.getOffset());
+        rs.setTotal(managerList.size());
+        rs.setRs(managerQueryResponseList);
+        return rs;
     }
 }
