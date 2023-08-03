@@ -4,6 +4,7 @@ import project_pet_backEnd.groomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.dto.PetGroomerQueryParameter;
 import project_pet_backEnd.groomer.vo.PetGroomer;
+import project_pet_backEnd.userManager.dto.UserQueryParameter;
 
 import java.util.List;
 
@@ -18,11 +19,14 @@ public interface PetGroomerDao {
 
     public List<PetGroomer> getAllGroomer();//取得ALL美容師
 
-    public List<GetAllGroomers> getAllGroomers(PetGroomerQueryParameter petGroomerQueryParameter);//列出所有資料
+    public List<GetAllGroomers> getAllGroomersLimit(PetGroomerQueryParameter petGroomerQueryParameter);//列出所有資料
 
     public void updateGroomerById(PetGroomer petGroomer);//後台先使用getAllGroomer後修改美容師 by pgId
 
-//    public List<PetGroomer> getGroomerByPgName(String petGroomerName);
 
+    public Integer countPetGroomer(PetGroomerQueryParameter petGroomerQueryParameter);//取得筆數，方便分頁查詢
+
+
+//    public List<PetGroomer> getGroomerByPgName(String petGroomerName);
 
 }

@@ -24,7 +24,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     PetGroomerDao petGroomerDao;
 
     /**
-     * get管理員權限為美容師個人管理 的 管理員List 。給新增美容師使用 for 管理員
+     * C get管理員權限為美容師個人管理 的 管理員List 。給新增美容師使用 for 管理員
      */
     public ResultResponse getManagerByFunctionId(Integer functionId) {
         ResultResponse rs = new ResultResponse();
@@ -37,7 +37,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     }
 
     /**
-     * 新增美容師 for 管理員
+     * C 新增美容師 for 管理員
      */
     public ResultResponse insertGroomer(PetGroomerInsertRequest petGroomerInsertRequest) {
 
@@ -68,7 +68,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     }
 
     /**
-     * 取得美容師列表 by ManId for 管理員
+     * C 取得美容師列表 by ManId for 管理員
      */
     public ResultResponse getPetGroomerByManId(Integer manId) {
         ResultResponse rs = new ResultResponse();
@@ -82,10 +82,10 @@ public class PetGroomerServiceImp implements PetGroomerService {
     }
 
     /**
-     * W 取得美容師列表 for 管理員
+     * 取得美容師列表 for 管理員
      */
     public Page<List<GetAllGroomers>> getAllGroomersForMan(PetGroomerQueryParameter petGroomerQueryParameter) {
-        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomers(petGroomerQueryParameter);
+        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersLimit(petGroomerQueryParameter);
         List<GetAllGroomerResponse>rsList=new ArrayList<>();
         if(allGroomersList==null){
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到寵物美容師");
@@ -95,10 +95,31 @@ public class PetGroomerServiceImp implements PetGroomerService {
             getAllGroomerResponse.setManId(groomers.getManId());
             getAllGroomerResponse.setPgId(groomers.getPgId());
             getAllGroomerResponse.setPgName(groomers.getPgName());
-
-
+            int gender=groomers.getPgGender();
+            switch (gender){
+                case 0:
+                    getAllGroomerResponse.setPgGender("女性");
+                    break;
+                case 1:
+                    getAllGroomerResponse.setPgGender("男性");
+                    break;
+            }
+            getAllGroomerResponse.setPgPic(AllDogCatUtils.base64Encode(groomers.getPgPic()));
+            getAllGroomerResponse.setPgEmail(groomers.getPgEmail());
+            getAllGroomerResponse.setPgPh(groomers.getPgPh());
+            getAllGroomerResponse.setPgAddress(groomers.getPgAddress());
+            getAllGroomerResponse.setPgBirthday(groomers.getPgBirthday());
+            getAllGroomerResponse.setNumAppointments(groomers.getNumAppointments());
+            rsList.add(getAllGroomerResponse);
         }
-
+        Page page = new Page<>();
+        page.setLimit(petGroomerQueryParameter.getLimit());
+        page.setOffset(petGroomerQueryParameter.getOffset());
+        //得到總筆數，方便實作頁數
+        Integer total = petGroomerDao.countPetGroomer(petGroomerQueryParameter);
+        page.setTotal(total);
+        page.setRs(rsList);
+        return page;
     }
 //    public ResultResponse getAllGroomersForMan() {
 //        ResultResponse rs = new ResultResponse();
@@ -165,7 +186,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
 //    }
 
     /**
-     * 修改美容師資料 by Id for 管理員
+     * C 修改美容師資料 by Id for 管理員
      */
     public ResultResponse updateGroomerByIdForMan(PetGroomer petGroomer) {
         ResultResponse rs = new ResultResponse();

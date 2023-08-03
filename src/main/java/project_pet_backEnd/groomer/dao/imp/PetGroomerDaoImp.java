@@ -9,6 +9,7 @@ import project_pet_backEnd.groomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.dto.ManagerGetByFunctionIdRequest;
 import project_pet_backEnd.groomer.dto.PetGroomerQueryParameter;
 import project_pet_backEnd.groomer.vo.PetGroomer;
+import project_pet_backEnd.userManager.dto.UserQueryParameter;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -127,7 +128,7 @@ public class PetGroomerDaoImp implements PetGroomerDao {
     }
 
     @Override
-    public List<GetAllGroomers> getAllGroomers(PetGroomerQueryParameter petGroomerQueryParameter) {
+    public List<GetAllGroomers> getAllGroomersLimit(PetGroomerQueryParameter petGroomerQueryParameter) {
         String sql = "SELECT pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY, COUNT(pet_groomer_appointment.PGA_NO) AS NUM_APPOINTMENTS " +
                 "FROM pet_groomer " +
                 "JOIN manager ON pet_groomer.MAN_ID = manager.manager_id " +
@@ -206,8 +207,28 @@ public class PetGroomerDaoImp implements PetGroomerDao {
 
         namedParameterJdbcTemplate.update(sql, map);
     }
+    @Override
+    public Integer countPetGroomer(PetGroomerQueryParameter petGroomerQueryParameter){
+        String sql = "SELECT COUNT(*) AS total_count " +
+                "FROM pet_groomer " +
+                "JOIN manager ON pet_groomer.MAN_ID = manager.MANAGER_ID " +
+                "WHERE MANAGER_STATE = :managerState";
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("managerState", 1);
+        if (petGroomerQueryParameter.getSearch() != null) {
+            sql += " AND PG_NAME LIKE :search";
+            map.put("search", "%" + petGroomerQueryParameter.getSearch() + "%");
+        }
+        Integer total= namedParameterJdbcTemplate.queryForObject(sql, map, new RowMapper<Integer>() {
 
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("total_count");
+            }
+        });
+        return  total;
+    }
 
 //    @Override
 //    public List<PetGroomer> getGroomerByPgName(String petGroomerName) {

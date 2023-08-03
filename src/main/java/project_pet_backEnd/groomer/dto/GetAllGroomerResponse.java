@@ -9,8 +9,8 @@ public class GetAllGroomerResponse {
     private Integer pgId;
     private Integer manId;
     private String pgName;
-    private String pgGender;
-    private String pgPic;
+    private String pgGender;//String
+    private String pgPic;//Base64
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
