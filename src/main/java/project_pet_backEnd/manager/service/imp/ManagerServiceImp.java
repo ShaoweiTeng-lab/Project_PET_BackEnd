@@ -131,6 +131,7 @@ public class ManagerServiceImp  implements ManagerService {
             adjustManagerRequest.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
         managerDao.updateManager(adjustManagerRequest);
         ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改完成");
         return  rs;
     }
 

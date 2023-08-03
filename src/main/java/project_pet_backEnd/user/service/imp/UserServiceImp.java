@@ -40,7 +40,7 @@ public class UserServiceImp implements UserService {
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有帳號註冊");//確認有無此帳號
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有人註冊此帳號");//確認有無此帳號
         if(!validatedCaptcha(userSignUpRequest.getUserEmail(),userSignUpRequest.getCaptcha()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"驗證碼異常，請從新確認驗證碼");//確認驗證碼
         String encodePwd=bCryptPasswordEncoder.encode(userSignUpRequest.getUserPassword());
