@@ -15,6 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 
 public class AllDogCatUtils {
+    private  AllDogCatUtils(){}
     /**
      * 生成驗證碼
      */

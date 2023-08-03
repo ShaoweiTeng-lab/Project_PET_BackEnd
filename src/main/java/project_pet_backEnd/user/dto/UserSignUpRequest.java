@@ -24,6 +24,7 @@ public class UserSignUpRequest {
     private String  userPhone;
     @NotBlank
     private  String userAddress;
+    private  byte[] userPic;
     private Date userBirthday;
     private IdentityProvider identityProvider;
     @NotBlank

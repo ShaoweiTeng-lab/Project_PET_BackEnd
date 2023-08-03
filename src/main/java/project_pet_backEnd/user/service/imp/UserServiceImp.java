@@ -1,4 +1,4 @@
-package project_pet_backEnd.user.service;
+package project_pet_backEnd.user.service.imp;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.dto.*;
-import project_pet_backEnd.user.service.imp.UserService;
+import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.user.vo.IdentityProvider;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
@@ -40,7 +40,7 @@ public class UserServiceImp implements UserService {
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有帳號註冊");//確認有無此帳號
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有人註冊此帳號");//確認有無此帳號
         if(!validatedCaptcha(userSignUpRequest.getUserEmail(),userSignUpRequest.getCaptcha()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"驗證碼異常，請從新確認驗證碼");//確認驗證碼
         String encodePwd=bCryptPasswordEncoder.encode(userSignUpRequest.getUserPassword());
@@ -128,14 +128,15 @@ public class UserServiceImp implements UserService {
         adjustUser.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
         adjustUser.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
         adjustUser.setUserEmail(user.getUserEmail());
-
-        String pwd =adjustUserProfileRequest.getUserPassword();
-        if(pwd!=null){
-            pwd=bCryptPasswordEncoder.encode(pwd);
-            adjustUser.setUserPassword(pwd);
+        if(user.getIdentityProvider()==IdentityProvider.Local){
+            String pwd =adjustUserProfileRequest.getUserPassword();
+            if(pwd!=null){
+                pwd=bCryptPasswordEncoder.encode(pwd);
+                adjustUser.setUserPassword(pwd);
+            }
+            else
+                adjustUser.setUserPassword(user.getUserPassword());
         }
-        else
-            adjustUser.setUserPassword(user.getUserPassword());
         adjustUser.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
         adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
         adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());

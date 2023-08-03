@@ -37,7 +37,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
     };
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        http.cors().and().csrf().disable();
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -49,6 +49,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .antMatchers("/customer/**").permitAll()
                 .antMatchers("/manager/login").permitAll()
                 .antMatchers("/test/**").permitAll()
+                .antMatchers("/user/googleLogin").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(managerJWTFilter, UsernamePasswordAuthenticationFilter.class);

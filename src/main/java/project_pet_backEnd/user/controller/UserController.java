@@ -4,11 +4,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project_pet_backEnd.user.dto.*;
-import project_pet_backEnd.user.service.UserServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import project_pet_backEnd.user.service.imp.UserService;
+import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
+import project_pet_backEnd.user.dto.oAuth.UserInfoResponse;
+import project_pet_backEnd.user.service.OAuthService;
+import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
 import javax.validation.Valid;
@@ -24,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private OAuthService oAuthService;
+
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
@@ -55,6 +60,7 @@ public class UserController {
             @RequestParam(required = false) @Max(1) @Min(0) Integer userGender,
             @RequestParam(required = false) @NotBlank  String userPassword,
             @RequestParam(required = false) @NotBlank  String userAddress,
+            @RequestParam(required = false) @NotBlank  String userPhone,
             @RequestParam(required = false) Date userBirthday,
             @RequestParam(required = false) MultipartFile userPic
             ){
@@ -63,6 +69,7 @@ public class UserController {
         adjustUserProfileRequest.setUserNickName(userNickName);
         adjustUserProfileRequest.setUserGender(userGender);
         adjustUserProfileRequest.setUserPassword(userPassword);
+        adjustUserProfileRequest.setUserPhone(userPhone);
         adjustUserProfileRequest.setUserAddress(userAddress);
         adjustUserProfileRequest.setUserBirthday(userBirthday);
         adjustUserProfileRequest.setUserPic(AllDogCatUtils.convertMultipartFileToByteArray(userPic));
@@ -71,4 +78,11 @@ public class UserController {
         rs.setMessage("修改完成");
         return  ResponseEntity.status(200).body(rs);
     }
+
+    @PostMapping("/user/googleLogin")
+    public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
+        ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
+        return ResponseEntity.ok().body(rs);
+    }
+
 }
