@@ -100,14 +100,21 @@ public class ManagerServiceImp  implements ManagerService {
 
     public  ResultResponse getManagerAuthoritiesById(Integer managerId){
         ResultResponse rs =new ResultResponse();
+        Manager manager =managerRepository.findById(managerId).orElse(null);
         List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
-        rs.setMessage(managerAuthorities);
+        QueryManagerAuthorities queryManagerAuthorities=new QueryManagerAuthorities();
+        queryManagerAuthorities.setManagerAccount(manager.getManagerAccount());
+        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthorities);
+        rs.setMessage(queryManagerAuthorities);
         return  rs;
     }
     public  ResultResponse getManagerAuthoritiesByAccount(String account){
         ResultResponse rs =new ResultResponse();
         List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
-        rs.setMessage(managerAuthorities);
+        QueryManagerAuthorities queryManagerAuthorities=new QueryManagerAuthorities();
+        queryManagerAuthorities.setManagerAccount(account);
+        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthorities);
+        rs.setMessage(queryManagerAuthorities);
         return  rs;
     }
     @Transactional

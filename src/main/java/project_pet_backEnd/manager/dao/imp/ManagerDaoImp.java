@@ -93,7 +93,7 @@ public class ManagerDaoImp implements ManagerDao {
                 "manager m\n" +
                 "join permission  p on m.MANAGER_ID=p.MANAGER_ID\n" +
                 "join `function` f on p.FUNCTION_ID =f.FUNCTION_ID\n" +
-                "where m.MANAGER_ACCOUNT = ':account'";
+                "where m.MANAGER_ACCOUNT = :account";
         Map<String ,Object> map=new HashMap<>();
         map.put("account",account);
         List<ManagerAuthorities>  managerAuthoritiesList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerAuthorities>() {
