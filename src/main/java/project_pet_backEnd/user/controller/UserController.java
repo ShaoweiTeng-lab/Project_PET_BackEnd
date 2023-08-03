@@ -7,6 +7,9 @@ import project_pet_backEnd.user.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
+import project_pet_backEnd.user.dto.oAuth.UserInfoResponse;
+import project_pet_backEnd.user.service.OAuthService;
 import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private OAuthService oAuthService;
+
     @PostMapping("/user/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
@@ -72,4 +78,15 @@ public class UserController {
         rs.setMessage("修改完成");
         return  ResponseEntity.status(200).body(rs);
     }
+
+    @PostMapping("/user/googleLogin")
+    public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
+
+        System.out.println(oAuthRequest.getCode());
+        UserInfoResponse userInfoResponse =oAuthService.oAuthLogin(oAuthRequest);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(userInfoResponse);
+        return ResponseEntity.ok().body(rs);
+    }
+
 }
