@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.vo;
+package project_pet_backEnd.groomer.PetGroomer.vo;
 
 import lombok.Data;
 
@@ -6,8 +6,8 @@ import java.sql.Date;
 
 @Data
 public class PetGroomerSchedule {
-    private int pgsId;
-    private int pgId;
+    private Integer pgsId;
+    private Integer pgId;
     private Date pgsDate;//sql.date
     private String pgsState;
 

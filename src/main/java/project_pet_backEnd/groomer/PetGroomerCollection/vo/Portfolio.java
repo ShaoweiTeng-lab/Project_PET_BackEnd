@@ -1,11 +1,11 @@
-package project_pet_backEnd.groomer.vo;
+package project_pet_backEnd.groomer.PetGroomerCollection.vo;
 
 import lombok.Data;
 
 @Data
 public class Portfolio {
-    private int porId;
-    private int pgId;
+    private Integer porId;
+    private Integer pgId;
     private String porTitle;
     private String porText;
     private java.util.Date porUpload;//util.date

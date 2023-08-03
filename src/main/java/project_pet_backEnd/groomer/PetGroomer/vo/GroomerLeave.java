@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.vo;
+package project_pet_backEnd.groomer.PetGroomer.vo;
 
 import lombok.Data;
 
@@ -6,8 +6,8 @@ import java.sql.Date;
 
 @Data
 public class GroomerLeave{
-    private int leaveNo;
-    private int pgId;
+    private Integer leaveNo;
+    private Integer pgId;
     private java.util.Date leaveCreated;//util.Date
     private Date leaveDate;//sql.date
     private String leaveTime;

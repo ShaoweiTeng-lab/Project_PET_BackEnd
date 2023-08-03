@@ -1,23 +1,18 @@
-package project_pet_backEnd.groomer.dto;
+package project_pet_backEnd.groomer.PetGroomer.dto.request;
 
 
 import lombok.Data;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Data
-public class PetGroomerInsertRequest {
+public class PGInsertReq {
     @NotBlank
-    private int manId;
+    private Integer manId;
     @NotBlank
     private String pgName;
-    @Min(0)
-    @Max(1)
-    private int pgGender;
+    private String pgGender;//String "男性","女性"
     private String pgPic;//base64
     private String pgEmail;
     private String pgPh;

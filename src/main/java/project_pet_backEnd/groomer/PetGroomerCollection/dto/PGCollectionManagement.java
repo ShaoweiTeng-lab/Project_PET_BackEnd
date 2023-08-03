@@ -1,8 +1,8 @@
-package project_pet_backEnd.groomer.dto;
+package project_pet_backEnd.groomer.PetGroomerCollection.dto;
 
 import lombok.Data;
 
-public class PetGroomerCollectionManagement {
+public class PGCollectionManagement {
 
     private String pgName;
     private String porTitle;

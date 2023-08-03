@@ -1,11 +1,11 @@
-package project_pet_backEnd.groomer.vo;
+package project_pet_backEnd.groomer.PetGroomerCollection.vo;
 
 import lombok.Data;
 
 @Data
 public class PictureInfo {
-    private int piNo;
-    private int porId;
+    private Integer piNo;
+    private Integer porId;
     private byte[] piPicture;
     private java.util.Date piDate;//util.date
 
