@@ -1,15 +1,15 @@
-package project_pet_backEnd.groomer.dto;
+package project_pet_backEnd.groomer.dto.response;
 
 import lombok.Data;
 
 import java.sql.Date;
 
 @Data
-public class GetAllGroomerResponse {
+public class GetAllGroomerListResponse {
     private Integer pgId;
     private Integer manId;
     private String pgName;
-    private String pgGender;//String
+    private String pgGender;//String 男性 / 女性
     private String pgPic;//Base64
     private String pgEmail;
     private String pgPh;

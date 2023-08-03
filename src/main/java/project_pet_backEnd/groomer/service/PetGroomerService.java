@@ -1,7 +1,7 @@
 package project_pet_backEnd.groomer.service;
 
 import project_pet_backEnd.groomer.dto.GetAllGroomers;
-import project_pet_backEnd.groomer.dto.PetGroomerInsertRequest;
+import project_pet_backEnd.groomer.dto.request.PetGroomerInsertRequest;
 import project_pet_backEnd.groomer.dto.PetGroomerQueryParameter;
 import project_pet_backEnd.groomer.vo.PetGroomer;
 import project_pet_backEnd.user.dto.ResultResponse;

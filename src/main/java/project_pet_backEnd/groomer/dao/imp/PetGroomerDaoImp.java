@@ -33,7 +33,9 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         List<ManagerGetByFunctionIdRequest> rsList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerGetByFunctionIdRequest>() {
             @Override
             public ManagerGetByFunctionIdRequest mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ManagerGetByFunctionIdRequest managerGetByFunctionIdRequest =new ManagerGetByFunctionIdRequest(rs.getInt("manager_id"),rs.getString("manager_account"));
+                ManagerGetByFunctionIdRequest managerGetByFunctionIdRequest =new ManagerGetByFunctionIdRequest(
+                        rs.getInt("manager_id"),
+                        rs.getString("manager_account"));
                 return managerGetByFunctionIdRequest;
             }
         });

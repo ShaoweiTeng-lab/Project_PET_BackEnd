@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.dto;
+package project_pet_backEnd.groomer.dto.request;
 
 
 import lombok.Data;
@@ -15,9 +15,7 @@ public class PetGroomerInsertRequest {
     private int manId;
     @NotBlank
     private String pgName;
-    @Min(0)
-    @Max(1)
-    private int pgGender;
+    private String pgGender;//String "男性","女性"
     private String pgPic;//base64
     private String pgEmail;
     private String pgPh;
