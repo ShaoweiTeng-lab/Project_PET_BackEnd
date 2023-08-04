@@ -2,7 +2,7 @@ package project_pet_backEnd.groomer.petgroomer.dao;
 
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
-import project_pet_backEnd.groomer.petgroomer.dto.request.ManagerGetByFunctionIdReq;
+import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 public interface PetGroomerDao {
 
 
-    public List<ManagerGetByFunctionIdReq> getManagerByFunctionId(Integer functionId);
+    public List<ManagerGetByFunctionIdRes> getManagerByFunctionId(Integer functionId);
     //進入美容師管理時自動查詢FUNCTION_ID=3的管理員(有美容師個人管理權限的管理員)
     public void insertGroomer(PetGroomer petGroomer);//供美容師管理員 新增美容師
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
-import project_pet_backEnd.groomer.petgroomer.dto.request.ManagerGetByFunctionIdReq;
+import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 
 import java.sql.ResultSet;
@@ -23,20 +23,20 @@ public class PetGroomerDaoImp implements PetGroomerDao {
 
 
     @Override
-    public List<ManagerGetByFunctionIdReq> getManagerByFunctionId(Integer functionId) {
+    public List<ManagerGetByFunctionIdRes> getManagerByFunctionId(Integer functionId) {
         String sql="SELECT m.MANAGER_ID,m.MANAGER_ACCOUNT FROM all_dog_cat.manager m\n" +
                 "join permission on m.MANAGER_ID = permission.manager_id\n" +
                 "join `function` on `function`.function_id = permission.function_id\n" +
                 "where permission.FUNCTION_ID = :functionId and MANAGER_STATE = 1";
         Map<String , Object> map =new HashMap<>();
         map.put("functionId", functionId);
-        List<ManagerGetByFunctionIdReq> rsList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerGetByFunctionIdReq>() {
+        List<ManagerGetByFunctionIdRes> rsList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerGetByFunctionIdRes>() {
             @Override
-            public ManagerGetByFunctionIdReq mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ManagerGetByFunctionIdReq managerGetByFunctionIdReq =new ManagerGetByFunctionIdReq(
+            public ManagerGetByFunctionIdRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ManagerGetByFunctionIdRes managerGetByFunctionIdRes =new ManagerGetByFunctionIdRes(
                         rs.getInt("manager_id"),
                         rs.getString("manager_account"));
-                return managerGetByFunctionIdReq;
+                return managerGetByFunctionIdRes;
             }
         });
         return rsList;

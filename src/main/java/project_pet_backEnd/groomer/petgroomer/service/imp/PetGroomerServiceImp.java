@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
-import project_pet_backEnd.groomer.petgroomer.dto.request.ManagerGetByFunctionIdReq;
+import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
@@ -34,11 +34,11 @@ public class PetGroomerServiceImp implements PetGroomerService {
     @Override
     public ResultResponse getManagerByFunctionId(Integer functionId) {
         ResultResponse rs = new ResultResponse();
-        List<ManagerGetByFunctionIdReq> managerGetByFunctionIdReqList = petGroomerDao.getManagerByFunctionId(functionId);
-        if (managerGetByFunctionIdReqList.isEmpty()) {
+        List<ManagerGetByFunctionIdRes> managerGetByFunctionIdResList = petGroomerDao.getManagerByFunctionId(functionId);
+        if (managerGetByFunctionIdResList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到擁有美容師個人管理權限之管理員，請至權限管理新增擁有美容師個人管理權限之管理員");
         }
-        rs.setMessage(managerGetByFunctionIdReqList);
+        rs.setMessage(managerGetByFunctionIdResList);
         return rs;
     }
 
