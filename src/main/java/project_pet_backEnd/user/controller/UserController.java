@@ -22,6 +22,7 @@ import java.sql.Date;
 
 @RestController
 @Validated
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -29,30 +30,32 @@ public class UserController {
     @Autowired
     private OAuthService oAuthService;
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
     }
-    @PostMapping("/user/customerSignUp")
+    @PostMapping("/signUp")
     public ResponseEntity<?> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
 
         userService.localSignUp(userSignUpRequest);
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
-    @GetMapping("/user/profile")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") Integer userId){
-        UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
-        return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
-    }
-    @PostMapping("/user/generateCaptcha")
+
+    @PostMapping("/generateCaptcha")
     public  ResponseEntity<ResultResponse> generateCaptcha(@RequestParam @Email String email){
         ResultResponse rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
-
-    @PostMapping("/user/adjustUserProfile")
+    /**取得個人資訊*/
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") Integer userId){
+        UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
+        return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
+    }
+    /**修改個人資訊*/
+    @PostMapping("/profile")
     public ResponseEntity<ResultResponse> adjustUserProfile(
             @RequestAttribute(name = "userId") Integer userId,
             @RequestParam(required = false) @NotBlank String userName,
@@ -78,11 +81,12 @@ public class UserController {
         rs.setMessage("修改完成");
         return  ResponseEntity.status(200).body(rs);
     }
-
-    @PostMapping("/user/googleLogin")
+    /**
+     * 第三方登入
+     * */
+    @PostMapping("/googleLogin")
     public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
         ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
         return ResponseEntity.ok().body(rs);
     }
-
 }

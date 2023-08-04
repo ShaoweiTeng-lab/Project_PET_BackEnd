@@ -44,12 +44,13 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/user/login").permitAll()
-                .antMatchers("/user/customerSignUp").permitAll()
+                .antMatchers("/user/signUp").permitAll()
                 .antMatchers("/user/generateCaptcha").permitAll()
                 .antMatchers("/customer/**").permitAll()
                 .antMatchers("/manager/login").permitAll()
                 .antMatchers("/test/**").permitAll()
                 .antMatchers("/user/googleLogin").permitAll()
+                .antMatchers("/websocket/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(managerJWTFilter, UsernamePasswordAuthenticationFilter.class);

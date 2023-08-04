@@ -21,16 +21,6 @@ import java.util.List;
 public class ManagerController {
     @Autowired
     private ManagerService managerService;
-
-    /**
-     * 創立管理員
-     * */
-    @PostMapping("/createManager")
-    @PreAuthorize("hasAnyAuthority('管理員管理')")
-    public ResponseEntity<ResultResponse> createManager(@RequestBody @Valid CreateManagerRequest createManagerRequest){
-        ResultResponse rs =managerService.createManager(createManagerRequest);
-        return  ResponseEntity.status(201).body(rs);
-    }
     /**
      * 管理員登入
      * */
@@ -39,14 +29,14 @@ public class ManagerController {
         ResultResponse rs =managerService.managerLogin(managerLoginRequest);
         return  ResponseEntity.status(200).body(rs);
     }
-
     /**
-     * 查詢自身管理員權限
+     * 新增管理員
      * */
-    @GetMapping("/authorities")
-    public  ResponseEntity<ResultResponse> getAuthorities(@RequestAttribute Integer managerId){
-        ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
-        return  ResponseEntity.status(200).body(rs);
+    @PostMapping("/manageManager")
+    @PreAuthorize("hasAnyAuthority('管理員管理')")
+    public ResponseEntity<ResultResponse> createManager(@RequestBody @Valid CreateManagerRequest createManagerRequest){
+        ResultResponse rs =managerService.createManager(createManagerRequest);
+        return  ResponseEntity.status(201).body(rs);
     }
     /**
      * 查詢管理員
@@ -63,32 +53,47 @@ public class ManagerController {
         Page<List<ManagerQueryResponse>> rs =managerService.getManagers(queryManagerParameter);
         return  ResponseEntity.status(200).body(rs);
     }
-    /**
-     * 查詢管理員權限(來自form表單 ，必須先查詢該管理員 ，再把管理員名稱透過參數呼叫此API)
-     * */
-    @PreAuthorize("hasAnyAuthority('管理員管理')")
-    @PostMapping("/manageManager/managerAuthorities")
-    public  ResponseEntity<ResultResponse> getManagerAuthoritiesByAccount(@RequestParam @NotBlank String managerAccount){
-        ResultResponse rs =managerService.getManagerAuthoritiesByAccount(managerAccount);
-        return  ResponseEntity.status(200).body(rs);
-    }
 
     /**
      * 修改管理員資料
      * */
     @PreAuthorize("hasAnyAuthority('管理員管理')")
-    @PostMapping("/adjustManager")
+    @PutMapping("/manageManager")
     public  ResponseEntity<?> adjustManager(@RequestBody @Valid AdjustManagerRequest adjustManagerRequest){
         ResultResponse rs =managerService.adjustManager(adjustManagerRequest);
+        return  ResponseEntity.status(200).body(rs);
+    }
+
+
+
+    /**
+     * 查詢自身管理員權限
+     * */
+    @GetMapping("/authorities")
+    public  ResponseEntity<ResultResponse> getAuthorities(@RequestAttribute Integer managerId){
+        ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
+        return  ResponseEntity.status(200).body(rs);
+    }
+
+    /**
+     * 查詢管理員權限(來自form表單 ，必須先查詢該管理員 ，再把管理員名稱透過參數呼叫此API)
+     * */
+    @PreAuthorize("hasAnyAuthority('管理員管理')")
+    @GetMapping("/manageManager/authorities")
+    public  ResponseEntity<ResultResponse> getManagerAuthoritiesByAccount(@RequestParam @NotBlank String managerAccount){
+        ResultResponse rs =managerService.getManagerAuthoritiesByAccount(managerAccount);
         return  ResponseEntity.status(200).body(rs);
     }
     /**
      * 修改管理員權限
      * */
     @PreAuthorize("hasAnyAuthority('管理員管理')")
-    @PostMapping("/adjustPermission")
+    @PutMapping("/manageManager/authorities")
     public  ResponseEntity<?> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){
         ResultResponse rs =managerService.adjustPermission(adjustPermissionRequest);
         return  ResponseEntity.status(200).body(rs);
     }
+
+
+
 }
