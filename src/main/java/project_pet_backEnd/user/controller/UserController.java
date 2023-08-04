@@ -1,5 +1,6 @@
 package project_pet_backEnd.user.controller;
 
+import io.swagger.annotations.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
-
+@Api(tags = "前台會員")
 @RestController
 @Validated
 @RequestMapping("/user")
@@ -48,12 +49,22 @@ public class UserController {
         ResultResponse rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
+
+    @ApiOperation("取得個人身分")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
     /**取得個人資訊*/
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@RequestAttribute(name = "userId") Integer userId){
+    public ResponseEntity<UserProfileResponse> getUserProfile(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
         UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
         return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
     }
+
+    @ApiOperation("修改個人身分")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
     /**修改個人資訊*/
     @PostMapping("/profile")
     public ResponseEntity<ResultResponse> adjustUserProfile(
@@ -81,6 +92,8 @@ public class UserController {
         rs.setMessage("修改完成");
         return  ResponseEntity.status(200).body(rs);
     }
+
+    @ApiOperation("google login ")
     /**
      * 第三方登入
      * */

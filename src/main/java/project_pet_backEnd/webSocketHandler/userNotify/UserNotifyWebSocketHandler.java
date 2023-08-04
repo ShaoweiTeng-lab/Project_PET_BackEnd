@@ -16,7 +16,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
     /**
      * 存放Session集合，方便推送消息 （javax.websocket.Session）
      * */
-    private final static ConcurrentHashMap<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
     @Autowired
     private ObjectMapper objectMapper;
     /**
