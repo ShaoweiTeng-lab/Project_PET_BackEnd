@@ -1,6 +1,5 @@
 package project_pet_backEnd.groomer.petgroomer.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSort
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.user.dto.ResultResponse;
-import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -68,7 +66,7 @@ public class GroomerController {
         return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForMan);
     }
 
-    @GetMapping("/user/getAllGroomerListSort")
+    @GetMapping("/costumer/getAllGroomerListSort")
     public ResponseEntity<Page<List<GetAllGroomerListSortResForUser>>> getAllGroomersForUser(
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "NUM_APPOINTMENTS") PGOrderBy orderBy,
@@ -85,7 +83,8 @@ public class GroomerController {
         Page<List<GetAllGroomerListSortResForUser>> petGroomerServiceAllGroomersForUser = petGroomerService.getAllGroomersForUser(pgQueryParameter);
         return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForUser);
     }
-    @PostMapping("/user/updateGroomerByPgId")
+    @PreAuthorize("hasAnyAuthority('美容師管理')")
+    @PostMapping("/manager/updateGroomerByPgId")
     public ResponseEntity<?> updateGroomerByIdForMan(@RequestBody  @Valid GetAllGroomerListRes getAllGroomerListRes){
         ResultResponse petGroomerServiceAllGroomersForUser = petGroomerService.updateGroomerByIdForMan(getAllGroomerListRes);
         return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForUser);
