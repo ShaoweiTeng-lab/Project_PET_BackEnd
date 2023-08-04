@@ -14,7 +14,7 @@ public class GetAllGroomerListSortRes {
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
-    private Date pgBirthday;//sql.date
+    private String pgBirthday;//sql.date
     private Integer NumAppointments;
     // 此處省略建構子、Getter 和 Setter 方法
 }

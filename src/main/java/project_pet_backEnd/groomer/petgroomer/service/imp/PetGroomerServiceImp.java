@@ -122,7 +122,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
         getAllGroomerListRes.setPgEmail(petGroomer.getPgEmail());
         getAllGroomerListRes.setPgPh(petGroomer.getPgPh());
         getAllGroomerListRes.setPgAddress(petGroomer.getPgAddress());
-        getAllGroomerListRes.setPgBirthday(petGroomer.getPgBirthday());
+        getAllGroomerListRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat(petGroomer.getPgBirthday()));
         rs.setMessage(getAllGroomerListRes);
         return rs;
     }
@@ -159,7 +159,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             getAllGroomerListSortRes.setPgEmail(groomers.getPgEmail());
             getAllGroomerListSortRes.setPgPh(groomers.getPgPh());
             getAllGroomerListSortRes.setPgAddress(groomers.getPgAddress());
-            getAllGroomerListSortRes.setPgBirthday(groomers.getPgBirthday());
+            getAllGroomerListSortRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat(groomers.getPgBirthday()));
             getAllGroomerListSortRes.setNumAppointments(groomers.getNumAppointments());
             rsList.add(getAllGroomerListSortRes);
         }
@@ -246,7 +246,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
                     petGroomer.setPgEmail(getAllGroomerListRes.getPgEmail());
                     petGroomer.setPgPh(getAllGroomerListRes.getPgPh());
                     petGroomer.setPgAddress(getAllGroomerListRes.getPgAddress());
-                    petGroomer.setPgBirthday(getAllGroomerListRes.getPgBirthday());
+                    petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(getAllGroomerListRes.getPgBirthday()));
                     petGroomerDao.updateGroomerById(petGroomer);
                     rs.setMessage("美容師信息更新成功");
                     found = true;
