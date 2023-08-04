@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -105,6 +107,26 @@ public class AllDogCatUtils {
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         String formattedDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return formattedDate;
+    }
+
+    /**
+     * 日期轉換格式 yyyy-MM-dd-> java.sql.date
+     * */
+    public static java.sql.Date dateFormatToSqlDate(String dateString) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(dateString);
+            return toSqlDate(date);
+    }
+
+    /**
+     * 日期轉換格式 java.util.date> java.sql.date
+     * */
+    public static java.sql.Date toSqlDate(Date date) {
+        if (date != null) {
+            return new java.sql.Date(date.getTime());
+        } else {
+            return null;
+        }
     }
     /**
      * 將上傳的檔案轉成 byte[]
