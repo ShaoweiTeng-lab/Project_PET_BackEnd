@@ -30,13 +30,15 @@ public class UserController {
     private UserService userService;
     @Autowired
     private OAuthService oAuthService;
-
+    @ApiOperation("使用者登入")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
     }
+
+    @ApiOperation("使用者註冊")
     @PostMapping("/signUp")
     public ResponseEntity<?> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
 
@@ -44,30 +46,36 @@ public class UserController {
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
 
+    @ApiOperation("生成認證碼")
     @PostMapping("/generateCaptcha")
     public  ResponseEntity<ResultResponse> generateCaptcha(@RequestParam @Email String email){
         ResultResponse rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
-    @ApiOperation("取得個人身分")
+
+    /**取得個人資訊*/
+    @ApiOperation("取得個人資訊")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
-    /**取得個人資訊*/
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getUserProfile(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
         UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
         return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
     }
 
+
+    /**
+     * 修改個人資訊
+     * */
     @ApiOperation("修改個人身分")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
-    /**修改個人資訊*/
     @PostMapping("/profile")
     public ResponseEntity<ResultResponse> adjustUserProfile(
+            @ApiParam(hidden = true)
             @RequestAttribute(name = "userId") Integer userId,
             @RequestParam(required = false) @NotBlank String userName,
             @RequestParam(required = false) @NotBlank  String userNickName,
@@ -93,10 +101,10 @@ public class UserController {
         return  ResponseEntity.status(200).body(rs);
     }
 
-    @ApiOperation("google login ")
     /**
      * 第三方登入
      * */
+    @ApiOperation("google 登入 ")
     @PostMapping("/googleLogin")
     public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
         ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
