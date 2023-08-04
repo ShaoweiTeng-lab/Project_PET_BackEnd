@@ -1,6 +1,7 @@
 package project_pet_backEnd.webSocketHandler.userNotify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketMessage;
@@ -16,7 +17,8 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      * 存放Session集合，方便推送消息 （javax.websocket.Session）
      * */
     private final static ConcurrentHashMap<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
     /**
      * 在建立WebSocket連結後觸發方法
      * */
