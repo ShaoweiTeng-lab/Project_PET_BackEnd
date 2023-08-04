@@ -3,6 +3,7 @@ package project_pet_backEnd.groomer.petgroomer.dto.request;
 
 import lombok.Data;
 
+import javax.annotation.sql.DataSourceDefinition;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
@@ -19,5 +20,6 @@ public class PGInsertReq {
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
+    
     private String pgBirthday;//sql.date
 }

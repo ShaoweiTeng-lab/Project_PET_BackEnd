@@ -111,15 +111,10 @@ public class AllDogCatUtils {
     /**
      * 日期轉換格式 yyyy-MM-dd-> java.sql.date
      * */
-    public static java.sql.Date dateFormatToSqlDate(String dateString) {
+    public static java.sql.Date dateFormatToSqlDate(String dateString) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
             Date date = sdf.parse(dateString);
             return toSqlDate(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**

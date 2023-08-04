@@ -40,7 +40,7 @@ public class GroomerController {
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/commitInsertNewGroomer")
     public ResponseEntity<?> commitInsertNewGroomer(@RequestBody @Valid PGInsertReq pgInsertReq){
-        ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);
+        ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);//Y
         return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
     @PreAuthorize("hasAnyAuthority('美容師管理')")

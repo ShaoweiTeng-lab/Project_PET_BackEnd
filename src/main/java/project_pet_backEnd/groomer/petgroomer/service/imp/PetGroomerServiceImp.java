@@ -19,6 +19,7 @@ import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,11 @@ public class PetGroomerServiceImp implements PetGroomerService {
         petGroomer.setPgEmail(pgInsertReq.getPgEmail());
         petGroomer.setPgPh(pgInsertReq.getPgPh());
         petGroomer.setPgAddress(pgInsertReq.getPgAddress());
-        petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgInsertReq.getPgBirthday()));
+        try {
+            petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgInsertReq.getPgBirthday()));
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+        }
 
         try {
             petGroomerDao.insertGroomer(petGroomer);
@@ -260,6 +265,8 @@ public class PetGroomerServiceImp implements PetGroomerService {
         } catch (DataAccessException e) {
             // 出現異常，可以拋出異常或返回錯誤提示信息
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新美容師信息失敗，請稍後重試", e);
+        }catch (ParseException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
         }
     }
 
