@@ -78,7 +78,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
         petGroomer.setPgEmail(pgInsertReq.getPgEmail());
         petGroomer.setPgPh(pgInsertReq.getPgPh());
         petGroomer.setPgAddress(pgInsertReq.getPgAddress());
-        petGroomer.setPgBirthday(pgInsertReq.getPgBirthday());
+        petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgInsertReq.getPgBirthday()));
 
         try {
             petGroomerDao.insertGroomer(petGroomer);

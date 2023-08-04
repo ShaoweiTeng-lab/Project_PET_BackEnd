@@ -19,5 +19,5 @@ public class PGInsertReq {
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
-    private Date pgBirthday;//sql.date
+    private String pgBirthday;//sql.date
 }
