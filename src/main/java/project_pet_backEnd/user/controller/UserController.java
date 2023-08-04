@@ -36,7 +36,7 @@ public class UserController {
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
     }
-    @PostMapping("/customerSignUp")
+    @PostMapping("/signUp")
     public ResponseEntity<?> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
 
         userService.localSignUp(userSignUpRequest);
@@ -88,5 +88,5 @@ public class UserController {
     public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
         ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
         return ResponseEntity.ok().body(rs);
-    } 
+    }
 }
