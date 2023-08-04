@@ -13,6 +13,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 public class AllDogCatUtils {
     private  AllDogCatUtils(){}
@@ -116,5 +117,12 @@ public class AllDogCatUtils {
             e.printStackTrace();
             return null;
         }
+    }
+    /**
+     * 生成UUID
+     * */
+    public static  String generateUUID(){
+        UUID uuid = UUID.randomUUID();
+        return  uuid.toString();
     }
 }

@@ -50,6 +50,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .antMatchers("/manager/login").permitAll()
                 .antMatchers("/test/**").permitAll()
                 .antMatchers("/user/googleLogin").permitAll()
+                .antMatchers("/websocket/**").permitAll()
                 .anyRequest().authenticated();
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(managerJWTFilter, UsernamePasswordAuthenticationFilter.class);
