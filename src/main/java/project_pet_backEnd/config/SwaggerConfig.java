@@ -30,8 +30,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "測試用API文件",
-                "這是測試用文件",
+                "All_Dog_Cat API文件",
+                "使用Spring boot 前後端分離",
                 "v1.0",
                 "",
                 new Contact("Jason","","Jasonteng20gmail.com"),
