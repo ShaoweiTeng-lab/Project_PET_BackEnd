@@ -1,9 +1,6 @@
 package project_pet_backEnd.manager.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -92,7 +89,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/authorities")
-    public  ResponseEntity<ResultResponse> getAuthorities(@RequestAttribute Integer managerId){
+    public  ResponseEntity<ResultResponse> getAuthorities(@ApiParam(hidden = true)@RequestAttribute Integer managerId){
         ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
