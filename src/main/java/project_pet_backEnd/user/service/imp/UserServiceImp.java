@@ -1,5 +1,6 @@
 package project_pet_backEnd.user.service.imp;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +39,9 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private UserJwtUtil userJwtUtil;
+
+    @Value("${renewPasswordUrl}")
+    private  String renewPasswordUrl;
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
@@ -160,7 +164,7 @@ public class UserServiceImp implements UserService {
         sendEmail(userEmail,
                 "修改密碼通知",
                 "請點選以下連接更改您的密碼:<br>"+
-                "https://www.google.com?code="+uuid);
+                        renewPasswordUrl+"?code="+uuid);
         ResultResponse rs =new ResultResponse();
         rs.setMessage("送出成功");
         return rs;
