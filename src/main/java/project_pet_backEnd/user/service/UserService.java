@@ -12,4 +12,7 @@ public interface UserService {
     ResultResponse adjustUserProfile(Integer userId, AdjustUserProfileRequest adjustUserProfileRequest);
 
 
+    ResultResponse forgetPassword(String userEmail);
+
+    ResultResponse forgetRenewPassword(String code, String newPassword);
 }
