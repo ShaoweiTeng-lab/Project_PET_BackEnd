@@ -3,6 +3,7 @@ package project_pet_backEnd.user.service.imp;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.smtp.EmailService;
 import project_pet_backEnd.smtp.dto.EmailResponse;
@@ -117,7 +118,7 @@ public class UserServiceImp implements UserService {
         userProfileResponse.setUserCreated(AllDogCatUtils.timestampToDateFormat(user.getUserCreated()));
         return  userProfileResponse;
     }
-
+    @Override
     public   ResultResponse adjustUserProfile(Integer userId,AdjustUserProfileRequest adjustUserProfileRequest){
         User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
         if(user==null)
@@ -148,5 +149,33 @@ public class UserServiceImp implements UserService {
         return  new ResultResponse();
     }
 
-
+    @Override
+    public ResultResponse forgetPassword(String userEmail) {
+        User user = userDao.getUserByEmail(userEmail);
+        if(user==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        String uuid= AllDogCatUtils.generateUUID();
+        redisTemplate.opsForValue().set(uuid,userEmail);
+        redisTemplate.expire(uuid,10, TimeUnit.MINUTES);//十分鐘後過期
+        sendEmail(userEmail,
+                "修改密碼通知",
+                "請點選以下連接更改您的密碼:<br>"+
+                "https://www.google.com?code="+uuid);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("送出成功");
+        return rs;
+    }
+    @Transactional
+    @Override
+    public ResultResponse forgetRenewPassword(String code, String newPassword) {
+        String email= redisTemplate.opsForValue().get(code);
+        if(email==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"認證網址已經過期，請重新寄送驗證信!");
+        User user =userDao.getUserByEmail(email);
+        AdjustUserProfileRequest adjustUserProfileRequest =new AdjustUserProfileRequest();
+        adjustUserProfileRequest.setUserPassword(newPassword);
+        ResultResponse rs =adjustUserProfile(user.getUserId(), adjustUserProfileRequest);
+        rs.setMessage("修改成功");
+        return rs;
+    }
 }

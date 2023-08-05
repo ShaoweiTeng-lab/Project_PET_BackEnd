@@ -1,6 +1,7 @@
 package project_pet_backEnd.user.controller;
 
 import io.swagger.annotations.*;
+import org.apache.coyote.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,6 +109,26 @@ public class UserController {
     @PostMapping("/googleLogin")
     public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
         ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
+        return ResponseEntity.ok().body(rs);
+    }
+
+
+    /**
+     * 使用者忘記密碼
+     * */
+    @ApiOperation("使用者忘記密碼 ")
+    @PostMapping("/forgetPassword")
+    public ResponseEntity<ResultResponse> forgetPassword(@RequestParam @Email String userEmail){
+        ResultResponse rs= userService.forgetPassword(userEmail);
+        return ResponseEntity.ok().body(rs);
+    }
+    /**
+     * 使用者忘記密碼
+     * */
+    @ApiOperation("忘記密碼更改密碼 ")
+    @PostMapping("/forgetPassword/renewPassword")
+    public ResponseEntity<ResultResponse> forgetRenewPassword(@RequestParam  String code,@RequestParam String newPassword){
+        ResultResponse rs= userService.forgetRenewPassword(code,newPassword);
         return ResponseEntity.ok().body(rs);
     }
 }
