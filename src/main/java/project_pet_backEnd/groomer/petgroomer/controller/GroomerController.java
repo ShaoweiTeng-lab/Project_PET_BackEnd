@@ -48,8 +48,8 @@ public class GroomerController {
             @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
             @RequestParam(value = "limit",defaultValue = "10")@Max(50) @Min(0) Integer limit,
             @RequestParam(value = "offset",defaultValue = "0")@Min(0)Integer offset){
-        PGQueryParameter pgQueryParameter =new PGQueryParameter();
 
+        PGQueryParameter pgQueryParameter =new PGQueryParameter();
         pgQueryParameter.setSearch(search);
         pgQueryParameter.setOrder(orderBy);
         pgQueryParameter.setSort(sort);
@@ -59,7 +59,7 @@ public class GroomerController {
         return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForMan);
     }
 
-    @GetMapping("/costumer/getAllGroomerListSort")
+    @GetMapping("/customer/getAllGroomerListSort")
     public ResponseEntity<Page<List<GetAllGroomerListSortResForUser>>> getAllGroomersForUser(
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "NUM_APPOINTMENTS") PGOrderBy orderBy,
