@@ -22,7 +22,8 @@ public interface PetGroomerDao {
      * @param petGroomer 美容師對象
      */
     public void insertGroomer(PetGroomer petGroomer);
-    
+
+
     /**
      * 取得所有美容師列表。
      * @return 所有美容師列表
@@ -35,6 +36,14 @@ public interface PetGroomerDao {
      * @return 美容師資料列表
      */
     public List<GetAllGroomers> getAllGroomersWithSearch(PGQueryParameter PGQueryParameter);
+
+
+    /**
+     * 供給updateGroomerById使用。
+     * @param manId
+     * @return
+     */
+    public PetGroomer getPetGroomerByManId(Integer manId);
 
     /**
      * 根據ManID更新美容師資料。後台先使用getAllGroomer查找對應美容師後修改該美容師 by pgId

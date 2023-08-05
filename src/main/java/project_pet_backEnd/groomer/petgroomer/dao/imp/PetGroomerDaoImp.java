@@ -163,6 +163,41 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         return petGroomersAllList;
     }
 
+    /**
+     * 供給updateGroomerById使用。
+     * @param manId
+     * @return
+     */
+    @Override
+    public PetGroomer getPetGroomerByManId(Integer manId) {
+
+        String sql = "select PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY from pet_groomer\n" +
+                "join manager on pet_groomer.MAN_ID = manager.manager_id\n" +
+                "where MAN_ID = :manId and MANAGER_STATE = 1";
+        Map map = new HashMap<>();
+        map.put("manId",manId);
+        List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
+            @Override
+            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PetGroomer petGroomer =  new PetGroomer();
+                petGroomer.setPgId(rs.getInt("PG_ID"));
+                petGroomer.setManId(rs.getInt("MAN_ID"));
+                petGroomer.setPgName(rs.getString("PG_NAME"));
+                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
+                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
+                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
+                petGroomer.setPgPh(rs.getString("PG_PH"));
+                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
+                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
+                return petGroomer;
+            }
+        });
+        if(petGroomerList.size()>0){
+            return petGroomerList.get(0);
+        }
+        return null;
+    }
+
     @Override
     public void updateGroomerById(PetGroomer petGroomer) {
         String sql = "UPDATE pet_groomer SET PG_NAME = :pgName, PG_GENDER = :pgGender, PG_PIC = :pgPic, PG_EMAIL = :pgEmail, PG_PH = :pgPh, PG_ADDRESS = :pgAddress, PG_BIRTHDAY = :pgBirthday WHERE PG_ID = :pgId";
