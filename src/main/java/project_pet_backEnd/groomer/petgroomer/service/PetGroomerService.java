@@ -19,16 +19,13 @@ public interface PetGroomerService {
      * 新增美容師 for 管理員
      */
     ResultResponse insertGroomer(PGInsertReq pgInsertReq);
+
     /**
-     * 取得美容師列表 by ManId for 管理員
-     */
-    ResultResponse getPetGroomerByManId(Integer manId);
-    /**
-     * w取得美容師列表 for 管理員
+     * 取得美容師列表 for 管理員
      */
     Page<List<GetAllGroomerListSortRes>> getAllGroomersForMan(PGQueryParameter PGQueryParameter);
     /**
-     * w取得美容師列表 for User and guest
+     * 取得美容師列表 for User and guest
      */
     Page<List<GetAllGroomerListSortResForUser>> getAllGroomersForUser(PGQueryParameter PGQueryParameter);
     /**

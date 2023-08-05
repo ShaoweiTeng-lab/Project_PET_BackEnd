@@ -2,13 +2,13 @@ package project_pet_backEnd.groomer.petgroomer.dto.response;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 @Data
 public class GetAllGroomerListRes {
-        @NotBlank
+        @NotNull
         private Integer pgId;
-        @NotBlank
+        @NotNull
         private Integer manId;
         private String pgName;
         private String pgGender;//String 男性 / 女性

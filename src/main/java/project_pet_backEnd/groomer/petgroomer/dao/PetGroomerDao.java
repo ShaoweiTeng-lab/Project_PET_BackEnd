@@ -23,12 +23,6 @@ public interface PetGroomerDao {
      */
     public void insertGroomer(PetGroomer petGroomer);
 
-    /**
-     * 根據ManID取得對應的美容師。
-     * @param manId 管理員ID
-     * @return 美容師對象
-     */
-    public PetGroomer getPetGroomerByManId(Integer manId);
 
     /**
      * 取得所有美容師列表。
@@ -41,7 +35,15 @@ public interface PetGroomerDao {
      * @param PGQueryParameter 分頁查詢參數
      * @return 美容師資料列表
      */
-    public List<GetAllGroomers> getAllGroomersLimit(PGQueryParameter PGQueryParameter);
+    public List<GetAllGroomers> getAllGroomersWithSearch(PGQueryParameter PGQueryParameter);
+
+
+    /**
+     * 供給updateGroomerById使用。
+     * @param manId
+     * @return
+     */
+    public PetGroomer getPetGroomerByManId(Integer manId);
 
     /**
      * 根據ManID更新美容師資料。後台先使用getAllGroomer查找對應美容師後修改該美容師 by pgId
