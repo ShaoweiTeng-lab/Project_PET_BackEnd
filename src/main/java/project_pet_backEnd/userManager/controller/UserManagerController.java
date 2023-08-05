@@ -1,5 +1,9 @@
 package project_pet_backEnd.userManager.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +22,7 @@ import project_pet_backEnd.utils.commonDto.Page;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
+@Api(tags = "會員管理")
 @Validated
 @RestController
 @RequestMapping("/manager")
@@ -26,8 +31,12 @@ public class UserManagerController {
     @Autowired
     private UserManagerServiceImp userManagerService;
     /**
-     *
+     *會員查詢
      * */
+    @ApiOperation("會員查詢")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+    })
     @GetMapping("/users")
     public ResponseEntity<Page<List<UserProfileResponse>>>  getUsers(
             @RequestParam(required = false)String search,
