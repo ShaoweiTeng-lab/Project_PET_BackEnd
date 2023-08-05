@@ -152,7 +152,7 @@ public class UserServiceImp implements UserService {
     @Override
     public ResultResponse forgetPassword(String userEmail) {
         User user = userDao.getUserByEmail(userEmail);
-        if(user==null)
+        if(user==null||user.getIdentityProvider()!=IdentityProvider.Local)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
         String uuid= AllDogCatUtils.generateUUID();
         redisTemplate.opsForValue().set(uuid,userEmail);
@@ -175,6 +175,7 @@ public class UserServiceImp implements UserService {
         AdjustUserProfileRequest adjustUserProfileRequest =new AdjustUserProfileRequest();
         adjustUserProfileRequest.setUserPassword(newPassword);
         ResultResponse rs =adjustUserProfile(user.getUserId(), adjustUserProfileRequest);
+        redisTemplate.delete(code);
         rs.setMessage("修改成功");
         return rs;
     }
