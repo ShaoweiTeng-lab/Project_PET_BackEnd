@@ -96,43 +96,6 @@ public class PetGroomerServiceImp implements PetGroomerService {
     }
 
     /**
-     * 取得指定管理員ID的美容師，for 管理員使用。
-     *
-     * @param manId 管理員ID
-     * @return rs 包含結果的回應對象
-     * @throws ResponseStatusException 如果找不到對應美容師，將拋出此異常
-     */
-    @Override
-    public ResultResponse getPetGroomerByManId(Integer manId) {
-        ResultResponse rs = new ResultResponse();
-        PetGroomer petGroomer = petGroomerDao.getPetGroomerByManId(manId);
-        if (petGroomer == null) {
-            // 沒有找到對應美容師
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此寵物美容師");
-        }
-        GetAllGroomerListRes getAllGroomerListRes = new GetAllGroomerListRes();
-        getAllGroomerListRes.setManId(petGroomer.getManId());
-        getAllGroomerListRes.setPgId(petGroomer.getPgId());
-        getAllGroomerListRes.setPgName(petGroomer.getPgName());
-        int gender = petGroomer.getPgGender();
-        switch (gender) {
-            case 0:
-                getAllGroomerListRes.setPgGender("女性");
-                break;
-            case 1:
-                getAllGroomerListRes.setPgGender("男性");
-                break;
-        }
-        getAllGroomerListRes.setPgPic(AllDogCatUtils.base64Encode(petGroomer.getPgPic()));
-        getAllGroomerListRes.setPgEmail(petGroomer.getPgEmail());
-        getAllGroomerListRes.setPgPh(petGroomer.getPgPh());
-        getAllGroomerListRes.setPgAddress(petGroomer.getPgAddress());
-        getAllGroomerListRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat(petGroomer.getPgBirthday()));
-        rs.setMessage(getAllGroomerListRes);
-        return rs;
-    }
-
-    /**
      * 取得美容師列表，for 管理員使用。
      *
      * @param PGQueryParameter 分頁查詢參數
@@ -141,7 +104,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
      */
     @Override
     public Page<List<GetAllGroomerListSortRes>> getAllGroomersForMan(PGQueryParameter PGQueryParameter) {
-        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersLimit(PGQueryParameter);
+        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersWithSearch(PGQueryParameter);
         List<GetAllGroomerListSortRes> rsList = new ArrayList<>();
         if (allGroomersList == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到寵物美容師");
@@ -187,7 +150,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
      */
     @Override
     public Page<List<GetAllGroomerListSortResForUser>> getAllGroomersForUser(PGQueryParameter PGQueryParameter) {
-        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersLimit(PGQueryParameter);
+        List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersWithSearch(PGQueryParameter);
         List<GetAllGroomerListSortResForUser> rsList = new ArrayList<>();
         if (allGroomersList == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到寵物美容師");

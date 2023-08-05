@@ -41,12 +41,6 @@ public class GroomerController {
         return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
     @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @GetMapping("/manager/getPetGroomerByManId")
-    public ResponseEntity<?> getPetGroomerByManId(@RequestParam(value = "manId") Integer manId ){
-        ResultResponse petGroomerByManId = petGroomerService.getPetGroomerByManId(manId);
-        return ResponseEntity.status(HttpStatus.OK).body(petGroomerByManId);
-    }
-    @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/getAllGroomerListSort")
     public ResponseEntity<Page<List<GetAllGroomerListSortRes>>> getAllGroomersForMan(
             @RequestParam(value = "search",required = false) String search,
