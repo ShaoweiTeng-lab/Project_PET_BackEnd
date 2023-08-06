@@ -2,6 +2,7 @@ package project_pet_backEnd.groomer.petgroomer.dao;
 
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
+import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 
@@ -46,10 +47,23 @@ public interface PetGroomerDao {
     public PetGroomer getPetGroomerByManId(Integer manId);
 
     /**
+     * 給User點單一美容師時回傳資訊。同時查詢作品集。 for教登Service層實作
+     * @param pgId
+     * @return
+     *    Integer pgId;
+     *    String pgName;
+     *    String pgGender;//String 男性 / 女性
+     *    String pgPic;//Base64
+     *    Integer NumAppointments;//預約數量
+     */
+    public GetAllGroomerListSortResForUser getPetGroomerByPgId(Integer pgId);
+
+
+    /**
      * 根據ManID更新美容師資料。後台先使用getAllGroomer查找對應美容師後修改該美容師 by pgId
      * @param petGroomer 美容師對象
      */
-    public void updateGroomerById(PetGroomer petGroomer);
+    public void updateGroomerByPgId(PetGroomer petGroomer);
 
     /**
      * 取得美容師總筆數，方便進行分頁查詢。

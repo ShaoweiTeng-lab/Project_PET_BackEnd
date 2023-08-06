@@ -6,6 +6,7 @@ import java.sql.Date;
 
 @Data
 public class GetAllGroomerListSortResForUser {
+    private Integer pgId;
     private String pgName;
     private String pgGender;//String 男性 / 女性
     private String pgPic;//Base64
