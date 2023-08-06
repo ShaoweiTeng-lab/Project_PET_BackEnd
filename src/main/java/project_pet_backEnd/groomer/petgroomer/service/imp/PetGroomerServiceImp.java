@@ -128,7 +128,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             getAllGroomerListSortRes.setPgEmail(groomers.getPgEmail());
             getAllGroomerListSortRes.setPgPh(groomers.getPgPh());
             getAllGroomerListSortRes.setPgAddress(groomers.getPgAddress());
-            getAllGroomerListSortRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat(groomers.getPgBirthday()));
+            getAllGroomerListSortRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat2(groomers.getPgBirthday()));
             getAllGroomerListSortRes.setNumAppointments(groomers.getNumAppointments());
             rsList.add(getAllGroomerListSortRes);
         }
@@ -199,7 +199,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             if (existingGroomer == null) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到美容師ID為" + getAllGroomerListRes.getPgId() + "的美容師");
             }
-            if (getAllGroomerListRes.getPgId() != null) {
+            if (getAllGroomerListRes.getPgId() == null) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID尚未輸入");
             }
 

@@ -34,8 +34,8 @@ public class PetGroomerDaoImp implements PetGroomerDao {
             @Override
             public ManagerGetByFunctionIdRes mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ManagerGetByFunctionIdRes managerGetByFunctionIdRes =new ManagerGetByFunctionIdRes(
-                        rs.getInt("manager_id"),
-                        rs.getString("manager_account"));
+                        rs.getInt("MANAGER_ID"),
+                        rs.getString("MANAGER_ACCOUNT"));
                 return managerGetByFunctionIdRes;
             }
         });

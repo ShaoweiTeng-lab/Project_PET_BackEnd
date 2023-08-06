@@ -101,12 +101,19 @@ public class AllDogCatUtils {
     }
 
     /**
-     * 日期轉換格式 date-> yyyy-MM-dd
+     * 日期轉換格式 java.util.date-> yyyy-MM-dd
      * */
     public  static String timestampToDateFormat(Date date){
         LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         String formattedDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         return formattedDate;
+    }
+    /**
+     * 日期轉換格式 java.sql.Date-> java.lang.String
+     * */
+    public static String timestampToDateFormat2(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
     }
 
     /**

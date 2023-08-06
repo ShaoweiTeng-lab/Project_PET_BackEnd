@@ -6,11 +6,12 @@ import lombok.Data;
 import javax.annotation.sql.DataSourceDefinition;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Data
 public class PGInsertReq {
-    @NotBlank
+    @NotNull
     private Integer manId;
     @NotBlank
     private String pgName;
