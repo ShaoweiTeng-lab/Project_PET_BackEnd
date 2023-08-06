@@ -128,7 +128,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             getAllGroomerListSortRes.setPgEmail(groomers.getPgEmail());
             getAllGroomerListSortRes.setPgPh(groomers.getPgPh());
             getAllGroomerListSortRes.setPgAddress(groomers.getPgAddress());
-            getAllGroomerListSortRes.setPgBirthday(AllDogCatUtils.timestampToDateFormat2(groomers.getPgBirthday()));
+            getAllGroomerListSortRes.setPgBirthday(AllDogCatUtils.timestampToSqlDateFormat(groomers.getPgBirthday()));
             getAllGroomerListSortRes.setNumAppointments(groomers.getNumAppointments());
             rsList.add(getAllGroomerListSortRes);
         }
