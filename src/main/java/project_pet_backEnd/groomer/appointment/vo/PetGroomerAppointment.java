@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.petgroomer.vo;
+package project_pet_backEnd.groomer.appointment.vo;
 
 import lombok.Data;
 
