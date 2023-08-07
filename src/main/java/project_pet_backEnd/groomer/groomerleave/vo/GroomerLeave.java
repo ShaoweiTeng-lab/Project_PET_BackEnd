@@ -1,12 +1,16 @@
-package project_pet_backEnd.groomer.appointment.vo;
+package project_pet_backEnd.groomer.groomerleave.vo;
 
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 
+@Table(name = "GROOMER_LEAVE")
 @Data
 public class GroomerLeave {
+    @Id
     @Column(name = "LEAVE_NO")
     private Integer leaveNo;
     @Column(name = "PG_ID")

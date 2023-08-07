@@ -282,31 +282,5 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         return  total;
     }
 
-//    @Override
-//    public List<PetGroomer> getGroomerByPgName(String petGroomerName) {
-//        String sql = "SELECT pet_groomer.PG_ID, pet_groomer.MAN_ID, pet_groomer.PG_NAME, pet_groomer.PG_GENDER, pet_groomer.PG_PIC, " +
-//                "pet_groomer.PG_EMAIL, pet_groomer.PG_PH, pet_groomer.PG_ADDRESS, pet_groomer.PG_BIRTHDAY " +
-//                "FROM pet_groomer " +
-//                "JOIN manager ON pet_groomer.MAN_ID = manager.manager_id " +
-//                "WHERE pet_groomer.PG_NAME LIKE :pgName AND manager.MANAGER_STATE = 1";
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("pgName", "%" + petGroomerName + "%");
-//        List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {
-//            @Override
-//            public PetGroomer mapRow(ResultSet rs, int rowNum) throws SQLException {
-//                PetGroomer petGroomer = new PetGroomer();
-//                petGroomer.setPgId(rs.getInt("PG_ID"));
-//                petGroomer.setManId(rs.getInt("MAN_ID"));
-//                petGroomer.setPgName(rs.getString("PG_NAME"));
-//                petGroomer.setPgGender(rs.getInt("PG_GENDER"));
-//                petGroomer.setPgPic(rs.getBytes("PG_PIC"));
-//                petGroomer.setPgEmail(rs.getString("PG_EMAIL"));
-//                petGroomer.setPgPh(rs.getString("PG_PH"));
-//                petGroomer.setPgAddress(rs.getString("PG_ADDRESS"));
-//                petGroomer.setPgBirthday(rs.getDate("PG_BIRTHDAY"));
-//                return petGroomer;
-//            }
-//        });
-//        return petGroomerList;
 }
 
