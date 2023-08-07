@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.redis;
+package project_pet_backEnd.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

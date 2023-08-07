@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.redis;
+package project_pet_backEnd.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

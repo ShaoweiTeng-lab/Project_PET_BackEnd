@@ -9,7 +9,7 @@ import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.utils.AppointmentUtils;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
-import project_pet_backEnd.groomer.redis.RedisService;
+import project_pet_backEnd.redis.RedisService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.util.ArrayList;
