@@ -8,7 +8,7 @@ import project_pet_backEnd.userManager.dto.Sort;
 public class PGScheduleQueryParameter {
     private  String search;
     private ScheduleOrderBy order;
-    //PGS_ID美容師班表編號,PG_ID美容師編號,PGS_DATE班表日期
+    //PGS_ID美容師班表編號,PG_ID美容師編號,PGS_DATE班表日期,PG_NAME美容師姓名
     private Sort sort;
     private  Integer limit;
     private  Integer offset;
