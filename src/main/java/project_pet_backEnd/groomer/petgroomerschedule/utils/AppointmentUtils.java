@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.petgroomerschedule.utils;
 
+import org.springframework.stereotype.Component;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
 import java.sql.Date;
@@ -7,8 +8,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component
 public class AppointmentUtils {
+
+    private  AppointmentUtils(){}
     // 過濾出當前伺服器時間至未來一個月內的 Schedule
     public static List<PetGroomerSchedule> filterFutureSchedules(List<PetGroomerSchedule> schedules) {
         List<PetGroomerSchedule> futureSchedules = new ArrayList<>();
