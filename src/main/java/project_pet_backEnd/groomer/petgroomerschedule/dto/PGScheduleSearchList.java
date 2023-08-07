@@ -4,7 +4,7 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class PGScheduleSearchRes {
+public class PGScheduleSearchList {
     private Integer pgsId;
     private String pgName;
     private Integer pgId;

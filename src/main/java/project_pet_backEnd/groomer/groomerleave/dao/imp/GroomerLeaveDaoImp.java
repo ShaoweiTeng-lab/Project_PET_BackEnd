@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.groomerleave.dao.GroomerLeaveDao;
 import project_pet_backEnd.groomer.groomerleave.dto.GroomerLeaveQueryParameter;
 import project_pet_backEnd.groomer.groomerleave.dto.PGLeaveSearchRes;
@@ -13,14 +14,11 @@ import project_pet_backEnd.groomer.groomerleave.vo.GroomerLeave;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+@Repository
 public class GroomerLeaveDaoImp implements GroomerLeaveDao {
     @Autowired
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public GroomerLeaveDaoImp(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
     @Override
     public void insertNewGroomerLeave(GroomerLeave groomerLeave) {
         String sql = "INSERT INTO GROOMER_LEAVE (PG_ID, LEAVE_CREATED, LEAVE_DATE, LEAVE_TIME, LEAVE_STATE) " +
