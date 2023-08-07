@@ -158,6 +158,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
         }
         for (GetAllGroomers groomers : allGroomersList) {
             GetAllGroomerListSortResForUser getAllGroomerListSortResForUser = new GetAllGroomerListSortResForUser();
+            getAllGroomerListSortResForUser.setPgId(groomers.getPgId());
             getAllGroomerListSortResForUser.setPgName(groomers.getPgName());
             int gender = groomers.getPgGender();
             switch (gender) {
@@ -229,7 +230,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
                 existingGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(getAllGroomerListRes.getPgBirthday()));
             }
 
-            petGroomerDao.updateGroomerById(existingGroomer);
+            petGroomerDao.updateGroomerByPgId(existingGroomer);
             rs.setMessage("美容師信息更新成功");
             return rs;
         } catch (DataAccessException e) {

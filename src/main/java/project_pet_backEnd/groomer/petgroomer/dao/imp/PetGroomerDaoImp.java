@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
+import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
+import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -197,9 +199,52 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         }
         return null;
     }
+    /**
+     * 給使用者點單一美容師時回傳資訊。同時查詢作品集。 for教登Service層實作
+     * @param pgId
+     * @return
+     *    Integer pgId;
+     *    String pgName;
+     *    String pgGender;//String 男性 / 女性
+     *    String pgPic;//Base64
+     *    Integer NumAppointments;//預約數量
+     */
+    @Override
+    public GetAllGroomerListSortResForUser getPetGroomerByPgId(Integer pgId) {
+
+        String sql = "SELECT pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY, COUNT(pet_groomer_appointment.PGA_NO) AS NUM_APPOINTMENTS\n" +
+                "FROM PET_GROOMER\n" +
+                "JOIN MANAGER ON pet_groomer.MAN_ID = manager.MANAGER_ID\n" +
+                "LEFT JOIN PET_GROOMER_APPOINTMENT ON pet_groomer.PG_ID = pet_groomer_appointment.PG_ID\n" +
+                "WHERE MANAGER_STATE = 1 AND pet_groomer.PG_ID = :pgId\n" +
+                "GROUP BY pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY";
+        Map map = new HashMap<>();
+        map.put("pgId",pgId);
+        List<GetAllGroomerListSortResForUser> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<GetAllGroomerListSortResForUser>() {
+            @Override
+            public GetAllGroomerListSortResForUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+                GetAllGroomerListSortResForUser petGroomer =  new GetAllGroomerListSortResForUser();
+                petGroomer.setPgId(rs.getInt("PG_ID"));
+                petGroomer.setPgName(rs.getString("PG_NAME"));
+
+                if(rs.getInt("PG_GENDER")==0){
+                    petGroomer.setPgGender("女性");
+                }else {
+                    petGroomer.setPgGender("男性");
+                }
+                petGroomer.setPgPic(AllDogCatUtils.base64Encode(rs.getBytes("PG_PIC")));
+                petGroomer.setNumAppointments(rs.getInt("NUM_APPOINTMENTS"));
+                return petGroomer;
+            }
+        });
+        if(petGroomerList.size()>0){
+            return petGroomerList.get(0);
+        }
+        return null;
+    }
 
     @Override
-    public void updateGroomerById(PetGroomer petGroomer) {
+    public void updateGroomerByPgId(PetGroomer petGroomer) {
         String sql = "UPDATE pet_groomer SET PG_NAME = :pgName, PG_GENDER = :pgGender, PG_PIC = :pgPic, PG_EMAIL = :pgEmail, PG_PH = :pgPh, PG_ADDRESS = :pgAddress, PG_BIRTHDAY = :pgBirthday WHERE PG_ID = :pgId";
 
         Map<String, Object> map = new HashMap<>();
