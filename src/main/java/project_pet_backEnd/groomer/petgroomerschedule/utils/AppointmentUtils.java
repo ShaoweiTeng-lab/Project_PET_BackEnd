@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AppointmentUtils {
     // 過濾出當前伺服器時間至未來一個月內的 Schedule
-    public List<PetGroomerSchedule> filterFutureSchedules(List<PetGroomerSchedule> schedules) {
+    public static List<PetGroomerSchedule> filterFutureSchedules(List<PetGroomerSchedule> schedules) {
         List<PetGroomerSchedule> futureSchedules = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
         LocalDateTime oneMonthLater = now.plusMonths(1);
@@ -30,7 +30,7 @@ public class AppointmentUtils {
     }
 
     // 將 List<Object> 轉換為 List<PetGroomerSchedule>
-    public List<PetGroomerSchedule> convertToPetGroomerScheduleList(List<Object> objList) {
+    public static List<PetGroomerSchedule> convertToPetGroomerScheduleList(List<Object> objList) {
         List<PetGroomerSchedule> scheduleList = new ArrayList<>();
         for (Object obj : objList) {
             if (obj instanceof PetGroomerSchedule) {
