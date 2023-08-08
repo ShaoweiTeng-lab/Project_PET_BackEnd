@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
+import project_pet_backEnd.groomer.appointment.dto.request.insertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
@@ -192,7 +193,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
     }
 
     @Override
-    public ResultResponse insertNewAppointmentUpdateScheduleByPgId() {
+    public ResultResponse insertNewAppointmentUpdateSchedule(insertAppointmentForUserReq insertAppointmentForUserReq) {
+
+
         return null;
     }
 }

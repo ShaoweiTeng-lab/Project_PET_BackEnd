@@ -22,6 +22,6 @@ public interface GroomerAppointmentService {
     ResultResponse getGroomerScheduleByPgId(Integer pgId);
 
 
-    ResultResponse insertNewAppointmentUpdateScheduleByPgId();
+    ResultResponse insertNewAppointmentUpdateSchedule(insertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
 
 }
