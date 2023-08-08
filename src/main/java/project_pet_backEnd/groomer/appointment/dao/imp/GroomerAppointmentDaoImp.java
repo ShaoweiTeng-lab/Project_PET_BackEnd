@@ -9,11 +9,16 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
+import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
+import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
     @Autowired
@@ -173,16 +178,41 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
     }
 
     @Override
-    public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer PgId) {
+    public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer pgId) {
         String sql = "SELECT PGA_NO, PG_ID, USER_ID, PGA_DATE, PGA_TIME, PGA_STATE, PGA_OPTION, PGA_NOTES, PGA_PHONE " +
                 "FROM PET_GROOMER_APPOINTMENT " +
                 "WHERE PG_ID = :pgId " +
                 "ORDER BY PGA_DATE"; // Default sorting by PGA_DATE
 
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pgId", PgId);
+        params.addValue("pgId", pgId);
 
         List<PetGroomerAppointment> petGroomerAppointmentList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerAppointment.class));
         return petGroomerAppointmentList;
+    }
+
+    @Override
+    public UserPhAndNameRes getUserPhAndNameForAppointment(Integer userId) {
+        String sql = "SELECT USER_NAME, USER_PHONE " +
+                "FROM USER " +
+                "WHERE USER_ID = :userId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        List<UserPhAndNameRes>  userPhAndNameResList= namedParameterJdbcTemplate.query(sql, map, new RowMapper<UserPhAndNameRes>() {
+            @Override
+            public UserPhAndNameRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                UserPhAndNameRes userPhAndNameRes = new  UserPhAndNameRes();
+                userPhAndNameRes.setUserName(rs.getString("USER_NAME"));
+                userPhAndNameRes.setUserPh(rs.getString("USER_PHONE"));
+                return userPhAndNameRes;
+            }
+        });
+
+        if(userPhAndNameResList.size()>0){
+            return userPhAndNameResList.get(0);
+        }
+        return null;
     }
 }

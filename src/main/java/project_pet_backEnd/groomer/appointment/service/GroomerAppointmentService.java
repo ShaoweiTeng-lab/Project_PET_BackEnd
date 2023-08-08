@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.appointment.service;
 
+import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.request.insertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
@@ -10,9 +11,12 @@ import java.util.List;
 public interface GroomerAppointmentService {
 
 
-    List<GetAllGroomersForAppointmentRes> getAllGroomersForAppointment();
+    PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId);
 
 
-    List<PetGroomerSchedule> getGroomerScheduleByPgId(Integer pgId);
+    ResultResponse getGroomerScheduleByPgId(Integer pgId);
+
+
+    ResultResponse insertNewAppointmentUpdateScheduleByPgId();
 
 }

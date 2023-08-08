@@ -2,6 +2,7 @@ package project_pet_backEnd.groomer.appointment.dao;
 
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
+import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 
 import java.util.List;
@@ -40,9 +41,11 @@ public interface GroomerAppointmentDao {
 
     /**
      * 根據寵物美容師編號獲取該美容師的預約記錄
-     * @param PgId 寵物美容師編號
+     * @param pgId 寵物美容師編號
      * @return 該美容師的預約記錄列表
      */
-    public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer PgId);
+    public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer pgId);
 
+
+    public UserPhAndNameRes getUserPhAndNameForAppointment(Integer userId);
 }
