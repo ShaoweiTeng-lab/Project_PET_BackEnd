@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
@@ -54,6 +56,10 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         if (getAllGroomersForAppointmentRes == null || getAllGroomersForAppointmentRes.isEmpty()) {
             // 查詢數據庫
             List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
+            if (allGroomer.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到可預約之美容師");
+            }
+
             // 將結果緩存到 Redis
             List<String> jsonStrings = new ArrayList<>();
             for (PetGroomer petGroomer : allGroomer) {
@@ -160,7 +166,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         } else {
             // 如果Redis中沒有快取資料，從資料庫中取得資料
             List<PetGroomerSchedule> petGroomerSchedulesList = petGroomerScheduleDao.getAllPgScheduleRecentMonth(pgId, currentServerDate);
-
+            if (petGroomerSchedulesList.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師之班表");
+            }
             // 將PetGroomerSchedule轉換為PetGroomerScheduleForAppointment
             pgScheduleByPgIdList = convertToAppointmentScheduleList(petGroomerSchedulesList);
 

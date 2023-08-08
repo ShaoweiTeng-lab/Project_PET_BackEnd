@@ -23,18 +23,16 @@ public class AppointmentController {
     @Autowired
     GroomerAppointmentService groomerAppointmentService;
 
-    /**
+    /*
      * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名
-     * @return
      */
     @GetMapping("/user/AppointmentPage")
     public ResponseEntity<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> getAllGroomersListForAppointmentPage(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
         PageForAppointment<List<GetAllGroomersForAppointmentRes>> allGroomersForAppointment = groomerAppointmentService.getAllGroomersForAppointment(userId);
         return ResponseEntity.status(HttpStatus.OK).body(allGroomersForAppointment);
     }
-    /**
+    /*
      * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表
-     * @return
      */
     @GetMapping("/user/ChosePgGetScheduleByPgId")
     public ResponseEntity<?> chosePgGetScheduleByPgId(@RequestParam Integer pgId){
