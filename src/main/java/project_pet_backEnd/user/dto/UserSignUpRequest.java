@@ -1,5 +1,7 @@
 package project_pet_backEnd.user.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 import project_pet_backEnd.user.vo.IdentityProvider;
 
@@ -24,7 +26,9 @@ public class UserSignUpRequest {
     private String  userPhone;
     @NotBlank
     private  String userAddress;
+    @ApiModelProperty(value = "Hidden property", hidden = true)
     private  byte[] userPic;
+    @ApiModelProperty(value = "Hidden property", hidden = true)
     private Date userBirthday;
     private IdentityProvider identityProvider;
     @NotBlank
