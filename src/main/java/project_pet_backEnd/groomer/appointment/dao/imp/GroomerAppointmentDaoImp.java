@@ -190,7 +190,10 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
         List<PetGroomerAppointment> petGroomerAppointmentList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerAppointment.class));
         return petGroomerAppointmentList;
     }
-
+    /*
+     * GroomerAppointmentServiceImp.getAllGroomersForAppointment 使用。提供進入預約頁面的使用者預先填寫電話。
+     * 姓名單純顯示。不可修改。
+     */
     @Override
     public UserPhAndNameRes getUserPhAndNameForAppointment(Integer userId) {
         String sql = "SELECT USER_NAME, USER_PHONE " +

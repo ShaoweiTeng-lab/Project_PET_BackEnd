@@ -34,12 +34,14 @@ public interface PetGroomerScheduleDao {
      */
     public List<PGScheduleSearchList>  getAllPgScheduleWithSearch(PGScheduleQueryParameter pgScheduleQueryParameter);
 
-    /**
-     * 根據美容師編號獲取該美容師的班表信息
-     * @param PgId 美容師編號
-     * @return 該美容師的班表Info列表
+    /*
+     * 尚未使用
      */
     public List<PetGroomerSchedule> getPgScheduleByPgId(Integer PgId);
 
+
+    /*
+     * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 使用。取得該美容師一個月內的班表供使用者查看
+     */
     public List<PetGroomerSchedule> getAllPgScheduleRecentMonth(Integer pgId, java.sql.Date currentServerDate);
 }

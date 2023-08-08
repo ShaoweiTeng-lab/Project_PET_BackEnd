@@ -41,7 +41,10 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+    /*
+     * 進入頁面後。取得全美容師給使用者選擇。進入預約頁面的使用者預先填寫電話。
+     * 姓名單純顯示。不可修改。
+     */
     @Override
     public PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId) {
         String redisKey = "getAllGroomersForAppointmentRes";

@@ -46,6 +46,9 @@ public interface GroomerAppointmentDao {
      */
     public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer pgId);
 
-
+    /*
+     * GroomerAppointmentServiceImp.getAllGroomersForAppointment 使用。提供進入預約頁面的使用者預先填寫電話。
+     * 姓名單純顯示。不可修改。
+     */
     public UserPhAndNameRes getUserPhAndNameForAppointment(Integer userId);
 }

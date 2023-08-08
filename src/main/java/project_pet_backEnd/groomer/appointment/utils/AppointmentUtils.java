@@ -26,6 +26,9 @@ public class AppointmentUtils {
 
     private  AppointmentUtils(){}
 
+    /*
+     * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 使用 包裝成DTO
+     */
     public static List<PetGroomerScheduleForAppointment> convertToAppointmentScheduleList(List<PetGroomerSchedule> scheduleList) {
         List<PetGroomerScheduleForAppointment> appointmentScheduleList = new ArrayList<>();
         for (PetGroomerSchedule schedule : scheduleList) {
@@ -39,7 +42,10 @@ public class AppointmentUtils {
         return appointmentScheduleList;
     }
 
-    // 方法用於生成亞洲/台北時區的當前伺服器時間
+    /*
+     * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 方法用於生成亞洲/台北時區的當前伺服器時間
+     */
+    //
     public static Date generateCurrentServerTime() {
         // 設定時區為亞洲/台北
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Taipei");

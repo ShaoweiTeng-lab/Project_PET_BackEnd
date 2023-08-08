@@ -134,7 +134,9 @@ public class PetGroomerScheduleDaoImp implements PetGroomerScheduleDao {
         return petGroomerSchedulesList;
     }
 
-
+    /*
+     * 尚未使用
+     */
     @Override
     public List<PetGroomerSchedule> getPgScheduleByPgId(Integer pgId) {
         String sql = "SELECT PGS_ID, PG_ID, PGS_DATE, PGS_STATE " +
@@ -150,7 +152,9 @@ public class PetGroomerScheduleDaoImp implements PetGroomerScheduleDao {
     }
 
 
-    //供查詢一個月內班表使用
+    /*
+     * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 使用。取得該美容師一個月內的班表供使用者查看
+     */
     @Override
     public List<PetGroomerSchedule> getAllPgScheduleRecentMonth(Integer pgId, java.sql.Date currentServerDate) {
         String sql = "SELECT PGS_ID, PG_ID, PGS_DATE, PGS_STATE " +
