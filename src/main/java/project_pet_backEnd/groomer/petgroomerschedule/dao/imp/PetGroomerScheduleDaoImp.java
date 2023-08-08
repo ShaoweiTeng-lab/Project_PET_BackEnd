@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleQueryParameter;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleSearchList;
@@ -13,6 +14,7 @@ import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,6 +144,27 @@ public class PetGroomerScheduleDaoImp implements PetGroomerScheduleDao {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pgId", pgId);
+
+        List<PetGroomerSchedule> petGroomerSchedulesList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerSchedule.class));
+        return petGroomerSchedulesList;
+    }
+
+    @Override
+    public List<PetGroomerSchedule> getAllPgScheduleRecentMonth(Integer pgId, java.sql.Date currentServerDate) {
+        String sql = "SELECT PGS_ID, PG_ID, PGS_DATE, PGS_STATE " +
+                "FROM PET_GROOMER_SCHEDULE " +
+                "WHERE PG_ID = :pgId " +
+                "AND PGS_DATE BETWEEN :startDate AND :endDate " +
+                "ORDER BY PGS_DATE "; // Default sorting by PGS_DATE from earliest to latest
+
+        // 計算一個月後的日期
+        long oneMonthInMillis = 30L * 24L * 60L * 60L * 1000L;
+        long endDateInMillis = currentServerDate.getTime() + oneMonthInMillis;
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pgId", pgId);
+        params.addValue("startDate", currentServerDate);
+        params.addValue("endDate", new java.sql.Date(endDateInMillis));
 
         List<PetGroomerSchedule> petGroomerSchedulesList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerSchedule.class));
         return petGroomerSchedulesList;

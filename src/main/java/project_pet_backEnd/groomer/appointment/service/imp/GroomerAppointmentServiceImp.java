@@ -8,12 +8,13 @@ import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
-import project_pet_backEnd.groomer.petgroomerschedule.utils.AppointmentUtils;
+import project_pet_backEnd.groomer.appointment.utils.AppointmentUtils;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
@@ -61,7 +62,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
             return getAllGroomersForAppointmentResList;
         } else {
-            // 轉換緩存的結果為 List<PetGroomer>
+            // Redis的結果為 List<PetGroomer>
             List<PetGroomer> groomers = new ArrayList<>();
             for (Object obj : getAllGroomersForAppointmentRes) {
                 if (obj instanceof PetGroomer) {
@@ -102,15 +103,22 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         List<PetGroomerSchedule> pgScheduleByPgIdList;
 
         if (cachedSchedule != null && !cachedSchedule.isEmpty()) {
-            // 如果 Redis 中有緩存，直接從緩存中取出結果
-            pgScheduleByPgIdList = convertToPetGroomerScheduleList(cachedSchedule);
-        } else {
-            // 如果 Redis 中沒有緩存，從數據庫中查詢 Schedule，並過濾出當前伺服器時間(含當日凌晨開始)至未來一個月內的 Schedule
-            pgScheduleByPgIdList = filterFutureSchedules(petGroomerScheduleDao.getPgScheduleByPgId(pgId));
+            // 檢查列表中的每個元素是否是PetGroomerSchedule對象
+            boolean allElementsArePetGroomerSchedule = cachedSchedule.stream().allMatch(e -> e instanceof PetGroomerSchedule);
 
-            // 將結果緩存到 Redis，設定過期時間為 1 小時
-            redisTemplate.opsForList().leftPushAll(redisKey, pgScheduleByPgIdList);
-            redisTemplate.expire(redisKey, 60, TimeUnit.MINUTES);
+            if (allElementsArePetGroomerSchedule) {
+                // 過濾出PetGroomerSchedule對象，並轉換為List<PetGroomerSchedule>
+                pgScheduleByPgIdList = cachedSchedule.stream()
+                        .filter(e -> e instanceof PetGroomerSchedule)
+                        .map(e -> (PetGroomerSchedule) e)
+                        .collect(Collectors.toList());
+            } else {
+                // 處理當Redis中的資料不全是PetGroomerSchedule的情況，從資料庫中取得資料
+                pgScheduleByPgIdList = appointmentUtils.fetchFromDatabaseAndCache(pgId);
+            }
+        } else {
+            // 如果Redis中沒有快取資料，從資料庫中取得資料
+            pgScheduleByPgIdList = appointmentUtils.fetchFromDatabaseAndCache(pgId);
         }
         return pgScheduleByPgIdList;
     }

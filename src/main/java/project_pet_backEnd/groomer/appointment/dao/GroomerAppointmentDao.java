@@ -45,7 +45,4 @@ public interface GroomerAppointmentDao {
      */
     public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer PgId);
 
-
-
-
 }

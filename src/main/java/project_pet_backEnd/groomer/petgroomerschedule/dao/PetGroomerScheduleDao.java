@@ -1,9 +1,11 @@
 package project_pet_backEnd.groomer.petgroomerschedule.dao;
 
+import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleQueryParameter;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleSearchList;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PetGroomerScheduleDao {
@@ -38,4 +40,6 @@ public interface PetGroomerScheduleDao {
      * @return 該美容師的班表Info列表
      */
     public List<PetGroomerSchedule> getPgScheduleByPgId(Integer PgId);
+
+    public List<PetGroomerSchedule> getAllPgScheduleRecentMonth(Integer pgId, java.sql.Date currentServerDate);
 }
