@@ -1,47 +1,46 @@
 package project_pet_backEnd.groomer.appointment.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
+import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-@Service
+
 public class AppointmentUtils {
 
-    @Autowired
-    PetGroomerScheduleDao petGroomerScheduleDao;
-
-    @Autowired
-    private RedisTemplate redisTemplate;
-
     private  AppointmentUtils(){}
-    public List<PetGroomerSchedule> fetchFromDatabaseAndCache(Integer pgId) {
-        // 生成亞洲/台北時區的當前伺服器時間
-        Date currentServerDate = generateCurrentServerTime();
 
-        // 從DAO中取得班表資料
-        List<PetGroomerSchedule> pgScheduleByPgIdList = petGroomerScheduleDao.getAllPgScheduleRecentMonth(pgId, currentServerDate);
-
-        // 將結果快取到Redis中，設定60分鐘的過期時間
-        redisTemplate.opsForList().leftPushAll("pgschedules_" + pgId, pgScheduleByPgIdList);
-        redisTemplate.expire("pgschedules_" + pgId, 60, TimeUnit.MINUTES);
-
-        return pgScheduleByPgIdList;
+    public static List<PetGroomerScheduleForAppointment> convertToAppointmentScheduleList(List<PetGroomerSchedule> scheduleList) {
+        List<PetGroomerScheduleForAppointment> appointmentScheduleList = new ArrayList<>();
+        for (PetGroomerSchedule schedule : scheduleList) {
+            PetGroomerScheduleForAppointment appointmentSchedule = new PetGroomerScheduleForAppointment();
+            appointmentSchedule.setPgsId(schedule.getPgsId());
+            appointmentSchedule.setPgId(schedule.getPgId());
+            appointmentSchedule.setPgsDate(AllDogCatUtils.timestampToSqlDateFormat(schedule.getPgsDate()));
+            appointmentSchedule.setPgsState(schedule.getPgsState());
+            appointmentScheduleList.add(appointmentSchedule);
+        }
+        return appointmentScheduleList;
     }
 
     // 方法用於生成亞洲/台北時區的當前伺服器時間
-    public Date generateCurrentServerTime() {
+    public static Date generateCurrentServerTime() {
         // 設定時區為亞洲/台北
         TimeZone timeZone = TimeZone.getTimeZone("Asia/Taipei");
 

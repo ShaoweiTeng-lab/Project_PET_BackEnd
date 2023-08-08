@@ -28,8 +28,8 @@ public class AppointmentController {
      * @return
      */
     @GetMapping("/user/AppointmentPage")
-    public ResponseEntity<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> getAllGroomersListForAppointmentPage(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer pgId){
-        PageForAppointment<List<GetAllGroomersForAppointmentRes>> allGroomersForAppointment = groomerAppointmentService.getAllGroomersForAppointment(pgId);
+    public ResponseEntity<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> getAllGroomersListForAppointmentPage(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
+        PageForAppointment<List<GetAllGroomersForAppointmentRes>> allGroomersForAppointment = groomerAppointmentService.getAllGroomersForAppointment(userId);
         return ResponseEntity.status(HttpStatus.OK).body(allGroomersForAppointment);
     }
     /**

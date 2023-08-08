@@ -1,5 +1,7 @@
 package project_pet_backEnd.groomer.appointment.service.imp;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -12,13 +14,17 @@ import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.appointment.utils.AppointmentUtils;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertToAppointmentScheduleList;
 
 @Service
 public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
@@ -29,23 +35,33 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
     @Autowired
     GroomerAppointmentDao groomerAppointmentDao;
-    @Autowired
-    AppointmentUtils appointmentUtils;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId) {
         String redisKey = "getAllGroomersForAppointmentRes";
 
-        List<PetGroomer> getAllGroomersForAppointmentRes = redisTemplate.opsForList().range(redisKey, 0, -1);
+        List<String> getAllGroomersForAppointmentRes = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (getAllGroomersForAppointmentRes == null || getAllGroomersForAppointmentRes.isEmpty()) {
             // 查詢數據庫
             List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
             // 將結果緩存到 Redis
-            redisTemplate.opsForList().leftPushAll(redisKey, allGroomer);
+            List<String> jsonStrings = new ArrayList<>();
+            for (PetGroomer petGroomer : allGroomer) {
+                try {
+                    String json = objectMapper.writeValueAsString(petGroomer);
+                    jsonStrings.add(json);
+                } catch (JsonProcessingException e) {
+                    // 如果需要，處理例外情況
+                }
+            }
+            redisTemplate.opsForList().leftPushAll(redisKey, jsonStrings);
             redisTemplate.expire(redisKey, 60, TimeUnit.MINUTES);
 
             List<GetAllGroomersForAppointmentRes> getAllGroomersForAppointmentResList = new ArrayList<>();
@@ -67,17 +83,20 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             }
 
             UserPhAndNameRes userPhAndNameForAppointment = groomerAppointmentDao.getUserPhAndNameForAppointment(userId);
-            PageForAppointment page = new PageForAppointment<>();
+            PageForAppointment<List<GetAllGroomersForAppointmentRes>> page = new PageForAppointment<>();
             page.setRs(getAllGroomersForAppointmentResList);
             page.setUserName(userPhAndNameForAppointment.getUserName());
             page.setUserPh(userPhAndNameForAppointment.getUserPh());
             return page;
         } else {
-            // Redis的結果為 List<PetGroomer>
+            // Redis的結果為 JSON 字串
             List<PetGroomer> groomers = new ArrayList<>();
-            for (Object obj : getAllGroomersForAppointmentRes) {
-                if (obj instanceof PetGroomer) {
-                    groomers.add((PetGroomer) obj);
+            for (String jsonString : getAllGroomersForAppointmentRes) {
+                try {
+                    PetGroomer petGroomer = objectMapper.readValue(jsonString, PetGroomer.class);
+                    groomers.add(petGroomer);
+                } catch (JsonProcessingException e) {
+                    // 處理例外情況
                 }
             }
 
@@ -100,7 +119,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             }
 
             UserPhAndNameRes userPhAndNameForAppointment = groomerAppointmentDao.getUserPhAndNameForAppointment(userId);
-            PageForAppointment page = new PageForAppointment();
+            PageForAppointment<List<GetAllGroomersForAppointmentRes>> page = new PageForAppointment<>();
             page.setRs(getAllGroomersForAppointmentResList);
             page.setUserName(userPhAndNameForAppointment.getUserName());
             page.setUserPh(userPhAndNameForAppointment.getUserPh());
@@ -114,36 +133,48 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
      */
     @Override
     public ResultResponse getGroomerScheduleByPgId(Integer pgId) {
-        String redisKey = "pgschedules_" + pgId;
+        // generateCurrentServerTime方法獲取現在的伺服器日期
+        Date currentServerDate = AppointmentUtils.generateCurrentServerTime();
 
-        List<Object> cachedSchedule = redisTemplate.opsForList().range(redisKey, 0, -1);
-        List<PetGroomerSchedule> pgScheduleByPgIdList = new ArrayList<>();
+        // 構建快取的 key 值
+        String redisKey = "pgschedules_" + pgId + "_" + currentServerDate;
+
+        List<PetGroomerScheduleForAppointment> pgScheduleByPgIdList = new ArrayList<>();
+
+        // 先從 Redis 中取出快取資料
+        List<String> cachedSchedule = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (cachedSchedule != null && !cachedSchedule.isEmpty()) {
-            // 檢查列表中的每個元素是否是PetGroomerSchedule對象
-            boolean allElementsArePetGroomerSchedule = true;
-            for (Object obj : cachedSchedule) {
-                if (!(obj instanceof PetGroomerSchedule)) {
-                    allElementsArePetGroomerSchedule = false;
-                    break;
+            // Redis中已有快取資料，將JSON String反序列化為PetGroomerScheduleForAppointment
+            for (String jsonString : cachedSchedule) {
+                try {
+                    PetGroomerScheduleForAppointment appointmentSchedule = objectMapper.readValue(jsonString, PetGroomerScheduleForAppointment.class);
+                    pgScheduleByPgIdList.add(appointmentSchedule);
+                } catch (JsonProcessingException e) {
+                    // 處理例外情況
                 }
-            }
-
-            if (allElementsArePetGroomerSchedule) {
-                // 過濾出PetGroomerSchedule對象，並轉換為List<PetGroomerSchedule>
-                for (Object obj : cachedSchedule) {
-                    if (obj instanceof PetGroomerSchedule) {
-                        pgScheduleByPgIdList.add((PetGroomerSchedule) obj);
-                    }
-                }
-            } else {
-                // 處理當Redis中的資料不全是PetGroomerSchedule的情況，從資料庫中取得資料
-                pgScheduleByPgIdList = appointmentUtils.fetchFromDatabaseAndCache(pgId);
             }
         } else {
             // 如果Redis中沒有快取資料，從資料庫中取得資料
-            pgScheduleByPgIdList = appointmentUtils.fetchFromDatabaseAndCache(pgId);
+            List<PetGroomerSchedule> petGroomerSchedulesList = petGroomerScheduleDao.getAllPgScheduleRecentMonth(pgId, currentServerDate);
+
+            // 將PetGroomerSchedule轉換為PetGroomerScheduleForAppointment
+            pgScheduleByPgIdList = convertToAppointmentScheduleList(petGroomerSchedulesList);
+
+            // 將結果序列化為JSON字符串後，快取到Redis中，設定60分鐘的過期時間
+            List<String> jsonStrings = new ArrayList<>();
+            for (PetGroomerScheduleForAppointment schedule : pgScheduleByPgIdList) {
+                try {
+                    String json = objectMapper.writeValueAsString(schedule);
+                    jsonStrings.add(json);
+                } catch (JsonProcessingException e) {
+                    // 處理例外情況
+                }
+            }
+            redisTemplate.opsForList().leftPushAll(redisKey, jsonStrings);
+            redisTemplate.expire(redisKey, 60, TimeUnit.MINUTES);
         }
+
         ResultResponse rs = new ResultResponse();
         rs.setMessage(pgScheduleByPgIdList);
         return rs;
