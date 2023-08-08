@@ -33,13 +33,13 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
     AppointmentUtils appointmentUtils;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Override
     public PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId) {
         String redisKey = "getAllGroomersForAppointmentRes";
 
-        List<Object> getAllGroomersForAppointmentRes = redisTemplate.opsForList().range(redisKey, 0, -1);
+        List<PetGroomer> getAllGroomersForAppointmentRes = redisTemplate.opsForList().range(redisKey, 0, -1);
 
         if (getAllGroomersForAppointmentRes == null || getAllGroomersForAppointmentRes.isEmpty()) {
             // 查詢數據庫

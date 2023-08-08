@@ -3,6 +3,7 @@ package project_pet_backEnd.groomer.appointment.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
@@ -15,14 +16,14 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-@Component
+@Service
 public class AppointmentUtils {
 
     @Autowired
     PetGroomerScheduleDao petGroomerScheduleDao;
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     private  AppointmentUtils(){}
     public List<PetGroomerSchedule> fetchFromDatabaseAndCache(Integer pgId) {
