@@ -30,6 +30,7 @@ public class UserSignUpRequest {
     private  byte[] userPic;
     @ApiModelProperty(value = "Hidden property", hidden = true)
     private Date userBirthday;
+    @ApiModelProperty(value = "Hidden property", hidden = true)
     private IdentityProvider identityProvider;
     @NotBlank
     private String captcha;//驗證碼
