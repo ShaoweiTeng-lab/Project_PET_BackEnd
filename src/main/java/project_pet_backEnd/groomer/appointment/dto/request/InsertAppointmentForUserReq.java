@@ -3,7 +3,7 @@ package project_pet_backEnd.groomer.appointment.dto.request;
 import lombok.Data;
 
 @Data
-public class insertAppointmentForUserReq {
+public class InsertAppointmentForUserReq {
     private Integer pgId; // 美容師編號 (Foreign Key)
     private Integer userId; // 會員編號 (Foreign Key)
     private String pgaDate; // yyyy-mm-dd sql.Date 預約日期

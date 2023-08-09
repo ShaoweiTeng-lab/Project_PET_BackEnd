@@ -5,7 +5,7 @@ import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleQueryParamet
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleSearchList;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public interface PetGroomerScheduleDao {
@@ -44,4 +44,12 @@ public interface PetGroomerScheduleDao {
      * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 使用。取得該美容師一個月內的班表供使用者查看
      */
     public List<PetGroomerSchedule> getAllPgScheduleRecentMonth(Integer pgId, java.sql.Date currentServerDate);
+
+
+    /*
+     * GroomerAppointmentServiceImp.insertNewAppointmentUpdateSchedule 使用。
+     * User預約時取得該筆需要修改的一筆班表。
+     */
+    public  PetGroomerSchedule getPgScheduleByPgIdAndPgsDate(Integer pgId, Date pgsDate);
+
 }

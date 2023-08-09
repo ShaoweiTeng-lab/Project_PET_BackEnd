@@ -9,25 +9,25 @@ import java.util.List;
 
 public interface GroomerAppointmentDao {
 
-    /**
+    /*
      * 新增寵物美容師預約記錄
      * @param petGroomerAppointment 要新增的寵物美容師預約對象
      */
     public void insertNewAppointment(PetGroomerAppointment petGroomerAppointment);
 
-    /**
+    /*
      * 根據預約單編號更新寵物美容師預約記錄
      * @param petGroomerAppointment 要更新的寵物美容師預約對象，其中pgaNo指定要更新的預約單編號，其他屬性指定要更新的值
      */
     public void updateAppointmentByPgaNo(PetGroomerAppointment petGroomerAppointment);
 
-    /**
+    /*
      * 獲取所有寵物美容師預約記錄
      * @return 所有寵物美容師預約記錄的列表
      */
     public List<PGAppointmentRes> getAllAppointment();
 
-    /**
+    /*
      * 根據條件獲取寵物美容師預約記錄
      * @param groomerAppointmentQueryParameter 查詢條件可以包含搜索關鍵字(
      * u.USER_NAME LIKE :search OR a.USER_ID LIKE :search OR g.PG_ID LIKE :search OR
@@ -39,7 +39,7 @@ public interface GroomerAppointmentDao {
      */
     public List<PGAppointmentRes> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
 
-    /**
+    /*
      * 根據寵物美容師編號獲取該美容師的預約記錄
      * @param pgId 寵物美容師編號
      * @return 該美容師的預約記錄列表
@@ -51,4 +51,12 @@ public interface GroomerAppointmentDao {
      * 姓名單純顯示。不可修改。
      */
     public UserPhAndNameRes getUserPhAndNameForAppointment(Integer userId);
+
+
+    /*
+     *
+     */
+
+
+
 }
