@@ -48,8 +48,7 @@ public class UserController {
     }
     @ApiOperation("確認使用者帳號是否註冊")
     @PostMapping("/checkAccountIsSignUp")
-    public  ResponseEntity<ResultResponse> checkUserIsSingUp(@RequestParam @Email String email){
-
+    public  ResponseEntity<String> checkUserIsSingUp(@RequestParam @Email String email){
         return  ResponseEntity.status(HttpStatus.OK).body(userService.checkUserIsSingUp(email));
     }
 
@@ -64,7 +63,7 @@ public class UserController {
     /**取得個人資訊*/
     @ApiOperation("取得個人資訊")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_U", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/profile")
     public ResponseEntity<UserProfileResponse> getUserProfile(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
@@ -78,7 +77,7 @@ public class UserController {
      * */
     @ApiOperation("修改個人身分")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_U", value = "JWT Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/profile")
     public ResponseEntity<ResultResponse> adjustUserProfile(
