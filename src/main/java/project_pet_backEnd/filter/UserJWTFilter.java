@@ -31,7 +31,7 @@ public class UserJWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization_U");
         if(!StringUtils.hasText(token)) {
             filterChain.doFilter(request,response);
             return;
@@ -42,7 +42,7 @@ public class UserJWTFilter extends OncePerRequestFilter {
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().println("Token Auth Error");
+            response.getWriter().println("認證異常");
             return;
         }
         userId=claims.getSubject();

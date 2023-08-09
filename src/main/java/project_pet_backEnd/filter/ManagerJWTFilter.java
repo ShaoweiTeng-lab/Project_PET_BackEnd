@@ -34,7 +34,7 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
             return;
         }
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader("Authorization_M");
         if(!StringUtils.hasText(token)) {
             filterChain.doFilter(request,response);
             return;
@@ -42,9 +42,10 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
         String  managerId=null;
         Claims claims= managerJwtUtil.validateToken(token);
         if(claims==null){
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().println("Token Auth Error");
+            response.getWriter().println("認證異常");
             return;
         }
         managerId=claims.getSubject();
