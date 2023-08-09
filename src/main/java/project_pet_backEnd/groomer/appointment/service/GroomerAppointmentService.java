@@ -3,6 +3,7 @@ package project_pet_backEnd.groomer.appointment.service;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
+import project_pet_backEnd.groomer.appointment.dto.response.UserAppointmentRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.user.dto.ResultResponse;
 
@@ -21,7 +22,17 @@ public interface GroomerAppointmentService {
      */
     List<PetGroomerScheduleForAppointment> getGroomerScheduleByPgId(Integer pgId);
 
-
+    /*
+     * 前台 for User 預約美容師(新增預約單)
+     */
     ResultResponse insertNewAppointmentAndUpdateSchedule(InsertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
+
+
+    /*
+     * 前台 for User 查詢美容師預約
+     */
+
+    List<UserAppointmentRes> getUserAppointmentByUserId();
+
 
 }

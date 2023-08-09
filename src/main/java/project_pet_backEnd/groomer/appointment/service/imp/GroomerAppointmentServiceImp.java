@@ -117,6 +117,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         return appointmentScheduleList;
     }
 
+    /*
+     * 前台 for User 預約美容師(新增預約單)
+     */
     @Override
     @Transactional
     public ResultResponse insertNewAppointmentAndUpdateSchedule(InsertAppointmentForUserReq insertAppointmentForUserReq) {

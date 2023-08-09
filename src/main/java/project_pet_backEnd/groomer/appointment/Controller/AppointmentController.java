@@ -53,6 +53,11 @@ public class AppointmentController {
         return ResponseEntity.status(200).body(resultResponse);
     }
 
+    /*
+     * 前台 for User 查詢美容師預約
+     */
+
+
 
 
 }
