@@ -107,7 +107,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     public Page<List<GetAllGroomerListSortRes>> getAllGroomersForMan(PGQueryParameter PGQueryParameter) {
         List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersWithSearch(PGQueryParameter);
         List<GetAllGroomerListSortRes> rsList = new ArrayList<>();
-        if (allGroomersList == null) {
+        if (allGroomersList == null || allGroomersList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到寵物美容師");
         }
         for (GetAllGroomers groomers : allGroomersList) {
@@ -153,7 +153,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
     public Page<List<GetAllGroomerListSortResForUser>> getAllGroomersForUser(PGQueryParameter PGQueryParameter) {
         List<GetAllGroomers> allGroomersList = petGroomerDao.getAllGroomersWithSearch(PGQueryParameter);
         List<GetAllGroomerListSortResForUser> rsList = new ArrayList<>();
-        if (allGroomersList == null) {
+        if (allGroomersList .isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到寵物美容師");
         }
         for (GetAllGroomers groomers : allGroomersList) {
@@ -240,116 +240,5 @@ public class PetGroomerServiceImp implements PetGroomerService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
         }
     }
-
-    /**
-     * 取得美容師列表，for 管理員使用。無分頁查詢(已拋棄)
-     */
-    //    public ResultResponse getAllGroomersForMan() {
-//        ResultResponse rs = new ResultResponse();
-//        List<PetGroomer> allGroomer;
-//        List<PetGroomerInsertRequest> PetGroomerInsertRequestList = new ArrayList<>();
-//        try {
-//            allGroomer = petGroomerDao.getAllGroomer();
-//
-//        } catch (DataAccessException e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "獲取寵物美容師列表失敗，請稍後重試", e);
-//        }
-//
-//        if (allGroomer == null || allGroomer.isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "目前無美容師資料");
-//        }
-//
-//        for (PetGroomer existingGroomer : allGroomer) {
-//            PetGroomerInsertRequest petGroomerInsertRequest = new PetGroomerInsertRequest();
-//            petGroomerInsertRequest.setManId(existingGroomer.getManId());
-//            petGroomerInsertRequest.setPgName(existingGroomer.getPgName());
-//            petGroomerInsertRequest.setPgGender(existingGroomer.getPgGender());
-//            petGroomerInsertRequest.setPgPic(AllDogCatUtils.base64Encode(existingGroomer.getPgPic()));
-//            petGroomerInsertRequest.setPgEmail(existingGroomer.getPgEmail());
-//            petGroomerInsertRequest.setPgPh(existingGroomer.getPgPh());
-//            petGroomerInsertRequest.setPgAddress(existingGroomer.getPgAddress());
-//            petGroomerInsertRequest.setPgBirthday(existingGroomer.getPgBirthday());
-//            PetGroomerInsertRequestList.add(petGroomerInsertRequest);
-//        }
-//
-//        rs.setMessage(PetGroomerInsertRequestList);
-//        return rs;
-//    }
-
-    /**
-     * 取得美容師列表，for User 與 訪客 使用。無分頁查詢(已拋棄)
-     */
-//    public ResultResponse getAllGroomersForUser() {
-//        ResultResponse rs = new ResultResponse();
-//        List<PetGroomer> allGroomer;
-//        List<GetAllGroomerResponse> allGroomerResponses = new ArrayList<>(); // Create a new list for GetAllGroomerResponse
-//
-//        try {
-//            allGroomer = petGroomerDao.getAllGroomer();
-//        } catch (DataAccessException e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "獲取寵物美容師列表失敗，請稍後重試", e);
-//        }
-//
-//        if (allGroomer == null || allGroomer.isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "目前無美容師資料");
-//        }
-//
-//        for (PetGroomer petGroomer : allGroomer) {
-//            GetAllGroomerResponse response = new GetAllGroomerResponse();
-//            response.setPgName(petGroomer.getPgName());
-//
-//            String base64Pic = AllDogCatUtils.base64Encode(petGroomer.getPgPic());
-//            response.setPgPic(base64Pic);
-//
-//            allGroomerResponses.add(response);
-//        }
-//
-//        rs.setMessage(allGroomerResponses);
-//        return rs;
-//    }
-
-    /**
-     * 取得美容師列表 By PgName for 管理員(已拋棄)
-     */
-//    public ResultResponse getGroomerByPgNameForMan(String PgName) {
-//        ResultResponse rs = new ResultResponse();
-//        try {
-//            List<PetGroomer> groomerByPgNameList = petGroomerDao.getGroomerByPgName(PgName);
-//            if (groomerByPgNameList.isEmpty()) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到符合條件的美容師");
-//            } else {
-//                rs.setMessage(groomerByPgNameList);
-//            }
-//        } catch (DataAccessException e) {
-//            // If there's an exception, set an error status code (e.g., 500 for Internal Server Error)
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "查詢美容師信息失敗，請稍後重試", e);
-//        }
-//        return rs;
-//    }
-    /**
-     * 取得美容師列表 By PgName for User(已拋棄)
-     */
-//    public ResultResponse getGroomerByPgNameForUser(String PgName) {
-//        ResultResponse rs = new ResultResponse();
-//        List<GetAllGroomerResponse> allGroomerResponses = new ArrayList<>();
-//        try {
-//            List<PetGroomer> groomerByPgNameList = petGroomerDao.getGroomerByPgName(PgName);
-//
-//            if (groomerByPgNameList.isEmpty()||groomerByPgNameList==null) {
-//                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到符合條件的美容師");
-//            }
-//            for(PetGroomer petGroomer:groomerByPgNameList){
-//                GetAllGroomerResponse getAllGroomerResponse = new GetAllGroomerResponse();
-//                getAllGroomerResponse.setPgName(petGroomer.getPgName());
-//                getAllGroomerResponse.setPgPic(AllDogCatUtils.base64Encode(petGroomer.getPgPic()));
-//                allGroomerResponses.add(getAllGroomerResponse);
-//            }
-//            rs.setMessage(allGroomerResponses);
-//
-//        } catch (DataAccessException e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "查詢美容師信息失敗，請稍後重試", e);
-//        }
-//        return rs;
-//    }
 }
 

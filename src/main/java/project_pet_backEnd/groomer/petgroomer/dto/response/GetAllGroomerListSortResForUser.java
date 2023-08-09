@@ -2,8 +2,6 @@ package project_pet_backEnd.groomer.petgroomer.dto.response;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
 public class GetAllGroomerListSortResForUser {
     private Integer pgId;

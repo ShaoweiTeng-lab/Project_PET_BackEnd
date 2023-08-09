@@ -12,9 +12,9 @@ import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleQueryParamet
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PGScheduleSearchList;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -175,4 +175,24 @@ public class PetGroomerScheduleDaoImp implements PetGroomerScheduleDao {
         List<PetGroomerSchedule> petGroomerSchedulesList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerSchedule.class));
         return petGroomerSchedulesList;
     }
+    /*
+     * GroomerAppointmentServiceImp.insertNewAppointmentUpdateSchedule 使用。
+     * User預約時取得該筆需要修改的一筆班表。
+     */
+    @Override
+    public  PetGroomerSchedule getPgScheduleByPgIdAndPgsDate(Integer pgId, Date pgsDate){
+        String sql ="SELECT PGS_ID,PG_ID,PGS_DATE,PGS_STATE FROM all_dog_cat.pet_groomer_schedule\n" +
+                "WHERE PG_ID = :pgId AND PGS_DATE = :pgsDate";
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pgId", pgId);
+        params.addValue("pgsDate", pgsDate);
+        List<PetGroomerSchedule> petGroomerSchedulesList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(PetGroomerSchedule.class));
+
+        if(petGroomerSchedulesList.size()>0){
+            return petGroomerSchedulesList.get(0);
+        }
+        return null;
+    }
+
 }

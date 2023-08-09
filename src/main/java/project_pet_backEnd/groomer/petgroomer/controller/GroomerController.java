@@ -78,7 +78,7 @@ public class GroomerController {
     }
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/updateGroomerByPgId")
-    public ResponseEntity<?> updateGroomerByIdForMan(@RequestBody  @Valid GetAllGroomerListRes getAllGroomerListRes){
+    public ResponseEntity<?> updateGroomerByPgIdForMan(@RequestBody  @Valid GetAllGroomerListRes getAllGroomerListRes){
         ResultResponse petGroomerServiceAllGroomersForUser = petGroomerService.updateGroomerByIdForMan(getAllGroomerListRes);
         return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForUser);
     }
