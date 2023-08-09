@@ -77,6 +77,10 @@ public class UserServiceImp implements UserService {
 
 
     public ResultResponse generateCaptcha(String email){
+        //先判斷有無註冊過
+        User user =userDao.getUserByEmail(email);
+        if(user!=null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"已有人註冊此信箱");
         String authCode=AllDogCatUtils.returnAuthCode();
         String  key ="MEMBER:"+ email;
         redisTemplate.opsForValue().set(key,authCode);
