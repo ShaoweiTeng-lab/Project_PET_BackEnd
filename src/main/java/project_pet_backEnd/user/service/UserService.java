@@ -15,4 +15,6 @@ public interface UserService {
     ResultResponse forgetPassword(String userEmail);
 
     ResultResponse forgetRenewPassword(String code, String newPassword);
+
+    ResultResponse checkUserIsSingUp(String email);
 }

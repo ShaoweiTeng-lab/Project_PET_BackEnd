@@ -183,4 +183,14 @@ public class UserServiceImp implements UserService {
         rs.setMessage("修改成功");
         return rs;
     }
+
+    @Override
+    public ResultResponse checkUserIsSingUp(String email) {
+        User user =userDao.getUserByEmail(email);
+        ResultResponse response =new ResultResponse();
+        if(user==null)
+            response.setMessage("此帳號可以註冊");
+        response.setMessage("此帳號已有人註冊");
+        return  response;
+    }
 }

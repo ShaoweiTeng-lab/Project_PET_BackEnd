@@ -46,6 +46,12 @@ public class UserController {
         userService.localSignUp(userSignUpRequest);
         return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
     }
+    @ApiOperation("確認使用者帳號是否註冊")
+    @PostMapping("/checkAccountIsSignUp")
+    public  ResponseEntity<ResultResponse> checkUserIsSingUp(@RequestParam @Email String email){
+
+        return  ResponseEntity.status(HttpStatus.OK).body(userService.checkUserIsSingUp(email));
+    }
 
     @ApiOperation("生成認證碼")
     @PostMapping("/generateCaptcha")
