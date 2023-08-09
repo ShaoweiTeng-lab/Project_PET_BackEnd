@@ -37,7 +37,7 @@ public class ManagerController {
      * */
     @ApiOperation("新增管理員")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/manageManager")
     @PreAuthorize("hasAnyAuthority('管理員管理')")
@@ -50,7 +50,7 @@ public class ManagerController {
      * */
     @ApiOperation("查詢管理員")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager")
@@ -70,7 +70,7 @@ public class ManagerController {
      * */
     @ApiOperation("修改管理員資料")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @PutMapping("/manageManager")
@@ -86,7 +86,7 @@ public class ManagerController {
      * */
     @ApiOperation("查詢自身管理員權限")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/authorities")
     public  ResponseEntity<ResultResponse> getAuthorities(@ApiParam(hidden = true)@RequestAttribute Integer managerId){
@@ -99,7 +99,7 @@ public class ManagerController {
      * */
     @ApiOperation("查詢管理員權限")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager/authorities")
@@ -113,7 +113,7 @@ public class ManagerController {
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @ApiOperation("修改管理員權限")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/manageManager/authorities")
     public  ResponseEntity<?> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){

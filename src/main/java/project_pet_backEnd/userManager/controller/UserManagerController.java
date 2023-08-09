@@ -35,7 +35,7 @@ public class UserManagerController {
      * */
     @ApiOperation("會員查詢")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", value = "JWT Token", required = true, dataType = "string", paramType = "header")
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/users")
     public ResponseEntity<Page<List<UserProfileResponse>>>  getUsers(
