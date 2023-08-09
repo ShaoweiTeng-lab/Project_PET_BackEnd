@@ -4,11 +4,11 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class picrot {
+public class PicRot {
     private Integer picNo;
     private Integer pdNo;
-    private String activityId;
-    private String pic;
+    private Integer activityId;
+    private byte[] pic;
     private Integer picRotStatus;
     private Date picRotStart;
     private Date picRotEnd;

@@ -4,7 +4,7 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class news {
+public class News {
     private Integer newsNo;
     private String newsTitle;
     private String newsCont;
