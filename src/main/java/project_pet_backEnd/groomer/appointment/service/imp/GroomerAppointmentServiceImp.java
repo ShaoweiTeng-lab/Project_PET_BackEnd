@@ -12,6 +12,7 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
+import project_pet_backEnd.groomer.appointment.dto.response.UserAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -195,6 +196,11 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         ResultResponse rs = new ResultResponse();
         rs.setMessage("預約成功!");
         return rs;
+    }
+
+    @Override
+    public List<UserAppointmentRes> getUserAppointmentByUserId() {
+        return null;
     }
     /*
     @Override
