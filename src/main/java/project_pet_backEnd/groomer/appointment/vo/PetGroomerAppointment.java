@@ -4,11 +4,14 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Date;
 @Data
 @Table(name = "PET_GROOMER_APPOINTMENT")
 public class PetGroomerAppointment {
     @Column(name = "PGA_NO")
+    @NotNull
     private Integer pgaNo; // 預約單編號 (Primary Key, AUTO_INCREMENT)
     @Column(name = "PG_ID")
     private Integer pgId; // 美容師編號 (Foreign Key)
@@ -17,11 +20,12 @@ public class PetGroomerAppointment {
     @Column(name = "PGA_DATE")
     private Date pgaDate; // sql.Date 預約日期
     @Column(name = "PGA_TIME")
+    @Size(min = 24, max = 24)
     private String pgaTime; // Varchar(24)  預約時段 (0:無預約 / 1:預約時段, 預設: 0)
     @Column(name = "PGA_STATE")
-    private byte pgaState; // 預約單狀態 (0:未完成 / 1:完成訂單 / 2:取消, 預設: 0)
+    private Integer pgaState; // 預約單狀態 (0:未完成 / 1:完成訂單 / 2:取消, 預設: 0)
     @Column(name = "PGA_OPTION")
-    private byte pgaOption; // 預約選項
+    private Integer pgaOption; // 預約選項
     @Column(name = "PGA_NOTES")
     private String pgaNotes; // 預約文字
     @Column(name = "PGA_PHONE")

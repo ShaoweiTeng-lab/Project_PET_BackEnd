@@ -85,8 +85,8 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
                 pgAppointmentRes.setUserId(rs.getInt("USER_ID"));
                 pgAppointmentRes.setPgaDate(rs.getDate("PGA_DATE"));
                 pgAppointmentRes.setPgaTime(rs.getString("PGA_TIME"));
-                pgAppointmentRes.setPgaState(rs.getByte("PGA_STATE"));
-                pgAppointmentRes.setPgaOption(rs.getByte("PGA_OPTION"));
+                pgAppointmentRes.setPgaState(rs.getInt("PGA_STATE"));
+                pgAppointmentRes.setPgaOption(rs.getInt("PGA_OPTION"));
                 pgAppointmentRes.setPgaNotes(rs.getString("PGA_NOTES"));
                 pgAppointmentRes.setPgaPhone(rs.getString("PGA_PHONE"));
                 pgAppointmentRes.setPgName(rs.getString("PG_NAME"));
@@ -164,8 +164,8 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
                 pgAppointmentRes.setUserId(rs.getInt("USER_ID"));
                 pgAppointmentRes.setPgaDate(rs.getDate("PGA_DATE"));
                 pgAppointmentRes.setPgaTime(rs.getString("PGA_TIME"));
-                pgAppointmentRes.setPgaState(rs.getByte("PGA_STATE"));
-                pgAppointmentRes.setPgaOption(rs.getByte("PGA_OPTION"));
+                pgAppointmentRes.setPgaState(rs.getInt("PGA_STATE"));
+                pgAppointmentRes.setPgaOption(rs.getInt("PGA_OPTION"));
                 pgAppointmentRes.setPgaNotes(rs.getString("PGA_NOTES"));
                 pgAppointmentRes.setPgaPhone(rs.getString("PGA_PHONE"));
                 pgAppointmentRes.setPgName(rs.getString("PG_NAME"));
