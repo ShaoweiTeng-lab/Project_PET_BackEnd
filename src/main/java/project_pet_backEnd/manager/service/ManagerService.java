@@ -18,4 +18,6 @@ public interface ManagerService {
 
     ManagerProfileResponse getProfile(Integer managerId);
 
+    void adjustProfile(Integer managerId,ManagerAdjustProfileRequest managerAdjustProfileRequest);
+
 }

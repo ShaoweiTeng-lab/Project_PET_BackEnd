@@ -9,6 +9,7 @@ import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.service.ManagerService;
 import project_pet_backEnd.manager.service.imp.ManagerServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import project_pet_backEnd.user.dto.AdjustUserProfileRequest;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -130,6 +131,16 @@ public class ManagerController {
         ManagerProfileResponse rs =managerService.getProfile(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
+    @ApiOperation("修改自身密碼")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PutMapping("/profile")
+    public  ResponseEntity<?> adjustProfile(@ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId,
+                                            @RequestBody @Valid ManagerAdjustProfileRequest managerAdjustProfileRequest){
 
+        managerService.adjustProfile(managerId,managerAdjustProfileRequest);
+        return  ResponseEntity.status(200).body("修改成功");
+    }
 
 }

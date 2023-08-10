@@ -177,4 +177,15 @@ public class ManagerServiceImp  implements ManagerService {
         managerProfileResponse.setManagerState(state);
         return managerProfileResponse;
     }
+
+    @Override
+    public void adjustProfile(Integer managerId, ManagerAdjustProfileRequest managerAdjustProfileRequest) {
+
+        Manager adjustManager =managerRepository.findById(managerId).orElse(null);
+        if(adjustManager==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        String pwd =bcryptEncoder.encode(managerAdjustProfileRequest.getManagerPassword());
+        adjustManager.setManagerPassword(pwd);
+        managerRepository.save(adjustManager);
+    }
 }
