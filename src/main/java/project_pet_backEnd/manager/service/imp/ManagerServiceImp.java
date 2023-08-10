@@ -155,4 +155,37 @@ public class ManagerServiceImp  implements ManagerService {
         rs.setRs(managerQueryResponseList);
         return rs;
     }
+
+    @Override
+    public ManagerProfileResponse getProfile(Integer managerId) {
+        Manager manager=managerRepository.findById(managerId).orElse(null);
+        if(manager==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
+
+        ManagerProfileResponse managerProfileResponse =new ManagerProfileResponse();
+        managerProfileResponse.setManagerAccount(manager.getManagerAccount());
+        managerProfileResponse.setManagerCreated(AllDogCatUtils.timestampToDateFormat(manager.getManagerCreated()));
+        String state="";
+        switch (manager.getManagerState()){
+            case 0:
+                state="停權";
+                break;
+            case 1:
+                state="開啟";
+                break;
+        }
+        managerProfileResponse.setManagerState(state);
+        return managerProfileResponse;
+    }
+
+    @Override
+    public void adjustProfile(Integer managerId, ManagerAdjustProfileRequest managerAdjustProfileRequest) {
+
+        Manager adjustManager =managerRepository.findById(managerId).orElse(null);
+        if(adjustManager==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        String pwd =bcryptEncoder.encode(managerAdjustProfileRequest.getManagerPassword());
+        adjustManager.setManagerPassword(pwd);
+        managerRepository.save(adjustManager);
+    }
 }
