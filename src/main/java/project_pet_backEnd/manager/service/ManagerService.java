@@ -16,4 +16,6 @@ public interface ManagerService {
 
     Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter);
 
+    ManagerProfileResponse getProfile(Integer managerId);
+
 }

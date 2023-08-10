@@ -121,6 +121,15 @@ public class ManagerController {
         return  ResponseEntity.status(200).body(rs);
     }
 
+    @ApiOperation("查詢個人資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @GetMapping("/profile")
+    public ResponseEntity<?> managerProfile( @ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId){
+        ManagerProfileResponse rs =managerService.getProfile(managerId);
+        return  ResponseEntity.status(200).body(rs);
+    }
 
 
 }
