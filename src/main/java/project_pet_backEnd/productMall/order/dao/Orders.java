@@ -1,4 +1,4 @@
-package project_pet_backEnd.productMall.dao;
+package project_pet_backEnd.productMall.order.dao;
 
 public interface Orders {
     /**

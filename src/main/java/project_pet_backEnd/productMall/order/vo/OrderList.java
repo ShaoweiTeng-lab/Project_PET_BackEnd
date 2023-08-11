@@ -1,4 +1,4 @@
-package project_pet_backEnd.productMall.vo;
+package project_pet_backEnd.productMall.order.vo;
 
 import lombok.Data;
 import java.io.Serializable;
