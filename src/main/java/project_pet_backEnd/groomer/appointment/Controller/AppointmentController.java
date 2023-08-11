@@ -28,7 +28,7 @@ public class AppointmentController {
     /*
      * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名
      */
-    @GetMapping("/user/AppointmentPage")
+    @GetMapping("/user/appointmentPage")
     public ResponseEntity<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> getAllGroomersListForAppointmentPageForUser(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
         PageForAppointment<List<GetAllGroomersForAppointmentRes>> allGroomersForAppointment = groomerAppointmentService.getAllGroomersForAppointment(userId);
         return ResponseEntity.status(HttpStatus.OK).body(allGroomersForAppointment);
@@ -36,7 +36,7 @@ public class AppointmentController {
     /*
      * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表
      */
-    @GetMapping("/user/ChosePgGetScheduleByPgId")
+    @GetMapping("/user/pgScheduleForA")
     public ResponseEntity<?> chosePgGetScheduleByPgIdForUser(@RequestParam Integer pgId){
         List<PetGroomerScheduleForAppointment> groomerScheduleByPgId = groomerAppointmentService.getGroomerScheduleByPgId(pgId);
         return ResponseEntity.status(HttpStatus.OK).body(groomerScheduleByPgId);
@@ -44,7 +44,7 @@ public class AppointmentController {
     /*
      * 前台 for User 預約美容師(新增預約單)
      */
-    @PostMapping("/user/NewAppointment")
+    @PostMapping("/user/newAppointment")
     public ResponseEntity<?> insertNewAppointmentAndUpdateSchedule(@RequestBody @Valid InsertAppointmentForUserReq insertAppointmentForUserReq){
         if (insertAppointmentForUserReq.getPgaState() == null) {
             insertAppointmentForUserReq.setPgaState(0);
