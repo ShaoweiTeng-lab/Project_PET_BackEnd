@@ -1,4 +1,4 @@
-package project_pet_backEnd.productMall.controller;
+package project_pet_backEnd.productMall.order.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
