@@ -1,6 +1,5 @@
 package project_pet_backEnd.groomer.appointment.service.imp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,7 +11,6 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
-import project_pet_backEnd.groomer.appointment.dto.response.UserAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -29,11 +27,8 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertToAppointmentScheduleList;
 
 @Service
 public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
@@ -198,10 +193,10 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         return rs;
     }
 
-    @Override
-    public List<UserAppointmentRes> getUserAppointmentByUserId() {
-        return null;
-    }
+//    @Override
+//    public List<UserAppointment> getUserAppointmentByUserId() {
+//        return null;
+//    }
     /*
     @Override
     public PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId) {

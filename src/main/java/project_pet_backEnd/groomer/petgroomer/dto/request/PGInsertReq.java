@@ -2,12 +2,13 @@ package project_pet_backEnd.groomer.petgroomer.dto.request;
 
 
 import lombok.Data;
+import lombok.extern.jbosslog.JBossLog;
 
-import javax.annotation.sql.DataSourceDefinition;
+import javax.persistence.Lob;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+
 
 @Data
 public class PGInsertReq {
@@ -15,12 +16,12 @@ public class PGInsertReq {
     private Integer manId;
     @NotBlank
     private String pgName;
-    private String pgGender;//String "男性","女性"
-    private String pgPic;//base64
+    private Integer pgGender;//String "男性","女性"
+    @Lob
+    private byte[] pgPic;//base64
     @Email
     private String pgEmail;
     private String pgPh;
     private String pgAddress;
-    
-    private String pgBirthday;//sql.date
+    private java.sql.Date pgBirthday;//sql.date
 }

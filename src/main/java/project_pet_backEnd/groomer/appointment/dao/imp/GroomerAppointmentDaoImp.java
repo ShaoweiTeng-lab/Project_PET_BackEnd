@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
+import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
@@ -218,4 +219,37 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
         }
         return null;
     }
+
+    @Override
+    public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId) {
+        String sql="SELECT PGA_NO,PGA_DATE,PGA_TIME,PGA_STATE,PGA_OPTION,PGA_NOTES,PGA_PHONE,USER_NAME,PG_NAME,PG_GENDER,PG_PIC\n" +
+                " FROM all_dog_cat.pet_groomer_appointment pga\n" +
+                " JOIN `user` ON pga.USER_ID = `user`.USER_ID\n" +
+                " JOIN pet_groomer ON pga.PG_ID =pet_groomer.PG_ID\n" +
+                " WHERE pga.USER_ID = :userId";
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        List<AppointmentListForUser>  appListForUser= namedParameterJdbcTemplate.query(sql, map, new RowMapper<AppointmentListForUser>() {
+            @Override
+            public AppointmentListForUser mapRow(ResultSet rs, int rowNum) throws SQLException {
+                AppointmentListForUser appList = new  AppointmentListForUser();
+                appList.setPgaNo(rs.getInt("PGA_NO"));
+                appList.setPgaDate(rs.getDate("PGA_DATE"));
+                appList.setPgaTime(rs.getString("PGA_TIME"));
+                appList.setPgaState(rs.getInt("PGA_STATE"));
+                appList.setPgaOption(rs.getInt("PGA_OPTION"));
+                appList.setPgaNotes(rs.getString("PGA_NOTES"));
+                appList.setPgaPhone(rs.getString("PGA_PHONE"));
+                appList.setUserName(rs.getString("USER_NAME"));
+                appList.setPgName(rs.getString("PG_NAME"));
+                appList.setPgGender(rs.getInt("PG_GENDER"));
+                appList.setPgPic(rs.getBytes("PG_PIC"));
+                return appList;
+            }
+        });
+        return appListForUser;
+    }
+
+
 }

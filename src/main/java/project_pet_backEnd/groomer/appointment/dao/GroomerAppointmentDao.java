@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.appointment.dao;
 
+import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
@@ -56,7 +57,7 @@ public interface GroomerAppointmentDao {
     /*
      *
      */
-
+    public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId);
 
 
 }

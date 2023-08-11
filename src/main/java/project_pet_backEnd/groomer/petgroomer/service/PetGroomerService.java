@@ -2,7 +2,7 @@ package project_pet_backEnd.groomer.petgroomer.service;
 
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListRes;
+import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.user.dto.ResultResponse;
@@ -31,7 +31,7 @@ public interface PetGroomerService {
     /**
      * 修改美容師資料 by Id for 管理員
      */
-    ResultResponse updateGroomerByIdForMan(GetAllGroomerListRes getAllGroomerListRes);
+    ResultResponse updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq);
     /**
      * 取得美容師列表 By PgName for 管理員
      */
