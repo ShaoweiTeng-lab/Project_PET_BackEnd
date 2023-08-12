@@ -1,6 +1,5 @@
 package project_pet_backEnd.groomer.appointment.service.imp;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
+import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
+import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
-import project_pet_backEnd.groomer.appointment.dto.response.UserAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -24,16 +25,17 @@ import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForA
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertToAppointmentScheduleList;
+import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertServiceOption;
+import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertTimeFrompgaTimeString;
 
 @Service
 public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
@@ -199,9 +201,44 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
     }
 
     @Override
-    public List<UserAppointmentRes> getUserAppointmentByUserId() {
-        return null;
+    public Page<List<AppoForUserListByUserIdRes>> getUserAppointmentByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter) {
+        List<AppointmentListForUser> appointmentForUserByUserId = groomerAppointmentDao.getAppointmentForUserByUserId(userId,userAppoQueryParameter);
+
+        List<AppoForUserListByUserIdRes> resList = new ArrayList<>();
+        for(AppointmentListForUser daoDate:appointmentForUserByUserId){
+            AppoForUserListByUserIdRes appoForUserListByUserIdRes = new AppoForUserListByUserIdRes();
+            appoForUserListByUserIdRes.setPgaNo(daoDate.getPgaNo());
+            appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoDate.getPgaDate()));
+            appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoDate.getPgaTime()));//轉為時間x:00 ~ x:00
+
+            switch (daoDate.getPgaState()) {
+                case 0 -> appoForUserListByUserIdRes.setPgaState("訂單未完成");
+                case 1 -> appoForUserListByUserIdRes.setPgaState("訂單已完成");
+                case 2 -> appoForUserListByUserIdRes.setPgaState("訂單已取消");
+            }
+            appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoDate.getPgaOption()));//預約選項轉換字串
+            appoForUserListByUserIdRes.setPgaNotes(daoDate.getPgaNotes());
+            appoForUserListByUserIdRes.setPgaPhone(daoDate.getPgaPhone());
+            appoForUserListByUserIdRes.setUserName(daoDate.getUserName());
+            appoForUserListByUserIdRes.setPgName(daoDate.getPgName());
+            switch (daoDate.getPgGender()) {
+                case 0 -> appoForUserListByUserIdRes.setPgGender("女性");
+                case 1 -> appoForUserListByUserIdRes.setPgGender("男性");
+            }
+            appoForUserListByUserIdRes.setPgPic(AllDogCatUtils.base64Encode(daoDate.getPgPic()));
+            resList.add(appoForUserListByUserIdRes);
+        }
+        Page page = new Page<>();
+        page.setLimit(userAppoQueryParameter.getLimit());
+        page.setOffset(userAppoQueryParameter.getOffset());
+        //得到總筆數，方便實作頁數
+        Integer total = groomerAppointmentDao.countAppointmentByUserId(userId);
+        page.setTotal(total);
+        page.setRs(resList);
+
+        return page;
     }
+
     /*
     @Override
     public PageForAppointment<List<GetAllGroomersForAppointmentRes>> getAllGroomersForAppointment(Integer userId) {

@@ -1,6 +1,8 @@
 package project_pet_backEnd.groomer.appointment.dao;
 
+import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -54,9 +56,12 @@ public interface GroomerAppointmentDao {
 
 
     /*
-     *
+     *查詢使用者所有預約單ByUserId。
      */
-
-
+    public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter);
+    /*
+     *查詢使用者所有預約單數量ByUserId 方便計算頁數。
+     */
+    public Integer countAppointmentByUserId(Integer userId);
 
 }

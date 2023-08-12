@@ -13,13 +13,12 @@ import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSort
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListRes;
+import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,29 +60,29 @@ public class PetGroomerServiceImp implements PetGroomerService {
         List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
         for (PetGroomer existingGroomer : allGroomer) {
             if (existingGroomer.getManId() == pgInsertReq.getManId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，管理員ID重複");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，此管理員已是美容師(管理員ID重複)");
             }
         }
         PetGroomer petGroomer = new PetGroomer();
-        petGroomer.setManId(pgInsertReq.getManId());
-        petGroomer.setPgName(pgInsertReq.getPgName());
-        String gender = pgInsertReq.getPgGender();
-        switch (gender) {
-            case "女性":
-                petGroomer.setPgGender(0);
-                break;
-            case "男性":
-                petGroomer.setPgGender(1);
-                break;
+        if(pgInsertReq.getManId()!=null){
+            petGroomer.setManId(pgInsertReq.getManId());
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，請提供管理員ID");
         }
-        petGroomer.setPgPic(AllDogCatUtils.base64Decode(pgInsertReq.getPgPic()));
-        petGroomer.setPgEmail(pgInsertReq.getPgEmail());
-        petGroomer.setPgPh(pgInsertReq.getPgPh());
-        petGroomer.setPgAddress(pgInsertReq.getPgAddress());
-        try {
-            petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgInsertReq.getPgBirthday()));
-        } catch (ParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+        if(!pgInsertReq.getPgName().isBlank())
+            petGroomer.setPgName(pgInsertReq.getPgName());
+        if(pgInsertReq.getPgGender()!=null)
+            petGroomer.setPgGender(pgInsertReq.getPgGender());
+        if(pgInsertReq.getPgPic()!=null)
+            petGroomer.setPgPic(pgInsertReq.getPgPic());
+        if(!pgInsertReq.getPgEmail().isBlank())
+            petGroomer.setPgEmail(pgInsertReq.getPgEmail());
+        if(!pgInsertReq.getPgPh().isBlank())
+            petGroomer.setPgPh(pgInsertReq.getPgPh());
+        if(!pgInsertReq.getPgAddress().isBlank())
+            petGroomer.setPgAddress(pgInsertReq.getPgAddress());
+        if(pgInsertReq.getPgBirthday()!=null){
+            petGroomer.setPgBirthday(pgInsertReq.getPgBirthday());
         }
 
         try {
@@ -186,48 +185,57 @@ public class PetGroomerServiceImp implements PetGroomerService {
     /**
      * 修改美容師資料，for 管理員使用。
      *
-     * @param getAllGroomerListRes 包含美容師信息的對象
+     * @param getAllGroomerListReq 包含美容師信息的對象
      * @return rs 包含結果的回應對象
      * @throws ResponseStatusException 如果找不到指定ID的美容師，將拋出此異常
      */
     @Override
-    public ResultResponse updateGroomerByIdForMan(GetAllGroomerListRes getAllGroomerListRes) {
+    public ResultResponse updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq) {
         ResultResponse rs = new ResultResponse();
         try {
             // 檢查是否存在該美容師
-            PetGroomer existingGroomer = petGroomerDao.getPetGroomerByManId(getAllGroomerListRes.getManId());
+            PetGroomer existingGroomer = petGroomerDao.getPetGroomerByManId(getAllGroomerListReq.getManId());
 
-            if (existingGroomer == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到美容師ID為" + getAllGroomerListRes.getPgId() + "的美容師");
+            if (getAllGroomerListReq.getPgId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID尚未輸入");
             }
-            if (getAllGroomerListRes.getPgId() == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID尚未輸入");
+            if (getAllGroomerListReq.getManId() == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "管理員ID尚未輸入");
+            }
+
+            if(existingGroomer==null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的美容師");
+            }
+
+            if (!getAllGroomerListReq.getManId().equals(existingGroomer.getManId()) ||
+                    !getAllGroomerListReq.getPgId().equals(existingGroomer.getPgId())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的美容師");
             }
 
             // 更新美容師信息
-            if (getAllGroomerListRes.getPgId() != null) {
-                existingGroomer.setPgId(getAllGroomerListRes.getPgId());
+            if (getAllGroomerListReq.getPgId() != null) {
+                existingGroomer.setPgId(getAllGroomerListReq.getPgId());
             }
-            if (getAllGroomerListRes.getPgName() != null) {
-                existingGroomer.setPgName(getAllGroomerListRes.getPgName());
+            if (!getAllGroomerListReq.getPgName().isBlank()) {
+                existingGroomer.setPgName(getAllGroomerListReq.getPgName());
             }
-            if (getAllGroomerListRes.getPgGender() != null) {
-                existingGroomer.setPgGender("女性".equals(getAllGroomerListRes.getPgGender()) ? 0 : 1);
+            if (getAllGroomerListReq.getPgGender() != null) {
+                existingGroomer.setPgGender(getAllGroomerListReq.getPgGender());
             }
-            if (getAllGroomerListRes.getPgPic() != null) {
-                existingGroomer.setPgPic(AllDogCatUtils.base64Decode(getAllGroomerListRes.getPgPic()));
+            if (getAllGroomerListReq.getPgPic() != null) {
+                existingGroomer.setPgPic(getAllGroomerListReq.getPgPic());
             }
-            if (getAllGroomerListRes.getPgEmail() != null) {
-                existingGroomer.setPgEmail(getAllGroomerListRes.getPgEmail());
+            if (!getAllGroomerListReq.getPgEmail().isBlank()) {
+                existingGroomer.setPgEmail(getAllGroomerListReq.getPgEmail());
             }
-            if (getAllGroomerListRes.getPgPh() != null) {
-                existingGroomer.setPgPh(getAllGroomerListRes.getPgPh());
+            if (!getAllGroomerListReq.getPgPh().isBlank()) {
+                existingGroomer.setPgPh(getAllGroomerListReq.getPgPh());
             }
-            if (getAllGroomerListRes.getPgAddress() != null) {
-                existingGroomer.setPgAddress(getAllGroomerListRes.getPgAddress());
+            if (!getAllGroomerListReq.getPgAddress().isBlank()) {
+                existingGroomer.setPgAddress(getAllGroomerListReq.getPgAddress());
             }
-            if (getAllGroomerListRes.getPgBirthday() != null) {
-                existingGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(getAllGroomerListRes.getPgBirthday()));
+            if (getAllGroomerListReq.getPgBirthday() != null) {
+                existingGroomer.setPgBirthday(getAllGroomerListReq.getPgBirthday());
             }
 
             petGroomerDao.updateGroomerByPgId(existingGroomer);
@@ -236,8 +244,6 @@ public class PetGroomerServiceImp implements PetGroomerService {
         } catch (DataAccessException e) {
             // 出現異常，可以拋出異常或返回錯誤提示信息
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新美容師信息失敗，請稍後重試", e);
-        }catch (ParseException e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
         }
     }
 }

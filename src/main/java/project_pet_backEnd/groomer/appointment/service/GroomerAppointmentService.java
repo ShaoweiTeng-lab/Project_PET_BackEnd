@@ -1,11 +1,14 @@
 package project_pet_backEnd.groomer.appointment.service;
 
+import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
+import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
-import project_pet_backEnd.groomer.appointment.dto.response.UserAppointmentRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ public interface GroomerAppointmentService {
      * 前台 for User 查詢美容師預約
      */
 
-    List<UserAppointmentRes> getUserAppointmentByUserId();
+    Page<List<AppoForUserListByUserIdRes>> getUserAppointmentByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter);
 
 
 }
