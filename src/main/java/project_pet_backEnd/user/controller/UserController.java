@@ -1,7 +1,6 @@
 package project_pet_backEnd.user.controller;
 
 import io.swagger.annotations.*;
-import org.apache.coyote.Response;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
-import project_pet_backEnd.user.dto.oAuth.UserInfoResponse;
 import project_pet_backEnd.user.service.OAuthService;
 import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.utils.AllDogCatUtils;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
