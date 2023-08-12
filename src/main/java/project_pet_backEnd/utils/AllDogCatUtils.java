@@ -65,39 +65,23 @@ public class AllDogCatUtils {
 
     public  static  byte[] downloadImageAsByteArray(String imageUrl)  {
         URL url = null;
-        InputStream inputStream=null;
-        ByteArrayOutputStream outputStream=null;
         try {
             url = new URL(imageUrl);
-            inputStream = url.openStream();
-            outputStream = new ByteArrayOutputStream();
-
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        try (InputStream inputStream = url.openStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             byte[] buffer = new byte[4096];
             int bytesRead;
-
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-        } catch (Exception e) {
+            return outputStream.toByteArray();
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        finally {
-            if(inputStream!=null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if(outputStream!=null) {
-                try {
-                    outputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return outputStream.toByteArray();
+
     }
 
     /**
