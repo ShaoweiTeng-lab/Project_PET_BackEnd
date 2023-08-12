@@ -8,10 +8,7 @@ import javax.persistence.Entity;
 
 @Data
 @AllArgsConstructor
-@Entity
 public class Function {
-    @Column(name = "function_Id")
     private  Integer functionId;
-    @Column(name ="function_name")
     private  String functionName;
 }
