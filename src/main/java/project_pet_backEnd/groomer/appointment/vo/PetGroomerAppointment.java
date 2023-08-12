@@ -1,17 +1,23 @@
 package project_pet_backEnd.groomer.appointment.vo;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.sql.Date;
+@DynamicInsert
+@DynamicUpdate
 @Data
+@Entity
 @Table(name = "PET_GROOMER_APPOINTMENT")
 public class PetGroomerAppointment {
     @Column(name = "PGA_NO")
     @NotNull
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer pgaNo; // 預約單編號 (Primary Key, AUTO_INCREMENT)
     @Column(name = "PG_ID")
     private Integer pgId; // 美容師編號 (Foreign Key)

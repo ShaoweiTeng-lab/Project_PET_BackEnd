@@ -32,7 +32,7 @@ public class PetGroomerDaoImp implements PetGroomerDao {
                 "where permission.FUNCTION_ID = :functionId and MANAGER_STATE = 1";
         Map<String , Object> map =new HashMap<>();
         map.put("functionId", functionId);
-        List<ManagerGetByFunctionIdRes> rsList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerGetByFunctionIdRes>() {
+        return namedParameterJdbcTemplate.query(sql, map, new RowMapper<ManagerGetByFunctionIdRes>() {
             @Override
             public ManagerGetByFunctionIdRes mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ManagerGetByFunctionIdRes managerGetByFunctionIdRes =new ManagerGetByFunctionIdRes(
@@ -41,7 +41,6 @@ public class PetGroomerDaoImp implements PetGroomerDao {
                 return managerGetByFunctionIdRes;
             }
         });
-        return rsList;
     }
     @Override
     public void insertGroomer(PetGroomer petGroomer) {
