@@ -114,7 +114,7 @@ public class GroomerController {
      * 用From表單送請求進來
      */
     @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/manager/updateGroomerByPgId")
+    @PostMapping("manager/updateGroomerByPgId")
     public ResponseEntity<?> updateGroomerByPgIdForMan(
             @RequestParam @NotNull Integer pgId,
             @RequestParam @NotNull Integer manId,
