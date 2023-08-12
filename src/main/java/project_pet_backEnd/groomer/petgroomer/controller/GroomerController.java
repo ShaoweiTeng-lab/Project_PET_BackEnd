@@ -64,12 +64,16 @@ public class GroomerController {
         pgInsertReq.setPgEmail(pgEmail);
         pgInsertReq.setPgPh(pgPh);
         pgInsertReq.setPgAddress(pgAddress);
-        try {
-            pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
-        } catch (ParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
-        }
 
+        if(pgBirthday.isBlank()){
+            pgInsertReq.setPgBirthday(null);
+        }else{
+            try {
+                pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
+        }
         ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);
         return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
@@ -111,10 +115,10 @@ public class GroomerController {
     }
 
     /*
-     * 用From表單送請求進來
+     * 用From表單送請求進來 QueryString
      */
     @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("manager/updateGroomerByPgId")
+    @PostMapping("/manager/updateGroomerByPgId")
     public ResponseEntity<?> updateGroomerByPgIdForMan(
             @RequestParam @NotNull Integer pgId,
             @RequestParam @NotNull Integer manId,
@@ -135,10 +139,15 @@ public class GroomerController {
         getAllGroomerListReq.setPgEmail(pgEmail);
         getAllGroomerListReq.setPgPh(pgPh);
         getAllGroomerListReq.setPgAddress(pgAddress);
-        try {
-            getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));//yyyy-mm-dd ->sql.date
-        } catch (ParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+
+        if(pgBirthday.isBlank()){
+            getAllGroomerListReq.setPgBirthday(null);
+        }else{
+            try {
+                getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));//yyyy-mm-dd ->sql.date
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
         }
         ResultResponse rs = petGroomerService.updateGroomerByIdForMan(getAllGroomerListReq);
         return ResponseEntity.status(200).body(rs);

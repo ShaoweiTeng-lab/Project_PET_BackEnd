@@ -60,7 +60,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
         List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
         for (PetGroomer existingGroomer : allGroomer) {
             if (existingGroomer.getManId() == pgInsertReq.getManId()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，管理員ID重複");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，此管理員已是美容師(管理員ID重複)");
             }
         }
         PetGroomer petGroomer = new PetGroomer();
@@ -69,18 +69,21 @@ public class PetGroomerServiceImp implements PetGroomerService {
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，請提供管理員ID");
         }
-        if(pgInsertReq.getPgName()!=null)
+        if(!pgInsertReq.getPgName().isBlank())
             petGroomer.setPgName(pgInsertReq.getPgName());
         if(pgInsertReq.getPgGender()!=null)
             petGroomer.setPgGender(pgInsertReq.getPgGender());
         if(pgInsertReq.getPgPic()!=null)
             petGroomer.setPgPic(pgInsertReq.getPgPic());
-        if(pgInsertReq.getPgEmail()!=null)
+        if(!pgInsertReq.getPgEmail().isBlank())
             petGroomer.setPgEmail(pgInsertReq.getPgEmail());
-        if(pgInsertReq.getPgPh()!=null)
+        if(!pgInsertReq.getPgPh().isBlank())
             petGroomer.setPgPh(pgInsertReq.getPgPh());
-        if(pgInsertReq.getPgAddress()!=null)
+        if(!pgInsertReq.getPgAddress().isBlank())
             petGroomer.setPgAddress(pgInsertReq.getPgAddress());
+        if(pgInsertReq.getPgBirthday()!=null){
+            petGroomer.setPgBirthday(pgInsertReq.getPgBirthday());
+        }
 
         try {
             petGroomerDao.insertGroomer(petGroomer);
@@ -207,7 +210,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             if (getAllGroomerListReq.getPgId() != null) {
                 existingGroomer.setPgId(getAllGroomerListReq.getPgId());
             }
-            if (getAllGroomerListReq.getPgName() != null) {
+            if (!getAllGroomerListReq.getPgName().isBlank()) {
                 existingGroomer.setPgName(getAllGroomerListReq.getPgName());
             }
             if (getAllGroomerListReq.getPgGender() != null) {
@@ -216,13 +219,13 @@ public class PetGroomerServiceImp implements PetGroomerService {
             if (getAllGroomerListReq.getPgPic() != null) {
                 existingGroomer.setPgPic(getAllGroomerListReq.getPgPic());
             }
-            if (getAllGroomerListReq.getPgEmail() != null) {
+            if (!getAllGroomerListReq.getPgEmail().isBlank()) {
                 existingGroomer.setPgEmail(getAllGroomerListReq.getPgEmail());
             }
-            if (getAllGroomerListReq.getPgPh() != null) {
+            if (!getAllGroomerListReq.getPgPh().isBlank()) {
                 existingGroomer.setPgPh(getAllGroomerListReq.getPgPh());
             }
-            if (getAllGroomerListReq.getPgAddress() != null) {
+            if (!getAllGroomerListReq.getPgAddress().isBlank()) {
                 existingGroomer.setPgAddress(getAllGroomerListReq.getPgAddress());
             }
             if (getAllGroomerListReq.getPgBirthday() != null) {
