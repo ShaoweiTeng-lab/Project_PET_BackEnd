@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -220,15 +222,30 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
         return null;
     }
 
+    /*
+     *查詢使用者所有預約單ByUserId。
+     */
     @Override
-    public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId) {
-        String sql="SELECT PGA_NO,PGA_DATE,PGA_TIME,PGA_STATE,PGA_OPTION,PGA_NOTES,PGA_PHONE,USER_NAME,PG_NAME,PG_GENDER,PG_PIC\n" +
-                " FROM all_dog_cat.pet_groomer_appointment pga\n" +
-                " JOIN `user` ON pga.USER_ID = `user`.USER_ID\n" +
-                " JOIN pet_groomer ON pga.PG_ID =pet_groomer.PG_ID\n" +
-                " WHERE pga.USER_ID = :userId";
+    public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter) {
+        String sql = "SELECT PGA_NO, PGA_DATE, PGA_TIME, PGA_STATE, PGA_OPTION, PGA_NOTES, PGA_PHONE, USER_NAME, PG_NAME, PG_GENDER, PG_PIC " +
+                "FROM all_dog_cat.pet_groomer_appointment pga " +
+                "JOIN `user` ON pga.USER_ID = `user`.USER_ID " +
+                "JOIN pet_groomer ON pga.PG_ID = pet_groomer.PG_ID " +
+                "WHERE pga.USER_ID = :userId ";
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
+
+        //sort
+        String orderBy = "PGA_DATE";
+        if (userAppoQueryParameter.getSort() != null) {
+            orderBy += " " + userAppoQueryParameter.getSort(); // Add "ASC" or "DESC" to orderBy
+        }
+        sql += "ORDER BY " + orderBy + " ";
+
+        // Limit and Offset
+        sql += "LIMIT :limit OFFSET :offset ";
+        map.put("limit", userAppoQueryParameter.getLimit());
+        map.put("offset", userAppoQueryParameter.getOffset());
 
         List<AppointmentListForUser>  appListForUser= namedParameterJdbcTemplate.query(sql, map, new RowMapper<AppointmentListForUser>() {
             @Override
@@ -251,5 +268,19 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
         return appListForUser;
     }
 
+    /*
+     *查詢使用者所有預約單數量ByUserId 方便計算頁數。
+     */
+    @Override
+    public Integer countAppointmentByUserId(Integer userId) {
+        String sql = "SELECT COUNT(*) AS total_count " +
+                "FROM all_dog_cat.pet_groomer_appointment " +
+                "WHERE USER_ID = :userId";
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        Integer totalCount = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
+        return totalCount;
+    }
 }

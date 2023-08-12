@@ -196,14 +196,20 @@ public class PetGroomerServiceImp implements PetGroomerService {
             // 檢查是否存在該美容師
             PetGroomer existingGroomer = petGroomerDao.getPetGroomerByManId(getAllGroomerListReq.getManId());
 
-            if (existingGroomer == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到美容師ID為" + getAllGroomerListReq.getPgId() + "的美容師");
-            }
             if (getAllGroomerListReq.getPgId() == null) {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID尚未輸入");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID尚未輸入");
             }
             if (getAllGroomerListReq.getManId() == null) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "管理員ID尚未輸入");
+            }
+
+            if(existingGroomer==null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的美容師");
+            }
+
+            if (!getAllGroomerListReq.getManId().equals(existingGroomer.getManId()) ||
+                    !getAllGroomerListReq.getPgId().equals(existingGroomer.getPgId())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的美容師");
             }
 
             // 更新美容師信息

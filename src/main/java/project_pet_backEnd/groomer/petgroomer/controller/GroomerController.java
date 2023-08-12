@@ -65,15 +65,21 @@ public class GroomerController {
         pgInsertReq.setPgPh(pgPh);
         pgInsertReq.setPgAddress(pgAddress);
 
-        if(pgBirthday.isBlank()){
-            pgInsertReq.setPgBirthday(null);
-        }else{
+        if(pgBirthday==null ||pgBirthday.isBlank()){
+            try {
+                pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate("1900-01-01"));
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
+        }else {
             try {
                 pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
             } catch (ParseException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
             }
         }
+
+
         ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);
         return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
@@ -140,8 +146,12 @@ public class GroomerController {
         getAllGroomerListReq.setPgPh(pgPh);
         getAllGroomerListReq.setPgAddress(pgAddress);
 
-        if(pgBirthday.isBlank()){
-            getAllGroomerListReq.setPgBirthday(null);
+        if(pgBirthday==null ||pgBirthday.isBlank()){
+            try {
+                getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate("1900-01-01"));
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
         }else{
             try {
                 getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));//yyyy-mm-dd ->sql.date

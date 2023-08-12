@@ -4,18 +4,24 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
+import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
+import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
+import project_pet_backEnd.groomer.petgroomer.dto.orderby.PGOrderBy;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.userManager.dto.Sort;
+import project_pet_backEnd.utils.commonDto.Page;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -56,8 +62,22 @@ public class AppointmentController {
     /*
      * 前台 for User 查詢美容師預約
      */
+    @GetMapping("/user/appointmentList")
+    public  ResponseEntity<Page<List<AppoForUserListByUserIdRes>>> getAllAppointmentList(
+            @RequestAttribute(name = "userId") Integer userId,
+            @RequestParam(value = "orderBy",required = false, defaultValue = "PGA_DATE") UserAppoOrderBy orderBy,
+            @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
+            @RequestParam(value = "limit",defaultValue = "10")@Max(50) @Min(0) Integer limit,
+            @RequestParam(value = "offset",defaultValue = "0")@Min(0)Integer offset
+    ){
+        UserAppoQueryParameter userAppoQueryParameter = new UserAppoQueryParameter();
+        userAppoQueryParameter.setOrder(orderBy);
+        userAppoQueryParameter.setSort(sort);
+        userAppoQueryParameter.setLimit(limit);
+        userAppoQueryParameter.setOffset(offset);
+        Page<List<AppoForUserListByUserIdRes>> appointment = groomerAppointmentService.getUserAppointmentByUserId(userId,userAppoQueryParameter);
 
-
-
+        return ResponseEntity.status(200).body(appointment);
+    }
 
 }

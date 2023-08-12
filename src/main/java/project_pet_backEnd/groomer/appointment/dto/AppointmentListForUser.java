@@ -1,8 +1,6 @@
 package project_pet_backEnd.groomer.appointment.dto;
 
 import lombok.Data;
-
-import javax.validation.constraints.Size;
 import java.sql.Date;
 @Data
 public class AppointmentListForUser {

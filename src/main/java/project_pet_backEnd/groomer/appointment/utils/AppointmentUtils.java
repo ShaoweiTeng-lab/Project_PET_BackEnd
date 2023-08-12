@@ -69,4 +69,60 @@ public class AppointmentUtils {
         return java.sql.Date.valueOf(localDate);
     }
 
+
+    //將預約單上的時間轉為xx:00~xx:00
+    public static String convertTimeFrompgaTimeString(String daoTime) {
+        int hourSlot = -1;
+
+        for (int i = 0; i < daoTime.length(); i++) {
+            if (daoTime.charAt(i) == '1') {
+                hourSlot = i;
+                break;
+            }
+        }
+
+        String result = switch (hourSlot) {
+            case 0 -> "0:00 ~ 1:00";
+            case 1 -> "1:00 ~ 2:00";
+            case 2 -> "2:00 ~ 3:00";
+            case 3 -> "3:00 ~ 4:00";
+            case 4 -> "4:00 ~ 5:00";
+            case 5 -> "5:00 ~ 6:00";
+            case 6 -> "6:00 ~ 7:00";
+            case 7 -> "7:00 ~ 8:00";
+            case 8 -> "8:00 ~ 9:00";
+            case 9 -> "9:00 ~ 10:00";
+            case 10 -> "10:00 ~ 11:00";
+            case 11 -> "11:00 ~ 12:00";
+            case 12 -> "12:00 ~ 13:00";
+            case 13 -> "13:00 ~ 14:00";
+            case 14 -> "14:00 ~ 15:00";
+            case 15 -> "15:00 ~ 16:00";
+            case 16 -> "16:00 ~ 17:00";
+            case 17 -> "17:00 ~ 18:00";
+            case 18 -> "18:00 ~ 19:00";
+            case 19 -> "19:00 ~ 20:00";
+            case 20 -> "20:00 ~ 21:00";
+            case 21 -> "21:00 ~ 22:00";
+            case 22 -> "22:00 ~ 23:00";
+            case 23 -> "23:00 ~ 0:00";
+            default -> "Unknown Time Slot";
+        };
+
+        return result;
+    }
+    //將預約單上的選項轉為字串項目回傳
+    public static String convertServiceOption(int serviceOption) {
+        String result = switch (serviceOption) {
+            case 0 -> "狗狗洗澡";
+            case 1 -> "狗狗半手剪 (洗澡+剃毛)";
+            case 2 -> "狗狗全手剪(洗澡+全身手剪造型)";
+            case 3 -> "貓咪洗澡";
+            case 4 -> "貓咪大美容";
+            default -> "未知服務選項";
+        };
+
+        return result;
+    }
+
 }
