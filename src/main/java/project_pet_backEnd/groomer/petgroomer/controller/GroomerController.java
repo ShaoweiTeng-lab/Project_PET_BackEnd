@@ -61,9 +61,16 @@ public class GroomerController {
         pgInsertReq.setPgName(pgName);
         pgInsertReq.setPgPic(AllDogCatUtils.convertMultipartFileToByteArray(pgPic));
         pgInsertReq.setPgGender(pgGender);
-        pgInsertReq.setPgEmail();
+        pgInsertReq.setPgEmail(pgEmail);
+        pgInsertReq.setPgPh(pgPh);
+        pgInsertReq.setPgAddress(pgAddress);
+        try {
+            pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+        }
 
-        ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);//Y
+        ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);
         return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
     @PreAuthorize("hasAnyAuthority('美容師管理')")

@@ -64,26 +64,23 @@ public class PetGroomerServiceImp implements PetGroomerService {
             }
         }
         PetGroomer petGroomer = new PetGroomer();
-        petGroomer.setManId(pgInsertReq.getManId());
-        petGroomer.setPgName(pgInsertReq.getPgName());
-        String gender = pgInsertReq.getPgGender();
-        switch (gender) {
-            case "女性":
-                petGroomer.setPgGender(0);
-                break;
-            case "男性":
-                petGroomer.setPgGender(1);
-                break;
+        if(pgInsertReq.getManId()!=null){
+            petGroomer.setManId(pgInsertReq.getManId());
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，請提供管理員ID");
         }
-        petGroomer.setPgPic(AllDogCatUtils.base64Decode(pgInsertReq.getPgPic()));
-        petGroomer.setPgEmail(pgInsertReq.getPgEmail());
-        petGroomer.setPgPh(pgInsertReq.getPgPh());
-        petGroomer.setPgAddress(pgInsertReq.getPgAddress());
-        try {
-            petGroomer.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgInsertReq.getPgBirthday()));
-        } catch (ParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
-        }
+        if(pgInsertReq.getPgName()!=null)
+            petGroomer.setPgName(pgInsertReq.getPgName());
+        if(pgInsertReq.getPgGender()!=null)
+            petGroomer.setPgGender(pgInsertReq.getPgGender());
+        if(pgInsertReq.getPgPic()!=null)
+            petGroomer.setPgPic(pgInsertReq.getPgPic());
+        if(pgInsertReq.getPgEmail()!=null)
+            petGroomer.setPgEmail(pgInsertReq.getPgEmail());
+        if(pgInsertReq.getPgPh()!=null)
+            petGroomer.setPgPh(pgInsertReq.getPgPh());
+        if(pgInsertReq.getPgAddress()!=null)
+            petGroomer.setPgAddress(pgInsertReq.getPgAddress());
 
         try {
             petGroomerDao.insertGroomer(petGroomer);

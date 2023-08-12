@@ -16,7 +16,7 @@ public class PGInsertReq {
     private Integer manId;
     @NotBlank
     private String pgName;
-    private Integer pgGender;//String "男性","女性"
+    private Integer pgGender;
     @Lob
     private byte[] pgPic;//base64
     @Email
