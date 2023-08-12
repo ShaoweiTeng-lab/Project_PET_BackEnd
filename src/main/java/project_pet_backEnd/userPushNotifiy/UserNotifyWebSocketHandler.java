@@ -1,4 +1,4 @@
-package project_pet_backEnd.webSocketHandler.userNotify;
+package project_pet_backEnd.userPushNotifiy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,8 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      * */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
-
+        System.out.println((String) session.getAttributes().get("connect"));
+        System.out.println((String) session.getAttributes().get("sender"));
     }
 
     /**
