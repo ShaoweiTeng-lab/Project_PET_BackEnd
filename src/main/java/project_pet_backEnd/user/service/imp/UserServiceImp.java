@@ -44,7 +44,7 @@ public class UserServiceImp implements UserService {
     private  String renewPasswordUrl;
 
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
-        if(userDao.getUserByEmail(userSignUpRequest.getUserEmail())!=null)
+        if(userRepository.findByUserEmail(userSignUpRequest.getUserEmail())!=null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有人註冊此帳號");//確認有無此帳號
         if(!validatedCaptcha(userSignUpRequest.getUserEmail(),userSignUpRequest.getCaptcha()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"驗證碼異常，請從新確認驗證碼");//確認驗證碼
@@ -55,7 +55,7 @@ public class UserServiceImp implements UserService {
     }
 
     public ResultResponse localSignIn(UserLoginRequest userLoginRequest){
-        User validUser=userDao.getUserByEmail(userLoginRequest.getEmail());
+        User validUser=userRepository.findByUserEmail(userLoginRequest.getEmail());
         if(validUser==null || validUser.getIdentityProvider()!=IdentityProvider.Local)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號 或帳號屬於
         boolean isPasswordMatch  =bCryptPasswordEncoder.matches(userLoginRequest.getPassword(),validUser.getUserPassword());
@@ -78,7 +78,7 @@ public class UserServiceImp implements UserService {
 
     public ResultResponse generateCaptcha(String email){
         //先判斷有無註冊過
-        User user =userDao.getUserByEmail(email);
+        User user =userRepository.findByUserEmail(email);
         if(user!=null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"已有人註冊此信箱");
         String authCode=AllDogCatUtils.returnAuthCode();
@@ -99,7 +99,7 @@ public class UserServiceImp implements UserService {
 
     public UserProfileResponse getUserProfile(Integer userId){
 
-        User user=userDao.getUserById(userId);
+        User user=userRepository.findById(userId).orElse(null);
         if(user==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"找不到使用者");
         UserProfileResponse userProfileResponse =new UserProfileResponse();
@@ -180,7 +180,9 @@ public class UserServiceImp implements UserService {
         String email= redisTemplate.opsForValue().get(code);
         if(email==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"認證網址已經過期，請重新寄送驗證信!");
-        User user =userDao.getUserByEmail(email);
+        User user =userRepository.findByUserEmail(email);
+        if(user==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
         AdjustUserProfileRequest adjustUserProfileRequest =new AdjustUserProfileRequest();
         adjustUserProfileRequest.setUserPassword(newPassword);
         ResultResponse rs =adjustUserProfile(user.getUserId(), adjustUserProfileRequest);
@@ -191,7 +193,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public String checkUserIsSingUp(String email) {
-        User user =userDao.getUserByEmail(email);
+        User user =userRepository.findByUserEmail(email);
         if(user==null)
             return ("此帳號可以註冊");
         return ("此帳號已有人註冊");
