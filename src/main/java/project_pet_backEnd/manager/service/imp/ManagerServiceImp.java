@@ -48,7 +48,7 @@ public class ManagerServiceImp  implements ManagerService {
     public ResultResponse createManager(CreateManagerRequest createManagerRequest){
         Manager manager=managerDao.getManagerByAccount(createManagerRequest.getManagerAccount());
         if(manager!=null)
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"已有重複管理員");
 
         manager =new Manager();
         manager.setManagerAccount(createManagerRequest.getManagerAccount());
