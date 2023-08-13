@@ -17,6 +17,7 @@ import project_pet_backEnd.manager.dao.ManagerRepository;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.service.ManagerService;
+import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
 import project_pet_backEnd.user.dto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
@@ -39,6 +40,7 @@ public class ManagerServiceImp  implements ManagerService {
     private ManagerDao managerDao;
     @Autowired
     private ManagerRepository managerRepository;
+
     @Autowired
     private  ObjectMapper objectMapper;
     @Autowired
@@ -101,19 +103,32 @@ public class ManagerServiceImp  implements ManagerService {
     public  ResultResponse getManagerAuthoritiesById(Integer managerId){
         ResultResponse rs =new ResultResponse();
         Manager manager =managerRepository.findById(managerId).orElse(null);
-        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
+        // List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
+        List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
+        List<String> managerFunctions=managerRepository.findManagerFunctionsById(managerId);
+        managerFunctions.forEach(function ->{
+            ManagerAuthorities managerAuthorities=ManagerAuthorities.valueOf(function);
+            managerAuthoritiesList.add(managerAuthorities);
+        } );
         QueryManagerAuthorities queryManagerAuthorities=new QueryManagerAuthorities();
         queryManagerAuthorities.setManagerAccount(manager.getManagerAccount());
-        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthorities);
+        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthoritiesList);
         rs.setMessage(queryManagerAuthorities);
         return  rs;
     }
     public  ResultResponse getManagerAuthoritiesByAccount(String account){
         ResultResponse rs =new ResultResponse();
-        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
+        //List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
+        List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
+        List<String> managerFunctions=managerRepository.findManagerFunctionsByAccount(account);
+        managerFunctions.forEach(function ->{
+            ManagerAuthorities managerAuthorities=ManagerAuthorities.valueOf(function);
+            managerAuthoritiesList.add(managerAuthorities);
+        } );
+
         QueryManagerAuthorities queryManagerAuthorities=new QueryManagerAuthorities();
         queryManagerAuthorities.setManagerAccount(account);
-        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthorities);
+        queryManagerAuthorities.setManagerAuthoritiesList(managerAuthoritiesList);
         rs.setMessage(queryManagerAuthorities);
         return  rs;
     }
