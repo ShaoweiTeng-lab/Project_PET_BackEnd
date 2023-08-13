@@ -32,7 +32,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus httpStatus = ex.getStatus();
         ResultResponse rs = new ResultResponse();
         rs.setMessage(errorMessage);
-        System.out.println("執行異常");
         return new ResponseEntity<>(rs, httpStatus);
     }
 
