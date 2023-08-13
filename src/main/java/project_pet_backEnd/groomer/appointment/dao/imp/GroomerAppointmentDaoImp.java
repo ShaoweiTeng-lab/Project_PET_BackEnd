@@ -9,12 +9,10 @@ import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
-import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
-import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,6 +54,7 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
                 "PGA_PHONE = :pgaPhone " +
                 "WHERE PGA_NO = :pgaNo";
         MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pgaNo",petGroomerAppointment.getPgaNo());
         params.addValue("pgId", petGroomerAppointment.getPgId());
         params.addValue("userId", petGroomerAppointment.getUserId());
         params.addValue("pgaDate", petGroomerAppointment.getPgaDate());
@@ -282,5 +281,34 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
 
         Integer totalCount = namedParameterJdbcTemplate.queryForObject(sql, map, Integer.class);
         return totalCount;
+    }
+
+    @Override
+    public PetGroomerAppointment getAppointmentByPgaNo(Integer pgaNo) {
+        String sql ="SELECT PGA_NO,PG_ID,USER_ID,PGA_DATE,PGA_TIME,PGA_STATE,PGA_OPTION,PGA_NOTES,PGA_PHONE\n" +
+                    "FROM all_dog_cat.pet_groomer_appointment pga WHERE pga.PGA_NO= :pgaNo";
+        Map<String, Object> map = new HashMap<>();
+        map.put("pgaNo", pgaNo);
+        List<PetGroomerAppointment>  appListByPgaNo= namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomerAppointment>() {
+            @Override
+            public PetGroomerAppointment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PetGroomerAppointment appList = new  PetGroomerAppointment();
+                appList.setPgaNo(rs.getInt("PGA_NO"));
+                appList.setPgId(rs.getInt("PG_ID"));
+                appList.setUserId(rs.getInt("USER_ID"));
+                appList.setPgaDate(rs.getDate("PGA_DATE"));
+                appList.setPgaTime(rs.getString("PGA_TIME"));
+                appList.setPgaState(rs.getInt("PGA_STATE"));
+                appList.setPgaOption(rs.getInt("PGA_OPTION"));
+                appList.setPgaNotes(rs.getString("PGA_NOTES"));
+                appList.setPgaPhone(rs.getString("PGA_PHONE"));
+                return appList;
+            }
+        });
+
+        if(appListByPgaNo.size()>0){
+            return appListByPgaNo.get(0);
+        }
+        return null;
     }
 }
