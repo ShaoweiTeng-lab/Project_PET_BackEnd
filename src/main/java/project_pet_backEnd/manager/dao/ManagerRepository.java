@@ -25,5 +25,7 @@ public interface  ManagerRepository   extends JpaRepository<Manager, Integer> {
             "JOIN `function` f ON p.FUNCTION_ID = f.FUNCTION_ID " +
             "WHERE m.MANAGER_ACCOUNT = ?1", nativeQuery = true)
     List<String> findManagerFunctionsByAccount(String account);
+
+
 }
 
