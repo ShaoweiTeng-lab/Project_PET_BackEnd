@@ -12,7 +12,7 @@ public class Orders {
     private Byte ordStatus;
     private Byte ordPayStatus;
     private Byte ordPick;
-    private Timestamp ordCreate;
+    private Date ordCreate;
     private Date ordFinish;
     private Integer ordFee;
     private Integer totalAmount;
