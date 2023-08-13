@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.user.dto.UserAuthentication;
 import project_pet_backEnd.utils.UserJwtUtil;
 
@@ -39,10 +40,7 @@ public class UserJWTFilter extends OncePerRequestFilter {
         String  userId=null;
         Claims claims= userJwtUtil.validateToken(token);
         if(claims==null){
-            response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().println("認證異常");
+            filterChain.doFilter(request,response);
             return;
         }
         userId=claims.getSubject();

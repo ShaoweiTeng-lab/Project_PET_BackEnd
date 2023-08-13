@@ -75,7 +75,7 @@ public class ManagerController {
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @PutMapping("/manageManager")
-    public  ResponseEntity<?> adjustManager(@RequestBody @Valid AdjustManagerRequest adjustManagerRequest){
+    public  ResponseEntity<ResultResponse> adjustManager(@RequestBody @Valid AdjustManagerRequest adjustManagerRequest){
         ResultResponse rs =managerService.adjustManager(adjustManagerRequest);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -117,7 +117,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/manageManager/authorities")
-    public  ResponseEntity<?> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){
+    public  ResponseEntity<ResultResponse> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){
         ResultResponse rs =managerService.adjustPermission(adjustPermissionRequest);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -127,7 +127,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/profile")
-    public ResponseEntity<?> managerProfile( @ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId){
+    public ResponseEntity<ManagerProfileResponse> managerProfile( @ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId){
         ManagerProfileResponse rs =managerService.getProfile(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -136,11 +136,13 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/profile")
-    public  ResponseEntity<?> adjustProfile(@ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId,
+    public  ResponseEntity<ResultResponse> adjustProfile(@ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId,
                                             @RequestBody @Valid ManagerAdjustProfileRequest managerAdjustProfileRequest){
 
         managerService.adjustProfile(managerId,managerAdjustProfileRequest);
-        return  ResponseEntity.status(200).body("修改成功");
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改成功");
+        return  ResponseEntity.status(200).body(rs);
     }
 
 }

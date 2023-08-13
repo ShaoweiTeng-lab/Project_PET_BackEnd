@@ -49,15 +49,15 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
         switch (socketIdentity){
             case User :
                 String userId=uClaims.getSubject();
-                attributes.put("connect_userId",uClaims.getSubject());
+                attributes.put("connect","userId_"+uClaims.getSubject());
                 User user=userRepository.findById(Integer.parseInt(userId)).orElse(null);
                 if(user==null)
                     return false;
-                attributes.put("sender",user.getUserNickName());
+                attributes.put("sender",user.getUserName());
                 break;
             case Manager:
                 String managerId=uClaims.getSubject();
-                attributes.put("connect_managerId",mClaims.getSubject());
+                attributes.put("connect","managerId_"+mClaims.getSubject());
                 Manager manager=managerRepository.findById(Integer.parseInt(managerId)).orElse(null);
                 if(manager==null)
                     return false;
