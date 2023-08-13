@@ -48,10 +48,9 @@ public class ManagerServiceImp  implements ManagerService {
 
 
     public ResultResponse createManager(CreateManagerRequest createManagerRequest){
-        Manager manager=managerDao.getManagerByAccount(createManagerRequest.getManagerAccount());
+        Manager manager=managerRepository.findByManagerAccount(createManagerRequest.getManagerAccount());
         if(manager!=null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"已有重複管理員");
-
         manager =new Manager();
         manager.setManagerAccount(createManagerRequest.getManagerAccount());
         String encodePwd=bcryptEncoder.encode(createManagerRequest.getManagerPassword());
@@ -134,17 +133,12 @@ public class ManagerServiceImp  implements ManagerService {
     }
     @Transactional
     public ResultResponse adjustManager(AdjustManagerRequest adjustManagerRequest) {
-        Integer managerId =managerDao.getManagerIdByAccount(adjustManagerRequest.getOrgManagerAccount());
-        if (managerId==null)
+        Manager manager =managerRepository.findByManagerAccount(adjustManagerRequest.getOrgManagerAccount());
+        if(manager==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-        adjustManagerRequest.setManagerId(managerId);
-        if(adjustManagerRequest.getManagerPassword()==null){
-            String password= managerDao.getPasswordById(managerId);
-            adjustManagerRequest.setManagerPassword(password);
-        }
-        else
-            adjustManagerRequest.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
-        managerDao.updateManager(adjustManagerRequest);
+        if(adjustManagerRequest.getManagerPassword()!=null)
+            manager.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
+        managerRepository.save(manager);
         ResultResponse rs =new ResultResponse();
         rs.setMessage("修改完成");
         return  rs;
@@ -152,7 +146,6 @@ public class ManagerServiceImp  implements ManagerService {
 
     @Override
     public Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
-        //List<Manager> managerList =managerRepository.findAll();
         List<Manager> managerList =managerDao.getManagers(queryManagerParameter);
         List<ManagerQueryResponse> managerQueryResponseList=new ArrayList<>();
         for(int i =0 ;i<managerList.size();i++){
@@ -176,7 +169,6 @@ public class ManagerServiceImp  implements ManagerService {
         Manager manager=managerRepository.findById(managerId).orElse(null);
         if(manager==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-
         ManagerProfileResponse managerProfileResponse =new ManagerProfileResponse();
         managerProfileResponse.setManagerAccount(manager.getManagerAccount());
         managerProfileResponse.setManagerCreated(AllDogCatUtils.timestampToDateFormat(manager.getManagerCreated()));
