@@ -30,7 +30,7 @@ public class UserController {
     private OAuthService oAuthService;
     @ApiOperation("使用者登入")
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
+    public ResponseEntity<ResultResponse> login(@RequestBody UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
@@ -38,15 +38,18 @@ public class UserController {
 
     @ApiOperation("使用者註冊")
     @PostMapping("/signUp")
-    public ResponseEntity<?> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
-
+    public ResponseEntity<ResultResponse> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
+        ResultResponse rs =new ResultResponse();
         userService.localSignUp(userSignUpRequest);
-        return  ResponseEntity.status(HttpStatus.OK).body("註冊成功" );
+        rs.setMessage("註冊成功" );
+        return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
     @ApiOperation("確認使用者帳號是否註冊")
     @PostMapping("/checkAccountIsSignUp")
-    public  ResponseEntity<String> checkUserIsSingUp(@RequestParam @Email String email){
-        return  ResponseEntity.status(HttpStatus.OK).body(userService.checkUserIsSingUp(email));
+    public  ResponseEntity<ResultResponse> checkUserIsSingUp(@RequestParam @Email String email){
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(userService.checkUserIsSingUp(email));
+        return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     @ApiOperation("生成認證碼")
