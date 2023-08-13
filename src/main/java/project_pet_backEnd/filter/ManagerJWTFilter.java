@@ -43,16 +43,22 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
         }
         String  managerId=null;
         Claims claims= managerJwtUtil.validateToken(token);
-        if(claims==null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"認證異常");
+        if(claims==null){
+            filterChain.doFilter(request,response);
+            return;
+        }
         managerId=claims.getSubject();
         String managerLoginJson=redisTemplate.opsForValue().get("Manager_Login_"+managerId);
-        if(managerLoginJson==null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"您的權限已被修改，請重新登入");
+        if(managerLoginJson==null){
+            filterChain.doFilter(request,response);
+            return;
+        }
         ManagerDetailsImp managerDetail=null;
         managerDetail=objectMapper.readValue(managerLoginJson,ManagerDetailsImp.class);
-        if(managerDetail.getManager().getManagerState()==0)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"您已被停權");
+        if(managerDetail.getManager().getManagerState()==0){//被停權
+            filterChain.doFilter(request,response);
+            return;
+        }
         UsernamePasswordAuthenticationToken managerAuthentication =new UsernamePasswordAuthenticationToken(managerDetail,null,managerDetail.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(managerAuthentication);
         request.setAttribute("managerId",Integer.valueOf(managerId));

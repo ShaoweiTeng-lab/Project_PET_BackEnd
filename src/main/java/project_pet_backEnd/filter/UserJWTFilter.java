@@ -39,8 +39,10 @@ public class UserJWTFilter extends OncePerRequestFilter {
         }
         String  userId=null;
         Claims claims= userJwtUtil.validateToken(token);
-        if(claims==null)
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"認證異常");
+        if(claims==null){
+            filterChain.doFilter(request,response);
+            return;
+        }
         userId=claims.getSubject();
         UserAuthentication userAuthentication =new UserAuthentication();
         userAuthentication.setUserId(userId);

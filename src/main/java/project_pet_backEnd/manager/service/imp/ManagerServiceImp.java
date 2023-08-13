@@ -64,10 +64,10 @@ public class ManagerServiceImp  implements ManagerService {
         UsernamePasswordAuthenticationToken authenticationToken =new UsernamePasswordAuthenticationToken(managerLoginRequest.getManagerAccount(),managerLoginRequest.getManagerPassword());
         Authentication authentication= authenticationManager.authenticate(authenticationToken);
         if(Objects.isNull(authentication))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"認證錯誤");
         ManagerDetailsImp managerDetail = (ManagerDetailsImp) authentication.getPrincipal();
         if(managerDetail.getManager().getManagerState()==0)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);//被停權
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"您已被停權");
         String managerId =String.valueOf( managerDetail.getManager().getManagerId());
         ObjectMapper objectMapper =new ObjectMapper();
         String managerDetailJson=null;
