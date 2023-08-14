@@ -1,7 +1,7 @@
 package project_pet_backEnd.user.service;
 
 
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
 import project_pet_backEnd.user.dto.oAuth.OAuthResponse;
 import project_pet_backEnd.user.dto.oAuth.UserInfoResponse;

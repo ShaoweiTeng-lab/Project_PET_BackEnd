@@ -1,7 +1,7 @@
 package project_pet_backEnd.manager.service;
 
 import project_pet_backEnd.manager.dto.*;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.List;

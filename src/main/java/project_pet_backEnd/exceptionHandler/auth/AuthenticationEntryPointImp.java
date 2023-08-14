@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

@@ -16,7 +16,7 @@ import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUse
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.utils.commonDto.Page;
 
