@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
+import project_pet_backEnd.user.dto.ResultResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +19,10 @@ public class AccessDeniedHandlerImp  implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         //處理異常 授權失敗 回傳  json格式
-        OnErrorMessage msg =new OnErrorMessage();
-        msg.setMsg("授權異常");
-        String json =mapper.writeValueAsString(msg);
-        response.setStatus(403);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("您無此權限");
+        String json =mapper.writeValueAsString(rs);
+        response.setStatus(200);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         response.getWriter().print(json);

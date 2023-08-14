@@ -31,8 +31,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String errorMessage = ex.getReason();
         HttpStatus httpStatus = ex.getStatus();
         ResultResponse rs = new ResultResponse();
+        rs.setCode(httpStatus.value());//改成將異常code丟入訊息中
         rs.setMessage(errorMessage);
-        return new ResponseEntity<>(rs, httpStatus);
+        //return new ResponseEntity<>(rs, httpStatus);
+        return new ResponseEntity<>(rs, HttpStatus.OK);
     }
 
     /**
@@ -43,6 +45,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // 返回錯誤訊息和 400 Bad Request 狀態碼
         ResultResponse rs = new ResultResponse();
         rs.setMessage("使用者輸入異常");
-        return new ResponseEntity<>(rs, HttpStatus.BAD_REQUEST);
+        rs.setCode(400);//改成將異常code丟入訊息中
+        return new ResponseEntity<>(rs, HttpStatus.OK);
     }
 }

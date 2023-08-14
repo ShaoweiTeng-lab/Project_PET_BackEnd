@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import project_pet_backEnd.user.dto.ResultResponse;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +18,11 @@ public class AuthenticationEntryPointImp implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         //處理異常 認證失敗 回傳  json格式
-        OnErrorMessage msg =new OnErrorMessage();
-        msg.setMsg("認證異常");
-        String json =mapper.writeValueAsString(msg);
-        response.setStatus(401);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("認證異常");
+        rs.setCode(400);
+        String json =mapper.writeValueAsString(rs);
+        response.setStatus(200);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         response.getWriter().print(json);
