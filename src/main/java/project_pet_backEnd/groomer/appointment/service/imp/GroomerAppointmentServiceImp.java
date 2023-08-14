@@ -262,9 +262,14 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         }else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約不可修改!");
         }
-        //驗證想更改的預約時段是否為伺服器2小時前
-        if(AppointmentUtils.validateNewTimeSlot(existAppointment.getPgaDate(),appointmentModifyReq.getPgaTime())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您修改後的預約時段超出當前時間兩小時前。請重新預約!");
+        //驗證想更改的預約時段是否超過當前時間。
+        if(!AppointmentUtils.validateNewTimeSlot(appointmentModifyReq.getPgaTime())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您修改後的預約時段已過，請預約兩小時前時間段。");
+        }
+
+        String sourcePgaTimeV = AppointmentUtils.convertTimeStringToHourSlotString(appointmentModifyReq.getSourcePgaTime());
+        if(!sourcePgaTimeV.equals(existAppointment.getPgaTime())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您提供的預約單。與原先的預約時間不相同!");
         }
 
         //xx:xx~xx:xx  預約時段

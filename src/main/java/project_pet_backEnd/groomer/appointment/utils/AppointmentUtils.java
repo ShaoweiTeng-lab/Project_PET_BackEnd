@@ -144,24 +144,19 @@ public class AppointmentUtils {
         return true;
     }
     //傳入一個時間區間的字串(x:xx ~ x:xx)。
-    // 然後根據伺服器的亞洲台北時間來驗證傳入的時間是否在當日的兩小時前。如果是，則返回 true，否則返回 false
-    public static boolean validateNewTimeSlot(Date newAppointmentDate, String timeSlot) {
+    // 條件，只有在傳入的時間在當前伺服器時間兩小時後成功修改
+    public static boolean validateNewTimeSlot(String timeSlot) {
         // 步驟 1：抓取伺服器時間（亞洲台北時區）
         LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
 
-        // 步驟 2：取得傳進來的時間區間的開始和結束時間
-        String[] parts = timeSlot.split("~");
-        String startTime = parts[0].trim();
-        String endTime = parts[1].trim();
+        // 步驟 2：取得傳進來的時間區間的開始時間
+        String startTime = timeSlot.split("~")[0].trim();
 
         // 將傳進來的時間轉換為 LocalTime
         LocalTime startLocalTime = LocalTime.parse(startTime);
 
-        // 步驟 3：計算兩小時前的時間
-        LocalTime twoHoursAgo = serverDateTime.toLocalTime().minusHours(2);
-
-        // 比較開始時間是否在當前伺服器時間的兩小時前，或者傳入的日期是未來的日期
-        if (startLocalTime.isBefore(twoHoursAgo) || newAppointmentDate.toLocalDate().isAfter(serverDateTime.toLocalDate())) {
+        // 步驟 3：比較開始時間是否在當前伺服器時間之前，或者在當前伺服器時間兩小時後之前
+        if (startLocalTime.isBefore(serverDateTime.toLocalTime()) || startLocalTime.isBefore(serverDateTime.toLocalTime().plusHours(2))) {
             return false;
         }
 
