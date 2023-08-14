@@ -41,6 +41,10 @@ public interface GroomerAppointmentDao {
      */
     public List<PGAppointmentRes> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
 
+
+    //計算搜尋預約單總筆數
+    public Integer countAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
+
     /*
      * 根據寵物美容師編號獲取該美容師的預約記錄
      * @param pgId 寵物美容師編號

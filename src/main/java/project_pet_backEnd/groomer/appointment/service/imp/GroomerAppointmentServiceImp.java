@@ -9,14 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
+import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
-import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
-import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
-import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
+import project_pet_backEnd.groomer.appointment.dto.response.*;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
@@ -204,27 +203,27 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         List<AppointmentListForUser> appointmentForUserByUserId = groomerAppointmentDao.getAppointmentForUserByUserId(userId,userAppoQueryParameter);
 
         List<AppoForUserListByUserIdRes> resList = new ArrayList<>();
-        for(AppointmentListForUser daoDate:appointmentForUserByUserId){
+        for(AppointmentListForUser daoData:appointmentForUserByUserId){
             AppoForUserListByUserIdRes appoForUserListByUserIdRes = new AppoForUserListByUserIdRes();
-            appoForUserListByUserIdRes.setPgaNo(daoDate.getPgaNo());
-            appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoDate.getPgaDate()));
-            appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoDate.getPgaTime()));//轉為時間x:00 ~ x:00
+            appoForUserListByUserIdRes.setPgaNo(daoData.getPgaNo());
+            appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));
+            appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
 
-            switch (daoDate.getPgaState()) {
+            switch (daoData.getPgaState()) {
                 case 0 -> appoForUserListByUserIdRes.setPgaState("訂單未完成");
                 case 1 -> appoForUserListByUserIdRes.setPgaState("訂單已完成");
                 case 2 -> appoForUserListByUserIdRes.setPgaState("訂單已取消");
             }
-            appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoDate.getPgaOption()));//預約選項轉換字串
-            appoForUserListByUserIdRes.setPgaNotes(daoDate.getPgaNotes());
-            appoForUserListByUserIdRes.setPgaPhone(daoDate.getPgaPhone());
-            appoForUserListByUserIdRes.setUserName(daoDate.getUserName());
-            appoForUserListByUserIdRes.setPgName(daoDate.getPgName());
-            switch (daoDate.getPgGender()) {
+            appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
+            appoForUserListByUserIdRes.setPgaNotes(daoData.getPgaNotes());
+            appoForUserListByUserIdRes.setPgaPhone(daoData.getPgaPhone());
+            appoForUserListByUserIdRes.setUserName(daoData.getUserName());
+            appoForUserListByUserIdRes.setPgName(daoData.getPgName());
+            switch (daoData.getPgGender()) {
                 case 0 -> appoForUserListByUserIdRes.setPgGender("女性");
                 case 1 -> appoForUserListByUserIdRes.setPgGender("男性");
             }
-            appoForUserListByUserIdRes.setPgPic(AllDogCatUtils.base64Encode(daoDate.getPgPic()));
+            appoForUserListByUserIdRes.setPgPic(AllDogCatUtils.base64Encode(daoData.getPgPic()));
             resList.add(appoForUserListByUserIdRes);
         }
         Page page = new Page<>();
@@ -309,7 +308,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
                     pgsStateChars[i] = '2';
                 } else if (newTimeChars[i] == '1' && (pgsStateChars[i] == '1' || pgsStateChars[i] == '2')) {
                     // 預約時段為1，但班表狀態已經是1或2，拋出預約失敗異常
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "預約失敗，該時段不可預約!");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "更新預約失敗，該時段不可預約!");
                 }
             }
 
@@ -367,6 +366,40 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         return rs;
     }
 
+    //------美容師後台管理(預約管理)-------
+
+    //美容師管理員查詢預清單
+    public Page<List<AppoForMan>> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter) {
+        List<PGAppointmentRes> searchlist = groomerAppointmentDao.getAllAppointmentWithSearch(groomerAppointmentQueryParameter);
+
+        List<AppoForMan> resList = new ArrayList<>();
+
+        for(PGAppointmentRes daoData:searchlist){
+            AppoForMan appoForMan = new AppoForMan();
+            appoForMan.setPgaNo(daoData.getPgaNo());
+            appoForMan.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));
+            appoForMan.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
+
+        switch (daoData.getPgaState()) {
+            case 0 -> appoForMan.setPgaState("訂單未完成");
+            case 1 -> appoForMan.setPgaState("訂單已完成");
+            case 2 -> appoForMan.setPgaState("訂單已取消");
+        }
+            appoForMan.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
+            appoForMan.setPgaNotes(daoData.getPgaNotes());
+            appoForMan.setPgaPhone(daoData.getPgaPhone());
+            appoForMan.setUserName(daoData.getUserName());
+            appoForMan.setPgName(daoData.getPgName());
+        resList.add(appoForMan);
+        }
+        Page page = new Page<>();
+        page.setLimit(groomerAppointmentQueryParameter.getLimit());
+        page.setOffset(groomerAppointmentQueryParameter.getOffset());
+        Integer total = groomerAppointmentDao.countAllAppointmentWithSearch(groomerAppointmentQueryParameter);
+        page.setTotal(total);
+        page.setRs(resList);
+        return page;
+    }
 
 
 

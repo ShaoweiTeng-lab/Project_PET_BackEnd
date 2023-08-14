@@ -1,10 +1,12 @@
 package project_pet_backEnd.groomer.appointment.service;
 
+import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
+import project_pet_backEnd.groomer.appointment.dto.response.AppoForMan;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
@@ -44,5 +46,7 @@ public interface GroomerAppointmentService {
     ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq);
 
     ResultResponse AppointmentCompleteOrCancel (AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
+
+    public Page<List<AppoForMan>> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
 }
 
