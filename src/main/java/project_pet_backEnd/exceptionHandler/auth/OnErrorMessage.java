@@ -1,13 +1,9 @@
 package project_pet_backEnd.exceptionHandler.auth;
 
+import lombok.Data;
+
+@Data
 public class OnErrorMessage {
     private String msg;
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
+    private  int code=200;
 }

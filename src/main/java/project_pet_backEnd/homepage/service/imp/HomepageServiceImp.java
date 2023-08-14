@@ -7,7 +7,7 @@ import project_pet_backEnd.homepage.service.HomepageService;
 import project_pet_backEnd.homepage.vo.News;
 import project_pet_backEnd.homepage.vo.NewsPic;
 import project_pet_backEnd.homepage.vo.PicRot;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.util.ArrayList;

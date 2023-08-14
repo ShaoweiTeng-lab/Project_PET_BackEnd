@@ -15,11 +15,10 @@ import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,9 +212,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             }
 
             // 更新美容師信息
-            if (getAllGroomerListReq.getPgId() != null) {
-                existingGroomer.setPgId(getAllGroomerListReq.getPgId());
-            }
+
             if (!getAllGroomerListReq.getPgName().isBlank()) {
                 existingGroomer.setPgName(getAllGroomerListReq.getPgName());
             }

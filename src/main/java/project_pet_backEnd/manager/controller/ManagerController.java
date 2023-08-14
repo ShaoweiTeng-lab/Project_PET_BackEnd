@@ -7,10 +7,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.service.ManagerService;
-import project_pet_backEnd.manager.service.imp.ManagerServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import project_pet_backEnd.user.dto.AdjustUserProfileRequest;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
 import javax.validation.Valid;
@@ -29,7 +27,7 @@ public class ManagerController {
      * */
     @ApiOperation("管理員登入")
     @PostMapping("/login")
-    public ResponseEntity<ResultResponse> managerLogin(@RequestBody @Valid ManagerLoginRequest managerLoginRequest){
+    public ResponseEntity<ResultResponse<String>> managerLogin(@RequestBody @Valid ManagerLoginRequest managerLoginRequest){
         ResultResponse rs =managerService.managerLogin(managerLoginRequest);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -42,7 +40,7 @@ public class ManagerController {
     })
     @PostMapping("/manageManager")
     @PreAuthorize("hasAnyAuthority('管理員管理')")
-    public ResponseEntity<ResultResponse> createManager(@RequestBody @Valid CreateManagerRequest createManagerRequest){
+    public ResponseEntity<ResultResponse<String>> createManager(@RequestBody @Valid CreateManagerRequest createManagerRequest){
         ResultResponse rs =managerService.createManager(createManagerRequest);
         return  ResponseEntity.status(201).body(rs);
     }
@@ -55,14 +53,16 @@ public class ManagerController {
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager")
-    public  ResponseEntity<Page<List<ManagerQueryResponse>>> getManagers(@RequestParam(required = false) String search,
+    public  ResponseEntity<ResultResponse<Page<List<ManagerQueryResponse>>>> getManagers(@RequestParam(required = false) String search,
                                                                          @RequestParam(defaultValue = "5") Integer limit,
                                                                          @RequestParam(defaultValue = "0") Integer offset){
+        ResultResponse rs =new ResultResponse();
         QueryManagerParameter queryManagerParameter =new QueryManagerParameter();
         queryManagerParameter.setSearch(search);
         queryManagerParameter.setLimit(limit);
         queryManagerParameter.setOffset(offset);
-        Page<List<ManagerQueryResponse>> rs =managerService.getManagers(queryManagerParameter);
+        Page<List<ManagerQueryResponse>> page =managerService.getManagers(queryManagerParameter);
+        rs.setMessage(page);
         return  ResponseEntity.status(200).body(rs);
     }
 
@@ -75,7 +75,7 @@ public class ManagerController {
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @PutMapping("/manageManager")
-    public  ResponseEntity<ResultResponse> adjustManager(@RequestBody @Valid AdjustManagerRequest adjustManagerRequest){
+    public  ResponseEntity<ResultResponse<String>> adjustManager(@RequestBody @Valid AdjustManagerRequest adjustManagerRequest){
         ResultResponse rs =managerService.adjustManager(adjustManagerRequest);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -90,7 +90,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/authorities")
-    public  ResponseEntity<ResultResponse> getAuthorities(@ApiParam(hidden = true)@RequestAttribute Integer managerId){
+    public  ResponseEntity<ResultResponse<QueryManagerAuthorities>> getAuthorities(@ApiParam(hidden = true)@RequestAttribute Integer managerId){
         ResultResponse rs =managerService.getManagerAuthoritiesById(managerId);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -104,7 +104,7 @@ public class ManagerController {
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager/authorities")
-    public  ResponseEntity<ResultResponse> getManagerAuthoritiesByAccount(@RequestParam @NotBlank String managerAccount){
+    public  ResponseEntity<ResultResponse<QueryManagerAuthorities>> getManagerAuthoritiesByAccount(@RequestParam @NotBlank String managerAccount){
         ResultResponse rs =managerService.getManagerAuthoritiesByAccount(managerAccount);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -117,7 +117,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/manageManager/authorities")
-    public  ResponseEntity<ResultResponse> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){
+    public  ResponseEntity<ResultResponse<String>> adjustPermission(@RequestBody @Valid AdjustPermissionRequest adjustPermissionRequest){
         ResultResponse rs =managerService.adjustPermission(adjustPermissionRequest);
         return  ResponseEntity.status(200).body(rs);
     }
@@ -127,8 +127,10 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/profile")
-    public ResponseEntity<ManagerProfileResponse> managerProfile( @ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId){
-        ManagerProfileResponse rs =managerService.getProfile(managerId);
+    public ResponseEntity<ResultResponse< ManagerProfileResponse>> managerProfile( @ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId){
+        ManagerProfileResponse managerProfileResponse =managerService.getProfile(managerId);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(managerProfileResponse);
         return  ResponseEntity.status(200).body(rs);
     }
     @ApiOperation("修改自身密碼")
@@ -136,7 +138,7 @@ public class ManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/profile")
-    public  ResponseEntity<ResultResponse> adjustProfile(@ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId,
+    public  ResponseEntity<ResultResponse<String>> adjustProfile(@ApiParam(hidden = true) @RequestAttribute("managerId")Integer managerId,
                                             @RequestBody @Valid ManagerAdjustProfileRequest managerAdjustProfileRequest){
 
         managerService.adjustProfile(managerId,managerAdjustProfileRequest);

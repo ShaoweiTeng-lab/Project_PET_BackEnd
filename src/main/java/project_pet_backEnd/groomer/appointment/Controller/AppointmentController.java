@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
-import project_pet_backEnd.groomer.petgroomer.dto.orderby.PGOrderBy;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -78,6 +78,14 @@ public class AppointmentController {
         Page<List<AppoForUserListByUserIdRes>> appointment = groomerAppointmentService.getUserAppointmentByUserId(userId,userAppoQueryParameter);
 
         return ResponseEntity.status(200).body(appointment);
+    }
+    /*
+     * 前台 for User 修改預約單
+     */
+    @PostMapping("/user/modifyAppointment")
+    public ResponseEntity<?> modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
+        ResultResponse resultResponse = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
+        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
 
 }

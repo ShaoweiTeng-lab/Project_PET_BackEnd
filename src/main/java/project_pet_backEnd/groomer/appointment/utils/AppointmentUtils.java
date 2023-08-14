@@ -1,46 +1,12 @@
 package project_pet_backEnd.groomer.appointment.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
-import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
-import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
-import project_pet_backEnd.utils.AllDogCatUtils;
-
 import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.*;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
 
 public class AppointmentUtils {
 
     private  AppointmentUtils(){}
-
-    /*
-     * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 使用 包裝成DTO
-     */
-    public static List<PetGroomerScheduleForAppointment> convertToAppointmentScheduleList(List<PetGroomerSchedule> scheduleList) {
-        List<PetGroomerScheduleForAppointment> appointmentScheduleList = new ArrayList<>();
-        for (PetGroomerSchedule schedule : scheduleList) {
-            PetGroomerScheduleForAppointment appointmentSchedule = new PetGroomerScheduleForAppointment();
-            appointmentSchedule.setPgsId(schedule.getPgsId());
-            appointmentSchedule.setPgId(schedule.getPgId());
-            appointmentSchedule.setPgsDate(AllDogCatUtils.timestampToSqlDateFormat(schedule.getPgsDate()));
-            appointmentSchedule.setPgsState(schedule.getPgsState());
-            appointmentScheduleList.add(appointmentSchedule);
-        }
-        return appointmentScheduleList;
-    }
 
     /*
      * GroomerAppointmentServiceImp.getGroomerScheduleByPgId 方法用於生成亞洲/台北時區的當前伺服器時間
@@ -111,6 +77,20 @@ public class AppointmentUtils {
 
         return result;
     }
+
+    //時間範圍xx:00~xx:00字串轉換時間字串
+    public static String convertTimeStringToHourSlotString(String timeString) {
+        String[] parts = timeString.split("~");
+        String startTime = parts[0].trim();
+        String[] startTimeParts = startTime.split(":");
+        int startHour = Integer.parseInt(startTimeParts[0]);
+
+        StringBuilder hourSlotString = new StringBuilder("000000000000000000000000");
+        hourSlotString.setCharAt(startHour, '1');
+
+        return hourSlotString.toString();
+    }
+
     //將預約單上的選項轉為字串項目回傳
     public static String convertServiceOption(int serviceOption) {
         String result = switch (serviceOption) {
@@ -123,6 +103,79 @@ public class AppointmentUtils {
         };
 
         return result;
+    }
+    //將預約單上服務選項字串轉換回整數方法
+    public static int convertServiceOptionToInt(String serviceOptionString) {
+        int serviceOption = switch (serviceOptionString.trim()) {
+            case "狗狗洗澡" -> 0;
+            case "狗狗半手剪 (洗澡+剃毛)" -> 1;
+            case "狗狗全手剪(洗澡+全身手剪造型)" -> 2;
+            case "貓咪洗澡" -> 3;
+            case "貓咪大美容" -> 4;
+            default -> -1; // 或其他代表未知的數值
+        };
+        return serviceOption;
+    }
+
+    //已存在的預約單日期（參數）。已存在的預約單時間。
+    //比對預約日期是否在伺服器時間當天之前（含當天），並且比對預約時間是否在當日伺服器時間的兩小時前。
+    public static boolean validateAppointment(Date appointmentDate, String timeSlotStatus) {
+        // 步驟 2：抓取伺服器日期時間（亞洲台北時區）
+        LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+
+        // 步驟 3：比對預約日期是否在伺服器時間當天之前（含當天）
+        LocalDate serverDate = serverDateTime.toLocalDate();
+
+        // 將24個數字的字串轉換為 LocalTime
+        int startHour = timeSlotStatus.indexOf('1'); // 找到第一個 '1' 的位置，表示起始小時
+        LocalTime startTime = LocalTime.of(startHour, 0); // 假設每個時間槽長度為1小時
+
+        if (appointmentDate.toLocalDate().isEqual(serverDate)) {
+            // 如果預約日期是今天
+            if (serverDate.atTime(startTime).isBefore(serverDateTime.plusHours(2))) {
+                // 如果預約的時間在兩小時內，則不可修改
+                return false;
+            }
+        } else if (appointmentDate.toLocalDate().isBefore(serverDate)) {
+            // 如果預約日期已經過期，則不可修改
+            return false;
+        }
+
+        return true;
+    }
+    //傳入一個時間區間的字串(x:xx ~ x:xx)。
+    // 然後根據伺服器的亞洲台北時間來驗證傳入的時間是否在當日的兩小時前。如果是，則返回 true，否則返回 false
+    public static boolean validateNewTimeSlot(Date newAppointmentDate, String timeSlot) {
+        // 步驟 1：抓取伺服器時間（亞洲台北時區）
+        LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
+
+        // 步驟 2：取得傳進來的時間區間的開始和結束時間
+        String[] parts = timeSlot.split("~");
+        String startTime = parts[0].trim();
+        String endTime = parts[1].trim();
+
+        // 將傳進來的時間轉換為 LocalTime
+        LocalTime startLocalTime = LocalTime.parse(startTime);
+
+        // 步驟 3：計算兩小時前的時間
+        LocalTime twoHoursAgo = serverDateTime.toLocalTime().minusHours(2);
+
+        // 比較開始時間是否在當前伺服器時間的兩小時前，或者傳入的日期是未來的日期
+        if (startLocalTime.isBefore(twoHoursAgo) || newAppointmentDate.toLocalDate().isAfter(serverDateTime.toLocalDate())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    //遍歷預約單時間字串，找到第一個 '1' 的位置，並將其視為起始小時
+    public static int convertTimeStringToHourSlot(String timeSlot) {
+        for (int i = 0; i < timeSlot.length(); i++) {
+            if (timeSlot.charAt(i) == '1') {
+                return i;
+            }
+        }
+        return -1; // 若找不到 '1'，表示時間槽為無效的值
     }
 
 }
