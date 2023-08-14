@@ -260,7 +260,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             if (appointmentModifyReq.getPgaState() == 0) {
                 existAppointment.setPgaState(0);
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約不可修改!");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約為完成或取消狀態，不可修改!");
             }
         }
         if (appointmentModifyReq.getPgaTime() != null && !appointmentModifyReq.getPgaTime().isEmpty()) {
