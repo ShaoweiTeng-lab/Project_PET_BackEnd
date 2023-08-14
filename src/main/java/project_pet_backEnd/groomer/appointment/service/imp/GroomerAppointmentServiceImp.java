@@ -24,7 +24,7 @@ import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.appointment.utils.AppointmentUtils;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -34,9 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertServiceOption;
-import static project_pet_backEnd.groomer.appointment.utils.AppointmentUtils.convertTimeFrompgaTimeString;
 
 @Service
 public class GroomerAppointmentServiceImp implements GroomerAppointmentService {

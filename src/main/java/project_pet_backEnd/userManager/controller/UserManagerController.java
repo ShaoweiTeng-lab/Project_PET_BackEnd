@@ -5,13 +5,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.userManager.dto.UserOrderBy;
@@ -38,7 +38,7 @@ public class UserManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/users")
-    public ResponseEntity<Page<List<UserProfileResponse>>>  getUsers(
+    public ResultResponse<Page<List<UserProfileResponse>>>  getUsers(
             @RequestParam(required = false)String search,
             @RequestParam(required = false, defaultValue = "USER_CREATED") UserOrderBy orderBy,
             @RequestParam(required = false,defaultValue = "desc") Sort sort,
@@ -51,7 +51,9 @@ public class UserManagerController {
         userQueryParameter.setLimit(limit);
         userQueryParameter.setOffset(offset);
         Page<List<UserProfileResponse>> userList = userManagerService.getUsers(userQueryParameter);
-        return ResponseEntity.status(200).body(userList);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(userList);
+        return rs;
     }
 //    public  ResponseEntity<ResultResponse> adjustUser
 

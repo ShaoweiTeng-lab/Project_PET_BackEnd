@@ -12,6 +12,8 @@ import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
 import project_pet_backEnd.user.service.OAuthService;
 import project_pet_backEnd.user.service.UserService;
 import project_pet_backEnd.utils.AllDogCatUtils;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -30,7 +32,7 @@ public class UserController {
     private OAuthService oAuthService;
     @ApiOperation("使用者登入")
     @PostMapping("/login")
-    public ResponseEntity<ResultResponse> login(@RequestBody UserLoginRequest userLoginRequest){
+    public ResponseEntity<ResultResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
@@ -38,7 +40,7 @@ public class UserController {
 
     @ApiOperation("使用者註冊")
     @PostMapping("/signUp")
-    public ResponseEntity<ResultResponse> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
+    public ResponseEntity<ResultResponse<String>> localSignUp(@RequestBody  @Valid UserSignUpRequest userSignUpRequest){
         ResultResponse rs =new ResultResponse();
         userService.localSignUp(userSignUpRequest);
         rs.setMessage("註冊成功" );
@@ -46,7 +48,7 @@ public class UserController {
     }
     @ApiOperation("確認使用者帳號是否註冊")
     @PostMapping("/checkAccountIsSignUp")
-    public  ResponseEntity<ResultResponse> checkUserIsSingUp(@RequestParam @Email String email){
+    public  ResponseEntity<ResultResponse<String>> checkUserIsSingUp(@RequestParam @Email String email){
         ResultResponse rs =new ResultResponse();
         rs.setMessage(userService.checkUserIsSingUp(email));
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
@@ -54,7 +56,7 @@ public class UserController {
 
     @ApiOperation("生成認證碼")
     @PostMapping("/generateCaptcha")
-    public  ResponseEntity<ResultResponse> generateCaptcha(@RequestParam @Email String email){
+    public  ResponseEntity<ResultResponse<String>> generateCaptcha(@RequestParam @Email String email){
         ResultResponse rs =userService.generateCaptcha(email);
         return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
@@ -66,9 +68,11 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
+    public ResponseEntity<ResultResponse<UserProfileResponse>> getUserProfile(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
+        ResultResponse rs =new ResultResponse();
         UserProfileResponse userProfileResponse= userService.getUserProfile(userId);
-        return  ResponseEntity.status(HttpStatus.OK).body(userProfileResponse);
+        rs.setMessage(userProfileResponse);
+        return  ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
 
@@ -80,7 +84,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/profile")
-    public ResponseEntity<ResultResponse> adjustUserProfile(
+    public ResponseEntity<ResultResponse<String>> adjustUserProfile(
             @ApiParam(hidden = true)
             @RequestAttribute(name = "userId") Integer userId,
             @RequestParam(required = false) @NotBlank String userName,
@@ -112,7 +116,7 @@ public class UserController {
      * */
     @ApiOperation("google 登入 ")
     @PostMapping("/googleLogin")
-    public ResponseEntity<ResultResponse> googleLogin(@RequestBody OAuthRequest oAuthRequest){
+    public ResponseEntity<ResultResponse<String>> googleLogin(@RequestBody OAuthRequest oAuthRequest){
         ResultResponse rs =oAuthService.oAuthLogin(oAuthRequest);
         return ResponseEntity.ok().body(rs);
     }
@@ -123,7 +127,7 @@ public class UserController {
      * */
     @ApiOperation("使用者忘記密碼 ")
     @PostMapping("/forgetPassword")
-    public ResponseEntity<ResultResponse> forgetPassword(@RequestParam @Email String userEmail){
+    public ResponseEntity<ResultResponse<String>> forgetPassword(@RequestParam @Email String userEmail){
         ResultResponse rs= userService.forgetPassword(userEmail);
         return ResponseEntity.ok().body(rs);
     }
@@ -132,7 +136,7 @@ public class UserController {
      * */
     @ApiOperation("忘記密碼更改密碼 ")
     @PostMapping("/forgetPassword/renewPassword")
-    public ResponseEntity<ResultResponse> forgetRenewPassword(@RequestParam  String code,@RequestParam String newPassword){
+    public ResponseEntity<ResultResponse<String>> forgetRenewPassword(@RequestParam  String code,@RequestParam String newPassword){
         ResultResponse rs= userService.forgetRenewPassword(code,newPassword);
         return ResponseEntity.ok().body(rs);
     }

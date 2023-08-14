@@ -1,7 +1,7 @@
 package project_pet_backEnd.homepage.service;
 
 import project_pet_backEnd.homepage.vo.NewsPic;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
 

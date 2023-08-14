@@ -1,6 +1,5 @@
 package project_pet_backEnd.groomer.appointment.service;
 
-import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
@@ -8,7 +7,7 @@ import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForU
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
-import project_pet_backEnd.user.dto.ResultResponse;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.List;
