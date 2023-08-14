@@ -6,6 +6,7 @@ import java.sql.Date;
 @Data
 public class AppoForMan {
     private Integer pgaNo; // 預約單編號 (Primary Key, AUTO_INCREMENT)
+    private Integer pgId;
     private String pgaDate; // yyyy-dd-mm 預約日期
     private String pgaTime; // 轉為時間x:00 ~ x:00 預約時段 (0:無預約 / 1:預約時段, 預設: 0)
     private String pgaState; // 預約單狀態 (0:未完成 / 1:訂單已完成 / 2:取消, 預設: 0)

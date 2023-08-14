@@ -53,11 +53,13 @@ public class AppointmentController {
      * 前台 for User 預約美容師(新增預約單)
      */
     @PostMapping("/user/newAppointment")
-    public ResponseEntity<?> insertNewAppointmentAndUpdateSchedule(@RequestBody @Valid InsertAppointmentForUserReq insertAppointmentForUserReq){
+    public ResponseEntity<?> insertNewAppointmentAndUpdateSchedule(@RequestAttribute(name = "userId") Integer userId,
+                                                                   @RequestBody @Valid InsertAppointmentForUserReq insertAppointmentForUserReq){
         if (insertAppointmentForUserReq.getPgaState() == null) {
             insertAppointmentForUserReq.setPgaState(0);
         }
-        ResultResponse resultResponse = groomerAppointmentService.insertNewAppointmentAndUpdateSchedule(insertAppointmentForUserReq);
+
+        ResultResponse resultResponse = groomerAppointmentService.insertNewAppointmentAndUpdateSchedule(userId,insertAppointmentForUserReq);
         return ResponseEntity.status(200).body(resultResponse);
     }
 
@@ -101,7 +103,7 @@ public class AppointmentController {
     //查詢預約 for Man
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/allAppointmentSearch")
-    public ResponseEntity<?> AllAppointmentSearch(
+    public ResponseEntity<?> AllAppointmentSearchForMan(
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "PGA_NO") AppointmentOrderBy orderBy,
             @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
@@ -118,6 +120,18 @@ public class AppointmentController {
         return ResponseEntity.status(200).body(allAppointmentWithSearch);
     }
 
+    //修改預約  for Man
+    @PostMapping("/manager/modifyAppointment")
+    public ResponseEntity<?> modifyAppointmentForMan(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
+        ResultResponse rs = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+    //取消預約單or完成訂單。for Man
+    @PostMapping("/manager/CompleteOrCancel")
+    public ResponseEntity<?> appointmentCompleteOrCancelForMan(@RequestBody @Valid AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq){
+        ResultResponse resultResponse = groomerAppointmentService.AppointmentCompleteOrCancelForMan(appointmentCompleteOrCancelReq);
+        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+    }
 
 
 }
