@@ -11,6 +11,7 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
@@ -338,6 +339,34 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         //推播 <修改成功> 待補...
 
         rs.setMessage("預約單更新成功");
+        return rs;
+    }
+
+    //取消預約單or完成訂單。
+    @Override
+    public ResultResponse AppointmentCompleteOrCancel(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
+        PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentCompleteOrCancelReq.getPgaNo());
+        ResultResponse rs = new ResultResponse();
+        if(existAppointment==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到對應之預約單。");
+        }
+        if(1==existAppointment.getPgaState()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約單已完成，不可修改!");
+        }else if(2==existAppointment.getPgaState()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約單已取消，不可修改!");
+        }
+
+        if(1==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("預約單完成!");
+            return rs;
+        }else if(2==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("預約單成功取消!");
+            return rs;
+        }
         return rs;
     }
 

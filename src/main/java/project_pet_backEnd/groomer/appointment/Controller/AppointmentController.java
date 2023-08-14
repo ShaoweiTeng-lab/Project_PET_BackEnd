@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
@@ -85,6 +86,12 @@ public class AppointmentController {
     @PostMapping("/user/modifyAppointment")
     public ResponseEntity<?> modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
         ResultResponse resultResponse = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
+        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+    }
+    //完成或取消訂單 for User
+    @PostMapping("/user/CompleteOrCancel")
+    public ResponseEntity<?> appointmentCompleteOrCancel(@RequestBody @Valid AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq){
+        ResultResponse resultResponse = groomerAppointmentService.AppointmentCompleteOrCancel(appointmentCompleteOrCancelReq);
         return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
 
