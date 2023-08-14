@@ -9,15 +9,10 @@ import javax.validation.constraints.Size;
 public class InsertAppointmentForUserReq {
     @NotNull
     private Integer pgId; // 美容師編號 (Foreign Key)
-    @NotNull
-    private Integer userId; // 會員編號 (Foreign Key)
     @NotBlank
     private String pgaDate; // yyyy-mm-dd sql.Date 預約日期
     @NotBlank
-    @Size(min = 24, max = 24)
     private String pgaTime; // Varchar(24)  預約時段 (0:無預約 / 1:預約時段, 預設: 0)
-
-
     private Integer pgaState; // 預約單狀態 (0:未完成 / 1:完成訂單 / 2:取消, 預設: 0)
     @NotNull
     private Integer pgaOption; // 預約選項

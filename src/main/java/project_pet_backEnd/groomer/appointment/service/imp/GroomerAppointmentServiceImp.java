@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
+import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
-import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
-import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
-import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
+import project_pet_backEnd.groomer.appointment.dto.response.*;
 import project_pet_backEnd.groomer.appointment.service.GroomerAppointmentService;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
@@ -101,7 +101,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
         List<PetGroomerSchedule> petGroomerSchedulesList = petGroomerScheduleDao.getAllPgScheduleRecentMonth(pgId, currentServerDate);
         if (petGroomerSchedulesList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師之班表");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師一個月內班表!");
         }
 
         // 將PetGroomerSchedule轉換為PetGroomerScheduleForAppointment
@@ -123,7 +123,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
      */
     @Override
     @Transactional
-    public ResultResponse insertNewAppointmentAndUpdateSchedule(InsertAppointmentForUserReq insertAppointmentForUserReq) {
+    public ResultResponse insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertAppointmentForUserReq) {
         PetGroomerSchedule pgSchedule;
         //修改美容師班表
         try {
@@ -172,7 +172,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         PetGroomerAppointment petGroomerAppointment = new PetGroomerAppointment();
 
         petGroomerAppointment.setPgId(insertAppointmentForUserReq.getPgId());
-        petGroomerAppointment.setUserId(insertAppointmentForUserReq.getUserId());
+        petGroomerAppointment.setUserId(userId);
         try {
             petGroomerAppointment.setPgaDate(AllDogCatUtils.dateFormatToSqlDate(insertAppointmentForUserReq.getPgaDate()));
         } catch (ParseException e) {
@@ -190,8 +190,10 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         if (insertAppointmentForUserReq.getPgaNotes()!=null && !insertAppointmentForUserReq.getPgaNotes().isEmpty()){
             petGroomerAppointment.setPgaNotes(insertAppointmentForUserReq.getPgaNotes());
         }
+        if (insertAppointmentForUserReq.getPgaPhone().length() != 10) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機格式有誤，請重新輸入!");
+        }
         petGroomerAppointment.setPgaPhone(insertAppointmentForUserReq.getPgaPhone());
-
         groomerAppointmentDao.insertNewAppointment(petGroomerAppointment);
         ResultResponse rs = new ResultResponse();
         rs.setMessage("預約成功!");
@@ -203,27 +205,27 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         List<AppointmentListForUser> appointmentForUserByUserId = groomerAppointmentDao.getAppointmentForUserByUserId(userId,userAppoQueryParameter);
 
         List<AppoForUserListByUserIdRes> resList = new ArrayList<>();
-        for(AppointmentListForUser daoDate:appointmentForUserByUserId){
+        for(AppointmentListForUser daoData:appointmentForUserByUserId){
             AppoForUserListByUserIdRes appoForUserListByUserIdRes = new AppoForUserListByUserIdRes();
-            appoForUserListByUserIdRes.setPgaNo(daoDate.getPgaNo());
-            appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoDate.getPgaDate()));
-            appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoDate.getPgaTime()));//轉為時間x:00 ~ x:00
+            appoForUserListByUserIdRes.setPgaNo(daoData.getPgaNo());
+            appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));
+            appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
 
-            switch (daoDate.getPgaState()) {
+            switch (daoData.getPgaState()) {
                 case 0 -> appoForUserListByUserIdRes.setPgaState("訂單未完成");
                 case 1 -> appoForUserListByUserIdRes.setPgaState("訂單已完成");
                 case 2 -> appoForUserListByUserIdRes.setPgaState("訂單已取消");
             }
-            appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoDate.getPgaOption()));//預約選項轉換字串
-            appoForUserListByUserIdRes.setPgaNotes(daoDate.getPgaNotes());
-            appoForUserListByUserIdRes.setPgaPhone(daoDate.getPgaPhone());
-            appoForUserListByUserIdRes.setUserName(daoDate.getUserName());
-            appoForUserListByUserIdRes.setPgName(daoDate.getPgName());
-            switch (daoDate.getPgGender()) {
+            appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
+            appoForUserListByUserIdRes.setPgaNotes(daoData.getPgaNotes());
+            appoForUserListByUserIdRes.setPgaPhone(daoData.getPgaPhone());
+            appoForUserListByUserIdRes.setUserName(daoData.getUserName());
+            appoForUserListByUserIdRes.setPgName(daoData.getPgName());
+            switch (daoData.getPgGender()) {
                 case 0 -> appoForUserListByUserIdRes.setPgGender("女性");
                 case 1 -> appoForUserListByUserIdRes.setPgGender("男性");
             }
-            appoForUserListByUserIdRes.setPgPic(AllDogCatUtils.base64Encode(daoDate.getPgPic()));
+            appoForUserListByUserIdRes.setPgPic(AllDogCatUtils.base64Encode(daoData.getPgPic()));
             resList.add(appoForUserListByUserIdRes);
         }
         Page page = new Page<>();
@@ -244,7 +246,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
     @Transactional
     public ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq) {
         ResultResponse rs = new ResultResponse();
-
+        String sourcePgaTimeV=null;
         PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentModifyReq.getPgaNo());
         if(existAppointment==null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的預約單。");
@@ -254,14 +256,22 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "已於預約兩小時前或預約單已逾期。此預約不可修改!");
         }
         // 預約單狀態 (0:未完成 / 1:完成訂單 / 2:取消, 預設: 0)
-        if (appointmentModifyReq.getPgaState()==0) {
-            existAppointment.setPgaState(0);
-        }else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約不可修改!");
+        if (appointmentModifyReq.getPgaState() != null) {
+            if (appointmentModifyReq.getPgaState() == 0) {
+                existAppointment.setPgaState(0);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約不可修改!");
+            }
         }
-        //驗證想更改的預約時段是否為伺服器2小時前
-        if(AppointmentUtils.validateNewTimeSlot(existAppointment.getPgaDate(),appointmentModifyReq.getPgaTime())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您修改後的預約時段超出當前時間兩小時前。請重新預約!");
+        if (appointmentModifyReq.getPgaTime() != null && !appointmentModifyReq.getPgaTime().isEmpty()) {
+            sourcePgaTimeV = AppointmentUtils.convertTimeStringToHourSlotString(appointmentModifyReq.getSourcePgaTime());
+            //驗證想更改的預約時段是否超過當前時間。
+            if (!AppointmentUtils.validateNewTimeSlot(appointmentModifyReq.getPgaTime())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您修改後的預約時段已過，請預約兩小時前時間段。");
+            }
+            if(!sourcePgaTimeV.equals(existAppointment.getPgaTime())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您提供的預約單。與原先的預約時間不相同!");
+            }
         }
 
         //xx:xx~xx:xx  預約時段
@@ -303,7 +313,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
                     pgsStateChars[i] = '2';
                 } else if (newTimeChars[i] == '1' && (pgsStateChars[i] == '1' || pgsStateChars[i] == '2')) {
                     // 預約時段為1，但班表狀態已經是1或2，拋出預約失敗異常
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "預約失敗，該時段不可預約!");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "更新預約失敗，該時段不可預約!");
                 }
             }
 
@@ -333,7 +343,99 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         return rs;
     }
 
+    //取消預約單or完成訂單。for User
+    @Override
+    public ResultResponse AppointmentCompleteOrCancel(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
+        PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentCompleteOrCancelReq.getPgaNo());
+        ResultResponse rs = new ResultResponse();
+        if(existAppointment==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到對應之預約單。");
+        }
+        if(1==existAppointment.getPgaState()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約單已完成，不可修改!");
+        }else if(2==existAppointment.getPgaState()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約單已取消，不可修改!");
+        }
 
+        if(1==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("預約單完成!");
+            return rs;
+        }else if(2==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("預約單成功取消!");
+            return rs;
+        }
+        return rs;
+    }
+
+    //------美容師後台管理(預約管理)-------
+
+    //美容師管理員查詢預清單
+    public Page<List<AppoForMan>> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter) {
+        List<PGAppointmentRes> searchlist = groomerAppointmentDao.getAllAppointmentWithSearch(groomerAppointmentQueryParameter);
+
+        List<AppoForMan> resList = new ArrayList<>();
+
+        for(PGAppointmentRes daoData:searchlist){
+            AppoForMan appoForMan = new AppoForMan();
+            appoForMan.setPgaNo(daoData.getPgaNo());
+            appoForMan.setPgId(daoData.getPgId());
+            appoForMan.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));
+            appoForMan.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
+
+        switch (daoData.getPgaState()) {
+            case 0 -> appoForMan.setPgaState("訂單未完成");
+            case 1 -> appoForMan.setPgaState("訂單已完成");
+            case 2 -> appoForMan.setPgaState("訂單已取消");
+        }
+            appoForMan.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
+            appoForMan.setPgaNotes(daoData.getPgaNotes());
+            appoForMan.setPgaPhone(daoData.getPgaPhone());
+            appoForMan.setUserName(daoData.getUserName());
+            appoForMan.setPgName(daoData.getPgName());
+        resList.add(appoForMan);
+        }
+        Page page = new Page<>();
+        page.setLimit(groomerAppointmentQueryParameter.getLimit());
+        page.setOffset(groomerAppointmentQueryParameter.getOffset());
+        Integer total = groomerAppointmentDao.countAllAppointmentWithSearch(groomerAppointmentQueryParameter);
+        page.setTotal(total);
+        page.setRs(resList);
+        return page;
+    }
+
+    //取消預約單or完成訂單。for Man
+    @Override
+    public ResultResponse AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
+        PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentCompleteOrCancelReq.getPgaNo());
+        ResultResponse rs = new ResultResponse();
+        if(existAppointment==null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到對應之預約單。");
+        }
+
+
+        if(1==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("已將預約單修改為完成狀態!");
+            return rs;
+        }else if(2==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(appointmentCompleteOrCancelReq.getPgaState());
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("已將預約單修改為取消狀態!");
+            return rs;
+        }else if(0==appointmentCompleteOrCancelReq.getPgaState()){
+            existAppointment.setPgaState(0);
+            groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+            rs.setMessage("已將預約單修改為尚未完成狀態!");
+            return rs;
+        }
+        rs.setMessage("修改失敗!");
+        return rs;
+    }
 
 
     /*

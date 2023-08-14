@@ -1,11 +1,15 @@
 package project_pet_backEnd.groomer.appointment.service;
 
+import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
+import project_pet_backEnd.groomer.appointment.dto.response.AppoForMan;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
+import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.PetGroomerScheduleForAppointment;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
@@ -25,18 +29,21 @@ public interface GroomerAppointmentService {
      */
     List<PetGroomerScheduleForAppointment> getGroomerScheduleByPgId(Integer pgId);
 
-    /*
-     * 前台 for User 預約美容師(新增預約單)
-     */
-    ResultResponse insertNewAppointmentAndUpdateSchedule(InsertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
+    //前台 for User 預約美容師(新增預約單)
+    ResultResponse insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
 
-
-    /*
-     * 前台 for User 查詢美容師預約
-     */
+    //前台 for User 查詢美容師預約
     Page<List<AppoForUserListByUserIdRes>> getUserAppointmentByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter);
 
-
+    //修改預約單 for User
     ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq);
 
+    //取消或完成預約單 for User
+    ResultResponse AppointmentCompleteOrCancel (AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
+    //查詢預約單 for Man
+    public Page<List<AppoForMan>> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
+
+    //取消或完成預約單 for Man
+    public ResultResponse AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
 }
+
