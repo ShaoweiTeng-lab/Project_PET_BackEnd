@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoOrderBy;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
@@ -78,6 +79,14 @@ public class AppointmentController {
         Page<List<AppoForUserListByUserIdRes>> appointment = groomerAppointmentService.getUserAppointmentByUserId(userId,userAppoQueryParameter);
 
         return ResponseEntity.status(200).body(appointment);
+    }
+    /*
+     * 前台 for User 修改預約單
+     */
+    @PostMapping("/user/modifyAppointment")
+    public ResponseEntity<?> modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
+        ResultResponse resultResponse = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
+        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
 
 }

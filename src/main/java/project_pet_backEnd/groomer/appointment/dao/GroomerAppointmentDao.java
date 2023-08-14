@@ -63,5 +63,8 @@ public interface GroomerAppointmentDao {
      *查詢使用者所有預約單數量ByUserId 方便計算頁數。
      */
     public Integer countAppointmentByUserId(Integer userId);
-
+    /*
+     *修改預約單使用。查詢單一筆預約單返回。
+     */
+    public PetGroomerAppointment getAppointmentByPgaNo(Integer pgaNo);
 }

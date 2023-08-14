@@ -52,4 +52,5 @@ public interface PetGroomerScheduleDao {
      */
     public  PetGroomerSchedule getPgScheduleByPgIdAndPgsDate(Integer pgId, Date pgsDate);
 
+
 }

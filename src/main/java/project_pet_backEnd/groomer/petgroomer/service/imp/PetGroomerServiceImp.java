@@ -213,9 +213,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             }
 
             // 更新美容師信息
-            if (getAllGroomerListReq.getPgId() != null) {
-                existingGroomer.setPgId(getAllGroomerListReq.getPgId());
-            }
+
             if (!getAllGroomerListReq.getPgName().isBlank()) {
                 existingGroomer.setPgName(getAllGroomerListReq.getPgName());
             }

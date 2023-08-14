@@ -11,6 +11,7 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
 import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
 import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
 import project_pet_backEnd.groomer.appointment.dto.response.AppoForUserListByUserIdRes;
 import project_pet_backEnd.groomer.appointment.dto.response.GetAllGroomersForAppointmentRes;
@@ -238,6 +239,105 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
         return page;
     }
+
+    /*
+     * 修改預約 只有預約日期不可變更。 預約單/美容師ID不可為空
+     */
+    @Override
+    @Transactional
+    public ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq) {
+        ResultResponse rs = new ResultResponse();
+
+        PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentModifyReq.getPgaNo());
+        if(existAppointment==null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到對應的預約單。");
+        }
+        //比對預約日期是否在伺服器時間當天之前（含當天），並且比對預約時間是否在當日伺服器時間的兩小時前。
+        if(!AppointmentUtils.validateAppointment(existAppointment.getPgaDate(), existAppointment.getPgaTime())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "已於預約兩小時前或預約單已逾期。此預約不可修改!");
+        }
+        // 預約單狀態 (0:未完成 / 1:完成訂單 / 2:取消, 預設: 0)
+        if (appointmentModifyReq.getPgaState()==0) {
+            existAppointment.setPgaState(0);
+        }else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此預約不可修改!");
+        }
+        //驗證想更改的預約時段是否為伺服器2小時前
+        if(AppointmentUtils.validateNewTimeSlot(existAppointment.getPgaDate(),appointmentModifyReq.getPgaTime())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您修改後的預約時段超出當前時間兩小時前。請重新預約!");
+        }
+
+        //xx:xx~xx:xx  預約時段
+        if (appointmentModifyReq.getPgaTime() != null && !appointmentModifyReq.getPgaTime().isEmpty()) {
+            //轉換回傳(24)String
+            String sourcePgaTime = AppointmentUtils.convertTimeStringToHourSlotString(appointmentModifyReq.getSourcePgaTime());
+            String newTime = AppointmentUtils.convertTimeStringToHourSlotString(appointmentModifyReq.getPgaTime());
+
+            PetGroomerSchedule pgSchedule = petGroomerScheduleDao.getPgScheduleByPgIdAndPgsDate(existAppointment.getPgId(), existAppointment.getPgaDate());
+            if(pgSchedule==null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "修改預約失敗，請重新修改!");
+            }
+            // 修改掉原本班表
+            //VARCHAR(24) 1代表要預約時段(只會有1個1)
+            char[] sourcePgaTimeChars = sourcePgaTime.toCharArray();//預約時段
+            // 獲取班表狀態 VARCHAR(24) 班表狀態時段 0:可預約 1:不可預約 2:已預約
+            char[] pgsStateChars = pgSchedule.getPgsState().toCharArray();//班表狀態時段
+
+            // 檢查班表狀態和預約時段的對應是否匹配
+            for (int i = 0; i < pgsStateChars.length; i++) {
+                if (sourcePgaTimeChars[i] == '1' && pgsStateChars[i] == '2') {
+
+                    pgsStateChars[i] = '0';
+                } else if (sourcePgaTimeChars[i] == '1' && (pgsStateChars[i] == '1' || pgsStateChars[i] == '2')) {
+                    // 預約時段為1，但班表狀態已經是1或2，拋出預約失敗異常
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "修改預約失敗，該時段不可預約!");
+                }
+            }
+            String updatedPgsState1 = new String(pgsStateChars);
+            pgSchedule.setPgsState(updatedPgsState1);
+            petGroomerScheduleDao.updatePgScheduleByPgsId(pgSchedule);
+            // 修改新預約班表
+            //VARCHAR(24) 1代表要預約時段(只會有1個1)
+            char[] newTimeChars = newTime.toCharArray();//預約時段
+            // 檢查班表狀態和預約時段的對應是否匹配
+            for (int i = 0; i < pgsStateChars.length; i++) {
+                if (newTimeChars[i] == '1' && pgsStateChars[i] == '0') {
+
+                    pgsStateChars[i] = '2';
+                } else if (newTimeChars[i] == '1' && (pgsStateChars[i] == '1' || pgsStateChars[i] == '2')) {
+                    // 預約時段為1，但班表狀態已經是1或2，拋出預約失敗異常
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "預約失敗，該時段不可預約!");
+                }
+            }
+
+            String updatedPgsState2 = new String(pgsStateChars);
+            pgSchedule.setPgsState(updatedPgsState2);
+            petGroomerScheduleDao.updatePgScheduleByPgsId(pgSchedule);
+            existAppointment.setPgaTime(newTime);
+        }
+
+        //將預約方案字串轉為Int，用於修改。
+        if(appointmentModifyReq.getPgaOption() != null && !appointmentModifyReq.getPgaOption().isEmpty()){
+            int i = AppointmentUtils.convertServiceOptionToInt(appointmentModifyReq.getPgaOption());
+            existAppointment.setPgaOption(i);
+        }
+        if(appointmentModifyReq.getPgaNotes() != null && !appointmentModifyReq.getPgaNotes().isEmpty()){
+            existAppointment.setPgaNotes(appointmentModifyReq.getPgaNotes());
+        }
+        if(appointmentModifyReq.getPgaPhone() != null && !appointmentModifyReq.getPgaPhone().isEmpty()){
+            existAppointment.setPgaPhone(appointmentModifyReq.getPgaPhone());
+        }
+
+        groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
+
+        //推播 <修改成功> 待補...
+
+        rs.setMessage("預約單更新成功");
+        return rs;
+    }
+
+
+
 
     /*
     @Override
