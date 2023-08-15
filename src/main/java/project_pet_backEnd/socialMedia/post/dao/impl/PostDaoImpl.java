@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project_pet_backEnd.socialMedia.post.dao.PostDao;
+import project_pet_backEnd.socialMedia.post.dto.req.UpPostReq;
+import project_pet_backEnd.socialMedia.post.vo.Message;
 import project_pet_backEnd.socialMedia.post.vo.POST;
 
 import javax.persistence.EntityManager;
@@ -30,23 +32,61 @@ public class PostDaoImpl implements PostDao {
 
 
     @Override
-    public POST update(POST post) {
-        return null;
+    @Transactional
+    public POST update(int postId, UpPostReq upPostReq) {
+        // find post by id
+        POST post = entityManager.find(POST.class, postId);
+        //update content
+        post.setPostContent(upPostReq.getPostContent());
+        // save update
+        POST newPost = entityManager.merge(post);
+        return newPost;
     }
 
     @Override
-    public boolean delete(int postId) {
-        return false;
+    @Transactional
+    public void delete(int postId) {
+        POST post = entityManager.find(POST.class, postId);
+        if (post != null) {
+
+            //remove all association with post ---> remove message、
+            List<Message> messages = post.getMessage();
+
+
+            if (messages != null) {
+                for (Message message : messages) {
+                    int messageId = message.getMessageId();
+                    Message mes = entityManager.find(Message.class, messageId);
+                    entityManager.remove(mes);
+                }
+            }
+//            List<PostCol> postColLists = post.getPostColList();
+//            if (postColLists != null) {
+//                for (PostCol postCol : postColLists) {
+//                    Integer pcId = postCol.getPcId();
+//                    PostCol postColl = entityManager.find(PostCol.class, pcId);
+//                    entityManager.remove(postColl);
+//                }
+//            }
+
+            //delete the post
+            entityManager.remove(post);
+        }
     }
 
-    @Override
-    public boolean reportPost(int postId) {
-        return false;
-    }
 
     @Override
     public List<POST> getAllPosts() {
         TypedQuery<POST> postList = entityManager.createQuery("FROM POST", POST.class);
         return postList.getResultList();
+    }
+
+    @Override
+    public  POST getPostById(int postId) {
+        POST post = entityManager.find(POST.class, postId);
+        if (post != null) {
+            return post;
+        }
+        return null;
     }
 }

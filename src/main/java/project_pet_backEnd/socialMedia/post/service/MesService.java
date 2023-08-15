@@ -1,23 +1,25 @@
 package project_pet_backEnd.socialMedia.post.service;
 
 
+import project_pet_backEnd.socialMedia.post.dto.req.MesReq;
+import project_pet_backEnd.socialMedia.post.dto.req.UpMesReq;
 import project_pet_backEnd.socialMedia.post.vo.Message;
+
+import java.util.List;
+
 
 public interface MesService {
 
 
-    /**
-     * create message by postId
-     */
+    Message create(Integer userId, MesReq mesReq);
 
-    public Message create(Message message);
+    Message update(Integer userId, Integer mesId, UpMesReq upMesReq);
 
-    public boolean update(Message message);
+    void delete(Integer userId, int messageId);
 
-    public boolean delete(int messageId);
+    List<Message> findMessageByPostId(int postId);
 
-    public int checkMessageUserId(int messageId);
-
+    Message getMesById(int messageId);
 
 
 }

@@ -32,9 +32,12 @@ public class POST {
     @Column(name = "POST_STATUS")
     Integer postStatus;
 
-    @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "POST_ID")
     private List<Message> message;
 
+//    @OneToMany(cascade = {CascadeType.REMOVE})
+//    @JoinColumn(name = "PC_ID")
+//    private List<PostCol> postColList;
 
 }
