@@ -21,49 +21,16 @@ import java.util.Map;
 @Component
 public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     @Autowired
-    private UserJwtUtil userJwtUtil;
-    @Autowired
-    private ManagerJwtUtil managerJwtUtil;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ManagerRepository managerRepository;
+    private WebsocketIdentityValid websocketIdentityValid;
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
                                    Map<String, Object> attributes) throws Exception {
         HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
         String token=req.getParameter("access_token");
-        SocketIdentity socketIdentity=null;
-        if(token==null)
-            return false;
-        Claims uClaims= userJwtUtil.validateToken(token);
-        if(uClaims!=null)
-            socketIdentity=SocketIdentity.User;
-        Claims mClaims= managerJwtUtil.validateToken(token);
-        if(mClaims!=null)
-            socketIdentity=SocketIdentity.Manager;
-        if(socketIdentity==null)
-            return false;
-        switch (socketIdentity){
-            case User :
-                String userId=uClaims.getSubject();
-                attributes.put("connect","userId_"+uClaims.getSubject());
-                User user=userRepository.findById(Integer.parseInt(userId)).orElse(null);
-                if(user==null)
-                    return false;
-                attributes.put("sender",user.getUserName());
-                break;
-            case Manager:
-                String managerId=mClaims.getSubject();
-                attributes.put("connect","managerId_"+mClaims.getSubject());
-                Manager manager=managerRepository.findById(Integer.parseInt(managerId)).orElse(null);
-                if(manager==null)
-                    return false;
-                attributes.put("sender",manager.getManagerAccount());
-                break;
-        }
+        Map<String ,Object> attribute=websocketIdentityValid.validSession(token);
+        if(attribute==null)
+            return  false;
+        attributes.putAll(attribute);
         return  super.beforeHandshake(request, response, wsHandler, attributes);
     }
     @Override
