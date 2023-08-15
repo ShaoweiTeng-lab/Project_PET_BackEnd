@@ -1,4 +1,4 @@
-package project_pet_backEnd.userPushNotifiy;
+package project_pet_backEnd.userPushNotify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
