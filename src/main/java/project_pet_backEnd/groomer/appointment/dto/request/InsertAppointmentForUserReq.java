@@ -1,6 +1,8 @@
 package project_pet_backEnd.groomer.appointment.dto.request;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

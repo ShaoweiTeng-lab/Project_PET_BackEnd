@@ -186,6 +186,8 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
         if (insertAppointmentForUserReq.getPgaNotes()!=null && !insertAppointmentForUserReq.getPgaNotes().isEmpty()){
             petGroomerAppointment.setPgaNotes(insertAppointmentForUserReq.getPgaNotes());
+        }else if (insertAppointmentForUserReq.getPgaNotes()==null) {
+            petGroomerAppointment.setPgaNotes("無");
         }
         if (insertAppointmentForUserReq.getPgaPhone().length() != 10) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機格式有誤，請重新輸入!");

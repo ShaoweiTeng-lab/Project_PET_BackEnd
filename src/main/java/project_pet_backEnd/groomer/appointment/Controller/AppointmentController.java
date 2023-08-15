@@ -133,5 +133,27 @@ public class AppointmentController {
         return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
 
+    //----------------------------美容師個人管理------------------------------------------------------
+
+    //查詢預約 for PG
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @GetMapping("/manager/PgAppointmentSearch")
+    public ResponseEntity<?> AllAppointmentSearchForPg(
+            @RequestParam(value = "search",required = false) String search,
+            @RequestParam(value = "orderBy",required = false, defaultValue = "PGA_NO") AppointmentOrderBy orderBy,
+            @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
+            @RequestParam(value = "limit",defaultValue = "10")@Max(50) @Min(0) Integer limit,
+            @RequestParam(value = "offset",defaultValue = "0")@Min(0)Integer offset
+    ){
+        GroomerAppointmentQueryParameter groomerAppointmentQueryParameter = new GroomerAppointmentQueryParameter();
+        groomerAppointmentQueryParameter.setSearch(search);
+        groomerAppointmentQueryParameter.setOrder(orderBy);
+        groomerAppointmentQueryParameter.setSort(sort);
+        groomerAppointmentQueryParameter.setLimit(limit);
+        groomerAppointmentQueryParameter.setOffset(offset);
+        Page<List<AppoForMan>> allAppointmentSearch = groomerAppointmentService.getAllAppointmentWithSearch(groomerAppointmentQueryParameter);
+        return ResponseEntity.status(200).body(allAppointmentSearch);
+    }
+
 
 }
