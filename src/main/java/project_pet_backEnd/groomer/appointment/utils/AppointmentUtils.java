@@ -1,8 +1,13 @@
 package project_pet_backEnd.groomer.appointment.utils;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.sql.Date;
 import java.time.*;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AppointmentUtils {
 
@@ -80,6 +85,13 @@ public class AppointmentUtils {
 
     //時間範圍xx:00~xx:00字串轉換時間字串
     public static String convertTimeStringToHourSlotString(String timeString) {
+        String regex = "^(2[0-3]|1[0-9]|0?[0-9]):[0-5][0-9] ~ (2[0-3]|1[0-9]|0?[0-9]):[0-5][0-9]$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(timeString);
+
+        if(!matcher.matches()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您提供的預約時間格式有誤!");
+        }
         String[] parts = timeString.split("~");
         String startTime = parts[0].trim();
         String[] startTimeParts = startTime.split(":");

@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
-import project_pet_backEnd.groomer.appointment.dto.AppointmentListForUser;
-import project_pet_backEnd.groomer.appointment.dto.GroomerAppointmentQueryParameter;
-import project_pet_backEnd.groomer.appointment.dto.PageForAppointment;
-import project_pet_backEnd.groomer.appointment.dto.UserAppoQueryParameter;
+import project_pet_backEnd.groomer.appointment.dto.*;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
 import project_pet_backEnd.groomer.appointment.dto.request.InsertAppointmentForUserReq;
@@ -301,7 +298,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             //取得原先班表
             PetGroomerSchedule existPgSchedule = petGroomerScheduleDao.getPgScheduleByPgIdAndPgsDate(existAppointment.getPgId(), existAppointment.getPgaDate());
             if (existPgSchedule == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "修改預約失敗，請重新修改!");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "該時段沒有您預約的美容師。修改失敗，請重新修改!");
             }
             //修改預約時段
             //xx:xx~xx:xx  預約時段 轉換回傳(24)String
@@ -371,14 +368,14 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             //更新預約單
             groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
             //推播 <修改成功> 待補...
-            rs.setMessage("預約單更新成功");
+            rs.setMessage("預約單更新成功!");
             return rs;
         } else if ((appointmentModifyReq.getPgaNewDate() == null || appointmentModifyReq.getPgaNewDate().isEmpty()) &&
                 (appointmentModifyReq.getPgaNewTime() == null || appointmentModifyReq.getPgaNewTime().isEmpty())) {
             // 使用者兩者都沒有提供
             groomerAppointmentDao.updateAppointmentByPgaNo(existAppointment);
             //推播 <修改成功> 待補...
-            rs.setMessage("預約單更新成功");
+            rs.setMessage("預約單更新成功!");
             return rs;
         } else {
             // 使用者只提供了其中一邊（pgaNewDate 或 pgaNewTime）
