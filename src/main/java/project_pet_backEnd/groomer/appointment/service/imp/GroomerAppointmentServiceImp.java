@@ -287,6 +287,15 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
                 appointmentModifyReq.getPgaNewTime() != null && !appointmentModifyReq.getPgaNewTime().isEmpty()) {
             // 使用者兩邊都提供了 pgaNewDate 和 pgaNewTime
 
+            //驗證新的預約時間 yyyy ->sql.date
+            try {
+                if(!AppointmentUtils.validateNewTime(AllDogCatUtils.dateFormatToSqlDate(appointmentModifyReq.getPgaNewDate()))){
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "欲修改預約時間已逾期，請重新提供!");
+                }
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "欲修改預約時間格式有誤，請重新輸入!");
+            }
+
             //如下更新班表:
 
             //取得原先班表

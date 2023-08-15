@@ -132,8 +132,8 @@ public class AppointmentUtils {
         }
         return true;
     }
-    //傳入一個時間區間的字串(x:xx ~ x:xx)。
-    public static boolean validateNewTime(Date newTime) {
+
+    public static boolean validateNewTime(Date newDate) {
         // 步驟 1：抓取伺服器時間（亞洲台北時區）
         LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
 
@@ -141,7 +141,7 @@ public class AppointmentUtils {
         LocalDate serverDate = serverDateTime.toLocalDate();
 
         // 如果修改預約的日期是過往則不行。
-        if (newTime.toLocalDate().isBefore(serverDate)) {
+        if (newDate.toLocalDate().isBefore(serverDate)) {
             return false;
         }
         return true;
