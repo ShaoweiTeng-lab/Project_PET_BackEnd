@@ -179,6 +179,27 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
         return pgAppointmentResList;
     }
 
+    ////計算搜尋預約單總筆數
+    @Override
+    public Integer countAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter) {
+        String sql = "SELECT COUNT(*) " +
+                "FROM PET_GROOMER_APPOINTMENT a " +
+                "LEFT JOIN PET_GROOMER g ON a.PG_ID = g.PG_ID " +
+                "LEFT JOIN USER u ON a.USER_ID = u.USER_ID " +
+                "WHERE 1=1 ";
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+
+        if (groomerAppointmentQueryParameter.getSearch() != null) {
+            sql += "AND (u.USER_NAME LIKE :search OR a.USER_ID LIKE :search OR g.PG_ID LIKE :search OR g.PG_NAME LIKE :search " +
+                    "OR a.PGA_NO LIKE :search OR a.PGA_DATE LIKE :search OR a.PGA_STATE LIKE :search) ";
+            params.addValue("search", "%" + groomerAppointmentQueryParameter.getSearch() + "%");
+        }
+
+        Integer totalCount = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return totalCount;
+    }
+
     @Override
     public List<PetGroomerAppointment> getAllAppointmentByPgId(Integer pgId) {
         String sql = "SELECT PGA_NO, PG_ID, USER_ID, PGA_DATE, PGA_TIME, PGA_STATE, PGA_OPTION, PGA_NOTES, PGA_PHONE " +
