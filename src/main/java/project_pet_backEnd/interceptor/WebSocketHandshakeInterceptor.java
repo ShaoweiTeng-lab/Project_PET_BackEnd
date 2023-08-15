@@ -56,7 +56,7 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
                 attributes.put("sender",user.getUserName());
                 break;
             case Manager:
-                String managerId=uClaims.getSubject();
+                String managerId=mClaims.getSubject();
                 attributes.put("connect","managerId_"+mClaims.getSubject());
                 Manager manager=managerRepository.findById(Integer.parseInt(managerId)).orElse(null);
                 if(manager==null)
