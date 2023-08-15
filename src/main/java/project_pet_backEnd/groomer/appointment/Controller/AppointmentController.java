@@ -88,8 +88,8 @@ public class AppointmentController {
      */
     @PostMapping("/user/modifyAppointment")
     public ResponseEntity<?> modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
-        ResultResponse resultResponse = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
-        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+        ResultResponse rs = groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
     //完成或取消訂單 for User
     @PostMapping("/user/CompleteOrCancel")
