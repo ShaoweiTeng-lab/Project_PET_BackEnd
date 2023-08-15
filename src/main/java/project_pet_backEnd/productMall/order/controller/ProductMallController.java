@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,42 +30,54 @@ public class ProductMallController {
 
     //新增訂單 Spring Jpa寫法
     @PostMapping("/insertOrders")
-    public ResponseEntity<String> insertOrders(@RequestBody OrdersRes ordersRes){
+    public ResponseEntity<ResultResponse<String>> insertOrders(@RequestBody OrdersRes ordersRes){
+        ResultResponse rs = new ResultResponse();
         ordersService.insertOrders(ordersRes);
-        return ResponseEntity.status(HttpStatus.OK).body("新增成功!");
+        rs.setMessage("新增成功");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     //刪除單一訂單By OrdId --練習
     @DeleteMapping("/deleteOrdersByOrdNo/{ordNo}")
-    public ResponseEntity<String> deleteByOrdNo(@PathVariable Integer ordNo){
+    public ResponseEntity<ResultResponse<String>> deleteByOrdNo(@PathVariable Integer ordNo){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage("刪除訂單成功!");
         ordersService.deleteOrdersByOrdNo(ordNo);
-        return ResponseEntity.status(HttpStatus.OK).body("刪除訂單成功!");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     //修改單一訂單By OrdId --練習
     @PutMapping("/updateOrdersByOrdNo/{ordNo}")
-    public  ResponseEntity<String> updateByOrdNo(@PathVariable Integer ordNo,
+    public  ResponseEntity<ResultResponse<String>> updateByOrdNo(@PathVariable Integer ordNo,
                                                  @RequestBody OrdersRes ordersRes){
         ordersService.updateOrdersByOrdNo(ordNo,ordersRes);
-        return ResponseEntity.status(HttpStatus.OK).body("修改訂單成功!");
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage("修改訂單成功!");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     //查詢全部訂單
     @GetMapping("/selectAllOrders")
-    public ResponseEntity<List<Orders>> selectAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.selectAll());
+    public ResponseEntity<ResultResponse<List<Orders>>> selectAll(){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.selectAll());
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     //查詢該使用者全部訂單
     @GetMapping("/selectByUserId/{userId}")
-    public ResponseEntity<List<Orders>> selectByUserId(@PathVariable Integer userId){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.findByUserId(userId));
+    public ResponseEntity<ResultResponse<List<Orders>>> selectByUserId(@PathVariable Integer userId){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.findByUserId(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
     //練習:查詢By 訂單編號ORD_NO
     @GetMapping("/orders/select/{ordNo}")
-    public ResponseEntity<OrdersRes> selectByOrdNo(@PathVariable Integer ordNo){
-        return ResponseEntity.status(HttpStatus.OK).body(ordersService.getByOrdNo(ordNo));
+    public ResponseEntity<ResultResponse<OrdersRes>> selectByOrdNo(@PathVariable Integer ordNo){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.getByOrdNo(ordNo));
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
 }

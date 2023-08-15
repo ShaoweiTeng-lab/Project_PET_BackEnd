@@ -1,19 +1,15 @@
 package project_pet_backEnd.productMall.order.service.imp;
 
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.productMall.order.controller.OrderExceptionHandler;
 import project_pet_backEnd.productMall.order.dao.OrdersDao;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +24,9 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public void insertOrders(OrdersRes ordersRes) {
         Orders orders = new Orders();
+        if(ordersRes.getUserId() == null || ordersRes.getUserId() < 0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此使用者");
+        }
         orders.setUserId(ordersRes.getUserId());
         orders.setOrdStatus(ordersRes.getOrdStatus());
         orders.setOrdPayStatus(ordersRes.getOrdPayStatus());
@@ -48,9 +47,9 @@ public class OrdersServiceImpl implements OrdersService {
     public void deleteOrdersByOrdNo(Integer ordNo) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if (ordNo < 0){
-            throw new RuntimeException("請輸入正確訂單編號");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確訂單編號");
         }else if(orders == null){
-            throw new RuntimeException("無此訂單,請重新輸入正確訂單編號");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此訂單,請重新輸入正確訂單編號");
         }else{
             ordersRepository.deleteById(ordNo);
         }
@@ -61,10 +60,10 @@ public class OrdersServiceImpl implements OrdersService {
     public void updateOrdersByOrdNo(Integer ordNo, OrdersRes ordersRes) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if(orders == null){
-            throw new RuntimeException("無此訂單,請重新輸入正確訂單編號");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此訂單,請重新輸入正確訂單編號");
         }
         if(ordNo < 0){
-            throw new RuntimeException("請輸入正確的訂單編號");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }
         orders.setUserId(ordersRes.getUserId());
         orders.setOrdStatus(ordersRes.getOrdStatus());
@@ -84,7 +83,7 @@ public class OrdersServiceImpl implements OrdersService {
     public OrdersRes getByOrdNo(Integer ordNo) {
         if(ordNo < 0){
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確訂單編號");
-            throw new RuntimeException("請輸入正確的訂單編號");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }else{
             return ordersDao.getByOrdNo(ordNo);
         }
@@ -94,7 +93,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public List<Orders> findByUserId(Integer userId) {
         if(userId == null){
-           throw new RuntimeException("請輸入正確會員編號");
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確會員編號");
         }else if(userId != null){
             return ordersRepository.findByUserId(userId);
         }
