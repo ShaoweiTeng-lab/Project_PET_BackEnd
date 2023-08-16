@@ -82,7 +82,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public OrdersRes getByOrdNo(Integer ordNo) {
         if(ordNo < 0){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確訂單編號");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }else{
             return ordersDao.getByOrdNo(ordNo);
