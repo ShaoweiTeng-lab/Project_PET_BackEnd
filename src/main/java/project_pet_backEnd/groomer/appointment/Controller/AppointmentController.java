@@ -41,9 +41,9 @@ public class AppointmentController {
     public ResultResponse<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> getAllGroomersListForAppointmentPageForUser(@ApiParam(hidden = true)@RequestAttribute(name = "userId") Integer userId){
         PageForAppointment<List<GetAllGroomersForAppointmentRes>> allGroomersForAppointment = groomerAppointmentService.getAllGroomersForAppointment(userId);
 
-        ResultResponse<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> rs =new ResultResponse<>();
-        rs.setMessage(allGroomersForAppointment);
-        return rs;
+        ResultResponse<PageForAppointment<List<GetAllGroomersForAppointmentRes>>> resultResponse =new ResultResponse<>();
+        resultResponse.setMessage(allGroomersForAppointment);
+        return resultResponse;
     }
     /*
      * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表
@@ -52,9 +52,9 @@ public class AppointmentController {
     public ResultResponse<List<PetGroomerScheduleForAppointment>> chosePgGetScheduleByPgIdForUser(@RequestParam Integer pgId){
         List<PetGroomerScheduleForAppointment> groomerScheduleByPgId = groomerAppointmentService.getGroomerScheduleByPgId(pgId);
 
-        ResultResponse<List<PetGroomerScheduleForAppointment>> rs =new ResultResponse<>();
-        rs.setMessage(groomerScheduleByPgId);
-        return rs;
+        ResultResponse<List<PetGroomerScheduleForAppointment>> resultResponse =new ResultResponse<>();
+        resultResponse.setMessage(groomerScheduleByPgId);
+        return resultResponse;
     }
     /*
      * 前台 for User 預約美容師(新增預約單)
@@ -87,9 +87,9 @@ public class AppointmentController {
         userAppoQueryParameter.setOffset(offset);
         Page<List<AppoForUserListByUserIdRes>> appointment = groomerAppointmentService.getUserAppointmentByUserId(userId,userAppoQueryParameter);
 
-        ResultResponse<Page<List<AppoForUserListByUserIdRes>>> rs =new ResultResponse<>();
-        rs.setMessage(appointment);
-        return rs;
+        ResultResponse<Page<List<AppoForUserListByUserIdRes>>> resultResponse =new ResultResponse<>();
+        resultResponse.setMessage(appointment);
+        return resultResponse;
     }
     /*
      * 前台 for User 修改預約單
