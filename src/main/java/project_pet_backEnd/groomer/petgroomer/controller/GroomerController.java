@@ -209,6 +209,12 @@ public class GroomerController {
     }
 
 
+    //查詢美容師自己，用於修改
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @PostMapping("/manager/pg")
+    public GetAllGroomerListSortRes gg(@RequestAttribute(name = "managerId") Integer managerId){
+        return null;
+    }
 
 
 }
