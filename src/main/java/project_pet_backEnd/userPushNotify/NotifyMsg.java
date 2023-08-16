@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class NotifyMsg {
     private  NotifyType notifyType;
+    private  String image;
     private  String msg;
     public  NotifyMsg(){};
 }

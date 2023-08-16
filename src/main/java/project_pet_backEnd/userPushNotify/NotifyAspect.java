@@ -17,7 +17,7 @@ public class NotifyAspect {
              NotifyType notifyType =NotifyType.Groomer;
              NotifyMsg notifyMsg =new NotifyMsg(notifyType,"有美容師發布作品了，趕快來看看喔~");
              System.out.println("執行 groomerUpdateNotify");
-             //userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+             userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
     //To Do: 商城 新增商品時
     @After("execution(* project_pet_backEnd.user.controller.*.*(..))")
