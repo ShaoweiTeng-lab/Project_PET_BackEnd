@@ -15,7 +15,7 @@ public class NotifyAspect {
     @After("execution(* project_pet_backEnd.user.controller.*.*(..))")
     public  void  groomerUpdateNotify() throws Exception {
              NotifyType notifyType =NotifyType.Groomer;
-             NotifyMsg notifyMsg =new NotifyMsg(notifyType,"有美容師發布作品了，趕快來看看喔~");
+             NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"有美容師發布作品了，趕快來看看喔~");
              System.out.println("執行 groomerUpdateNotify");
              userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
@@ -23,7 +23,7 @@ public class NotifyAspect {
     @After("execution(* project_pet_backEnd.user.controller.*.*(..))")
     public  void  productUpdateNotify() throws Exception {
         NotifyType notifyType =NotifyType.Store;
-        NotifyMsg notifyMsg =new NotifyMsg(notifyType,"商城有新的商品，趕快來看看喔~");
+        NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
         System.out.println("執行 groomerUpdateNotify");
         userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
