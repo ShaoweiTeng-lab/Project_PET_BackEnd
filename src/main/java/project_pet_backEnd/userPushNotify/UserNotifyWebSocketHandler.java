@@ -1,9 +1,11 @@
 package project_pet_backEnd.userPushNotify;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -24,28 +26,38 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      * */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        String connector=(String) session.getAttributes().get("connect");
         System.out.println((String) session.getAttributes().get("connect"));
-        System.out.println((String) session.getAttributes().get("sender"));
+        //System.out.println((String) session.getAttributes().get("sender"));
+        sessionMap.put(connector,session);
     }
+    //推播消息
+    public  void  publicNotifyMsg(NotifyMsg notifyMsg) throws Exception {
+        String message= objectMapper.writeValueAsString(notifyMsg);
+        for (String key : sessionMap.keySet()) {
+            TextMessage textMessage = new TextMessage(message);
+            sessionMap.get(key).sendMessage(textMessage);
+        }
 
+    }
     /**
      * 處理收到的WebSocket消息
      * */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        System.out.println(message.getPayload().toString());
-        SocketMsg socketMsg;
-        socketMsg=objectMapper.readValue(message.getPayload().toString(),SocketMsg.class);
-        String channel=socketMsg.getChanel();
-        String sessionKey= session.getId()+"_"+channel;//使用_隔開存入map
-        System.out.println(sessionKey);
-        if(!sessionMap.containsKey(sessionKey)||sessionMap.get(sessionKey).isOpen())
-            sessionMap.put(sessionKey, session);
-        System.out.println(sessionMap.size());
-        for (String key : sessionMap.keySet()) {//將訊息傳遞給所有chanel相同的session
-            if( key.contains(channel) &&sessionMap.get(key).isOpen())
-                sessionMap.get(key).sendMessage(message);
-        }
+//        System.out.println(message.getPayload().toString());
+//        SocketMsg socketMsg;
+//        socketMsg=objectMapper.readValue(message.getPayload().toString(),SocketMsg.class);
+//        String channel=socketMsg.getChanel();
+//        String sessionKey= session.getId()+"_"+channel;//使用_隔開存入map
+//        System.out.println(sessionKey);
+//        if(!sessionMap.containsKey(sessionKey)||sessionMap.get(sessionKey).isOpen())
+//            sessionMap.put(sessionKey, session);
+//        System.out.println(sessionMap.size());
+//        for (String key : sessionMap.keySet()) {//將訊息傳遞給所有chanel相同的session
+//            if( key.contains(channel) &&sessionMap.get(key).isOpen())
+//                sessionMap.get(key).sendMessage(message);
+//        }
     }
 
     /**
