@@ -5,6 +5,7 @@ import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
+import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -14,11 +15,11 @@ public interface PetGroomerService {
     /**
      * get管理員權限為美容師個人管理 的 管理員List 。給新增美容師使用 for 管理員
      */
-    ResultResponse getManagerByFunctionId(Integer functionId);
+    ResultResponse<List<ManagerGetByFunctionIdRes>> getManagerByFunctionId(Integer functionId);
     /**
      * 新增美容師 for 管理員
      */
-    ResultResponse insertGroomer(PGInsertReq pgInsertReq);
+    ResultResponse<String> insertGroomer(PGInsertReq pgInsertReq);
 
     /**
      * 取得美容師列表 for 管理員
@@ -31,15 +32,6 @@ public interface PetGroomerService {
     /**
      * 修改美容師資料 by Id for 管理員
      */
-    ResultResponse updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq);
-    /**
-     * 取得美容師列表 By PgName for 管理員
-     */
+    ResultResponse<String> updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq);
 
-//    ResultResponse getGroomerByPgNameForMan(String PgName);
-
-    /**
-     * 取得美容師列表 By PgName for User
-     */
-//    ResultResponse getGroomerByPgNameForUser (String PgName);
 }

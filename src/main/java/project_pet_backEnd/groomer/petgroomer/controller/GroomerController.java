@@ -14,6 +14,7 @@ import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
+import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.userManager.dto.Sort;
@@ -36,9 +37,8 @@ public class GroomerController {
     PetGroomerService petGroomerService;
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/insertNewGroomer")
-    public ResponseEntity<?> insertNewGroomer(){
-        ResultResponse managerByFunctionIdList = petGroomerService.getManagerByFunctionId(3);
-        return  ResponseEntity.status(HttpStatus.OK).body(managerByFunctionIdList );
+    public ResultResponse<List<ManagerGetByFunctionIdRes>> insertNewGroomer(){
+        return petGroomerService.getManagerByFunctionId(3);
     }
 
     /*
@@ -46,7 +46,7 @@ public class GroomerController {
      */
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/commitInsertNewGroomer")
-    public ResponseEntity<?> commitInsertNewGroomer(
+    public ResultResponse<String> commitInsertNewGroomer(
             @RequestParam @NotNull Integer manId,
             @RequestParam @NotBlank String pgName,
             @RequestParam Integer pgGender,
@@ -79,13 +79,11 @@ public class GroomerController {
             }
         }
 
-
-        ResultResponse resultResponse = petGroomerService.insertGroomer(pgInsertReq);
-        return  ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+        return petGroomerService.insertGroomer(pgInsertReq);
     }
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/getAllGroomerListSort")
-    public ResponseEntity<Page<List<GetAllGroomerListSortRes>>> getAllGroomersForMan(
+    public ResultResponse<Page<List<GetAllGroomerListSortRes>>> getAllGroomersForMan(
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "NUM_APPOINTMENTS") PGOrderBy orderBy,
             @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
@@ -99,11 +97,14 @@ public class GroomerController {
         pgQueryParameter.setLimit(limit);
         pgQueryParameter.setOffset(offset);
         Page<List<GetAllGroomerListSortRes>> petGroomerServiceAllGroomersForMan = petGroomerService.getAllGroomersForMan(pgQueryParameter);
-        return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForMan);
+
+        ResultResponse<Page<List<GetAllGroomerListSortRes>>> rs =new ResultResponse<>();
+        rs.setMessage(petGroomerServiceAllGroomersForMan);
+        return rs;
     }
 
     @GetMapping("/customer/getAllGroomerListSort")
-    public ResponseEntity<Page<List<GetAllGroomerListSortResForUser>>> getAllGroomersForUser(
+    public ResultResponse<Page<List<GetAllGroomerListSortResForUser>>> getAllGroomersForUser(
             @RequestParam(value = "search",required = false) String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "NUM_APPOINTMENTS") PGOrderBy orderBy,
             @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
@@ -117,7 +118,10 @@ public class GroomerController {
         pgQueryParameter.setLimit(limit);
         pgQueryParameter.setOffset(offset);
         Page<List<GetAllGroomerListSortResForUser>> petGroomerServiceAllGroomersForUser = petGroomerService.getAllGroomersForUser(pgQueryParameter);
-        return ResponseEntity.status(200).body(petGroomerServiceAllGroomersForUser);
+
+        ResultResponse<Page<List<GetAllGroomerListSortResForUser>>> rs =new ResultResponse<>();
+        rs.setMessage(petGroomerServiceAllGroomersForUser);
+        return rs;
     }
 
     /*
@@ -125,7 +129,7 @@ public class GroomerController {
      */
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/updateGroomerByPgId")
-    public ResponseEntity<?> updateGroomerByPgIdForMan(
+    public ResultResponse<String> updateGroomerByPgIdForMan(
             @RequestParam @NotNull Integer pgId,
             @RequestParam @NotNull Integer manId,
             @RequestParam(required = false) String pgName,
@@ -159,8 +163,52 @@ public class GroomerController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
             }
         }
-        ResultResponse rs = petGroomerService.updateGroomerByIdForMan(getAllGroomerListReq);
-        return ResponseEntity.status(200).body(rs);
+        return petGroomerService.updateGroomerByIdForMan(getAllGroomerListReq);
     }
+
+    //-----美容師個人管理-----
+
+    // 用From表單送請求進來 QueryString
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @PostMapping("/manager/updateGroomerForPg")
+    public ResultResponse<String> updateGroomerByPgIdForPg(
+            @RequestParam @NotNull Integer pgId,
+            @RequestParam @NotNull Integer manId,
+            @RequestParam(required = false) String pgName,
+            @RequestParam(required = false) Integer pgGender,
+            @RequestParam(required = false) MultipartFile pgPic,
+            @RequestParam(required = false) String pgEmail,
+            @RequestParam(required = false) String pgPh,
+            @RequestParam(required = false) String pgAddress,
+            @RequestParam(required = false) String pgBirthday
+    ){
+        GetAllGroomerListReq getAllGroomerListReq = new GetAllGroomerListReq();
+        getAllGroomerListReq.setPgId(pgId);
+        getAllGroomerListReq.setManId(manId);
+        getAllGroomerListReq.setPgName(pgName);
+        getAllGroomerListReq.setPgGender(pgGender);
+        getAllGroomerListReq.setPgPic(AllDogCatUtils.convertMultipartFileToByteArray(pgPic));
+        getAllGroomerListReq.setPgEmail(pgEmail);
+        getAllGroomerListReq.setPgPh(pgPh);
+        getAllGroomerListReq.setPgAddress(pgAddress);
+
+        if(pgBirthday==null ||pgBirthday.isBlank()){
+            try {
+                getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate("1900-01-01"));
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
+        }else{
+            try {
+                getAllGroomerListReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));//yyyy-mm-dd ->sql.date
+            } catch (ParseException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            }
+        }
+        return petGroomerService.updateGroomerByIdForMan(getAllGroomerListReq);
+    }
+
+
+
 
 }

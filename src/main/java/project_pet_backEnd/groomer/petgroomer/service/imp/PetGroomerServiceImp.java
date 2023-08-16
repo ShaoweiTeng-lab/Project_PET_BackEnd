@@ -36,8 +36,8 @@ public class PetGroomerServiceImp implements PetGroomerService {
      * @throws ResponseStatusException 如果找不到擁有美容師個人管理權限之管理員，將拋出此異常
      */
     @Override
-    public ResultResponse getManagerByFunctionId(Integer functionId) {
-        ResultResponse rs = new ResultResponse();
+    public ResultResponse<List<ManagerGetByFunctionIdRes>> getManagerByFunctionId(Integer functionId) {
+        ResultResponse<List<ManagerGetByFunctionIdRes>> rs = new ResultResponse<>();
         List<ManagerGetByFunctionIdRes> managerGetByFunctionIdResList = petGroomerDao.getManagerByFunctionId(functionId);
         if (managerGetByFunctionIdResList.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到擁有美容師個人管理權限之管理員，請至權限管理新增擁有美容師個人管理權限之管理員");
@@ -54,7 +54,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
      * @throws ResponseStatusException 如果新增失敗，將拋出此異常
      */
     @Override
-    public ResultResponse insertGroomer(PGInsertReq pgInsertReq) {
+    public ResultResponse<String> insertGroomer(PGInsertReq pgInsertReq) {
 
         List<PetGroomer> allGroomer = petGroomerDao.getAllGroomer();
         for (PetGroomer existingGroomer : allGroomer) {
@@ -86,7 +86,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
 
         try {
             petGroomerDao.insertGroomer(petGroomer);
-            ResultResponse rs = new ResultResponse();
+            ResultResponse<String> rs = new ResultResponse<>();
             rs.setMessage("新增美容師成功");
             return rs;
         } catch (DataAccessException e) {
@@ -189,8 +189,8 @@ public class PetGroomerServiceImp implements PetGroomerService {
      * @throws ResponseStatusException 如果找不到指定ID的美容師，將拋出此異常
      */
     @Override
-    public ResultResponse updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq) {
-        ResultResponse rs = new ResultResponse();
+    public ResultResponse<String> updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq) {
+        ResultResponse<String> rs = new ResultResponse<>();
         try {
             // 檢查是否存在該美容師
             PetGroomer existingGroomer = petGroomerDao.getPetGroomerByManId(getAllGroomerListReq.getManId());
