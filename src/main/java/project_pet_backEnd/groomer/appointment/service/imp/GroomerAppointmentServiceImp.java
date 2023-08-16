@@ -120,7 +120,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
      */
     @Override
     @Transactional
-    public ResultResponse insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertAppointmentForUserReq) {
+    public ResultResponse<String> insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertAppointmentForUserReq) {
         PetGroomerSchedule pgSchedule;
         //修改美容師班表
         try {
@@ -194,7 +194,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         }
         petGroomerAppointment.setPgaPhone(insertAppointmentForUserReq.getPgaPhone());
         groomerAppointmentDao.insertNewAppointment(petGroomerAppointment);
-        ResultResponse rs = new ResultResponse();
+        ResultResponse<String> rs = new ResultResponse<>();
         rs.setMessage("預約成功!");
         return rs;
     }
@@ -244,8 +244,8 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
      */
     @Override
     @Transactional
-    public ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq) {
-        ResultResponse rs = new ResultResponse();
+    public ResultResponse<String> modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq) {
+        ResultResponse<String> rs = new ResultResponse<>();
         String sourcePgaTimeV=null;
         PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentModifyReq.getPgaNo());
         if(existAppointment==null){
@@ -387,9 +387,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
     //取消預約單or完成訂單。for User
     @Override
-    public ResultResponse AppointmentCompleteOrCancel(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
+    public ResultResponse<String> AppointmentCompleteOrCancel(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
         PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentCompleteOrCancelReq.getPgaNo());
-        ResultResponse rs = new ResultResponse();
+        ResultResponse<String> rs = new ResultResponse<>();
         if(existAppointment==null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到對應之預約單。");
         }
@@ -451,9 +451,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
     //取消預約單or完成訂單。for Man
     @Override
-    public ResultResponse AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
+    public ResultResponse<String> AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq) {
         PetGroomerAppointment existAppointment = groomerAppointmentDao.getAppointmentByPgaNo(appointmentCompleteOrCancelReq.getPgaNo());
-        ResultResponse rs = new ResultResponse();
+        ResultResponse<String> rs = new ResultResponse<>();
         if(existAppointment==null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到對應之預約單。");
         }
