@@ -66,9 +66,8 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        //todo 當連線後先去 redis 拿取對應的 history
+        // 當連線後先去 redis 拿對應的 history
         String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
-        Set<String> notifyKeys = getKeys("userNotify:*");
         Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
         for(long i =0; i<lsSize;i++){
             if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
