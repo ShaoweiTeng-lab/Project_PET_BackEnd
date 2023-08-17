@@ -1,19 +1,21 @@
 package project_pet_backEnd.productMall.productsmanage.dao;
 
 
-import project_pet_backEnd.productMall.productsmanage.dto.CreateProductRequest;
+import project_pet_backEnd.productMall.productsmanage.dto.CreateProductInfoRequest;
 import project_pet_backEnd.productMall.productsmanage.dto.ProductListResponse;
-import project_pet_backEnd.productMall.productsmanage.vo.Product;
+import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
 
 import java.util.List;
 
 public interface ProductsManageDao {
 
+    void insertProduct(CreateProductInfoRequest createProductInfoRequest);
+
     /*
      * [新增商品]
      * @param createProductRequest 要新增的商品
      */
-    public void insertProduct(CreateProductRequest createProductRequest);
+    public void insertProduct(CreateProductInfoRequest createProductInfoRequest, ProductPic productPic);
 
     /*
      * 根據商品編號 [編輯(更新)商品資訊]

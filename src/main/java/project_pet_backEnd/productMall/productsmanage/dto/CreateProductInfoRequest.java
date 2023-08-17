@@ -1,6 +1,5 @@
 package project_pet_backEnd.productMall.productsmanage.dto;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Max;
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data        // 新增商品
-public class CreateProductRequest {
+public class CreateProductInfoRequest {
 
     @NotNull
     @NotBlank
@@ -25,8 +24,5 @@ public class CreateProductRequest {
     private Integer pdStatus;  //商品上下架狀態 DEFAULT 1 ,'0:上架中  1:已下架 此為商品上架狀態'
 
     private String pdDescription; //商品說明 VARCHAR(500)
-
-    @ApiModelProperty
-    private byte[] pdPic; //商品照片 LONGBLOB
 
 }

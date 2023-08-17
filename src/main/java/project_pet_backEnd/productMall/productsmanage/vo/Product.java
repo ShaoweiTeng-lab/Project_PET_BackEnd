@@ -4,9 +4,11 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
-@Data //自動讓所有屬性擁有getter/setter
+import java.util.List;
+
+@Data
 @Entity
-@Table(name = "Product")
+@Table(name = "PRODUCT")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +24,10 @@ public class Product {
     @Column(name = "PD_FORMAT")
     private String pdFormat;
 
-    @Column(name = "PD_DESCRIPTION", columnDefinition = "TIMESTAMP  DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "PD_DESCRIPTION")
     private String pdDescription;
 
-    @Column(name = "PD_UPDATE")
+    @Column(name = "PD_UPDATE" , columnDefinition = "TIMESTAMP  DEFAULT CURRENT_TIMESTAMP")
     private Date pdUpdate; //sql.date
 
     @Column(name = "PD_STATUS")
@@ -36,4 +38,7 @@ public class Product {
 
     @Column(name = "PD_SCORE")
     private Integer pdScore;
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductPic> pics;
 }
