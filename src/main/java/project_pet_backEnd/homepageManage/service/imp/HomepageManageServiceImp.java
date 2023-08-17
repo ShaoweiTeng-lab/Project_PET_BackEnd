@@ -1,6 +1,7 @@
 package project_pet_backEnd.homepageManage.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import project_pet_backEnd.homepage.vo.News;
 import project_pet_backEnd.homepage.vo.NewsPic;
 import project_pet_backEnd.homepage.vo.PicRot;
@@ -10,15 +11,14 @@ import project_pet_backEnd.homepageManage.service.HomepageManageService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
-
+@Service
 public class HomepageManageServiceImp implements HomepageManageService {
     @Autowired
     private HomepageManageDao homepageManageDao;
 
     @Override
-    public ResultResponse addRotePic(AddRotePicRequest addRotePicRequest) {
+    public void addRotePic(AddRotePicRequest addRotePicRequest) {
         homepageManageDao.addRotePic(addRotePicRequest);
-        return null;
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface HomepageManageService {
         List<PicRot> getAllRotePic();
         ResultResponse editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest);
         void deleteRotePicByPicNo(Integer picNo);
-        ResultResponse addRotePic(AddRotePicRequest addRotePicRequest);
+        void addRotePic(AddRotePicRequest addRotePicRequest);
 
         ResultResponse addNews(AddNewsRequest addNewsRequest);
         void editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);

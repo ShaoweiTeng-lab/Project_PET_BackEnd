@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 public class AddRotePicRequest {
     private String picLocateUrl;
-    private Byte pic;
+    private byte[] pic;
     private Integer picRotStatus;
     @NotBlank
     private Date picRotStart;
