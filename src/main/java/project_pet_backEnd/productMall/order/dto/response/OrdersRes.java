@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 @Data
 public class OrdersRes {
     private Integer ordNo;
+    private Integer userId;
     private Byte ordStatus;
     private Byte ordPayStatus;
     private Byte ordPick;
