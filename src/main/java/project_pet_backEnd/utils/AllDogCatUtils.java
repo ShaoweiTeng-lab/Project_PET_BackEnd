@@ -95,7 +95,7 @@ public class AllDogCatUtils {
     /**
      * 日期轉換格式 java.sql.Date-> java.lang.String yyyy-MM-dd
      * */
-    public static String timestampToSqlDateFormat(Date date) {
+    public static String timestampToSqlDateFormat(java.sql.Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }

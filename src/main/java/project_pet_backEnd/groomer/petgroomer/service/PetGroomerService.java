@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.petgroomer.service;
 
+import org.springframework.data.relational.core.sql.In;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
@@ -33,5 +34,7 @@ public interface PetGroomerService {
      * 修改美容師資料 by Id for 管理員
      */
     ResultResponse<String> updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq);
+
+    ResultResponse<GetAllGroomerListSortRes> getPgInfoByManIdForPg(Integer manId);
 
 }

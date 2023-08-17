@@ -243,5 +243,30 @@ public class PetGroomerServiceImp implements PetGroomerService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新美容師信息失敗，請稍後重試", e);
         }
     }
+
+    @Override
+    public ResultResponse<GetAllGroomerListSortRes> getPgInfoByManIdForPg(Integer manId) {
+        GetAllGroomers groomer = petGroomerDao.getGroomerByManId(manId);
+        if(groomer == null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您尚未被新增為美容師。請通知管理員新增。");
+
+        GetAllGroomerListSortRes resPg = new GetAllGroomerListSortRes();
+        resPg.setPgId(groomer.getPgId());
+        resPg.setManId(groomer.getManId());
+        resPg.setPgName(groomer.getPgName());
+        switch (groomer.getPgGender()) {
+            case 0 -> resPg.setPgGender("女性");
+            case 1 -> resPg.setPgGender("男性");
+        }
+        resPg.setPgPic(AllDogCatUtils.base64Encode(groomer.getPgPic()));
+        resPg.setPgEmail(groomer.getPgEmail());
+        resPg.setPgPh(groomer.getPgPh());
+        resPg.setPgAddress(groomer.getPgAddress());
+        resPg.setPgBirthday(AllDogCatUtils.timestampToSqlDateFormat(groomer.getPgBirthday()));
+        resPg.setNumAppointments(groomer.getNumAppointments());
+        ResultResponse<GetAllGroomerListSortRes> resultResponse = new ResultResponse<>();
+        resultResponse.setMessage(resPg);
+        return resultResponse;
+    }
 }
 

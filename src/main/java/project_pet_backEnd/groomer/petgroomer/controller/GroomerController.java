@@ -1,5 +1,9 @@
 package project_pet_backEnd.groomer.petgroomer.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +31,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.util.List;
-
+@Api(tags = "美容師功能")
 @RestController
 @Validated
 
@@ -35,6 +39,10 @@ public class GroomerController {
 
     @Autowired
     PetGroomerService petGroomerService;
+    @ApiOperation("Man查詢管理員:擁有'美容師個人管理'權限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/insertNewGroomer")
     public ResultResponse<List<ManagerGetByFunctionIdRes>> insertNewGroomer(){
@@ -44,6 +52,10 @@ public class GroomerController {
     /*
      * 用From表單送請求進來 QueryString
      */
+    @ApiOperation("Man新增美容師")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/commitInsertNewGroomer")
     public ResultResponse<String> commitInsertNewGroomer(
@@ -81,6 +93,10 @@ public class GroomerController {
 
         return petGroomerService.insertGroomer(pgInsertReq);
     }
+    @ApiOperation("Man查詢美容師資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/getAllGroomerListSort")
     public ResultResponse<Page<List<GetAllGroomerListSortRes>>> getAllGroomersForMan(
@@ -103,6 +119,7 @@ public class GroomerController {
         return rs;
     }
 
+    @ApiOperation("Customer查詢美容師資訊")
     @GetMapping("/customer/getAllGroomerListSort")
     public ResultResponse<Page<List<GetAllGroomerListSortResForUser>>> getAllGroomersForUser(
             @RequestParam(value = "search",required = false) String search,
@@ -127,6 +144,10 @@ public class GroomerController {
     /*
      * 用From表單送請求進來 QueryString
      */
+    @ApiOperation("Man修改美容師資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/updateGroomerByPgId")
     public ResultResponse<String> updateGroomerByPgIdForMan(
@@ -168,7 +189,23 @@ public class GroomerController {
 
     //-----美容師個人管理-----
 
+
+    //查詢美容師自己，用於修改
+    @ApiOperation("Pg查詢自身美容師資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @PostMapping("/manager/pg")
+    public ResultResponse<GetAllGroomerListSortRes> getPgByManIdForPgPage(@RequestAttribute(name = "managerId") Integer managerId){
+        return petGroomerService.getPgInfoByManIdForPg(managerId);
+    }
+
     // 用From表單送請求進來 QueryString
+    @ApiOperation("Pg修改自身美容師資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     @PreAuthorize("hasAnyAuthority('美容師個人管理')")
     @PostMapping("/manager/updateGroomerForPg")
     public ResultResponse<String> updateGroomerByPgIdForPg(
@@ -209,12 +246,7 @@ public class GroomerController {
     }
 
 
-    //查詢美容師自己，用於修改
-    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
-    @PostMapping("/manager/pg")
-    public GetAllGroomerListSortRes gg(@RequestAttribute(name = "managerId") Integer managerId){
-        return null;
-    }
+
 
 
 }
