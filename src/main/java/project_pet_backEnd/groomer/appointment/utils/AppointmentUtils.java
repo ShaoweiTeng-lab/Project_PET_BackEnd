@@ -1,8 +1,13 @@
 package project_pet_backEnd.groomer.appointment.utils;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.sql.Date;
 import java.time.*;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AppointmentUtils {
 
@@ -80,6 +85,13 @@ public class AppointmentUtils {
 
     //時間範圍xx:00~xx:00字串轉換時間字串
     public static String convertTimeStringToHourSlotString(String timeString) {
+        String regex = "^(2[0-3]|1[0-9]|0?[0-9]):[0-5][0-9] ~ (2[0-3]|1[0-9]|0?[0-9]):[0-5][0-9]$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(timeString);
+
+        if(!matcher.matches()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您提供的預約時間格式有誤!");
+        }
         String[] parts = timeString.split("~");
         String startTime = parts[0].trim();
         String[] startTimeParts = startTime.split(":");
@@ -118,48 +130,32 @@ public class AppointmentUtils {
     }
 
     //已存在的預約單日期（參數）。已存在的預約單時間。
-    //比對預約日期是否在伺服器時間當天之前（含當天），並且比對預約時間是否在當日伺服器時間的兩小時前。
-    public static boolean validateAppointment(Date appointmentDate, String timeSlotStatus) {
+    //比對預約日期是否在伺服器時間當天之前（含當天）如果預約的時間在當天內就不可修改。
+    public static boolean validateAppointment(Date existAppointmentDate) {
         // 步驟 2：抓取伺服器日期時間（亞洲台北時區）
         LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
 
         // 步驟 3：比對預約日期是否在伺服器時間當天之前（含當天）
         LocalDate serverDate = serverDateTime.toLocalDate();
 
-        // 將24個數字的字串轉換為 LocalTime
-        int startHour = timeSlotStatus.indexOf('1'); // 找到第一個 '1' 的位置，表示起始小時
-        LocalTime startTime = LocalTime.of(startHour, 0); // 假設每個時間槽長度為1小時
-
-        if (appointmentDate.toLocalDate().isEqual(serverDate)) {
-            // 如果預約日期是今天
-            if (serverDate.atTime(startTime).isBefore(serverDateTime.plusHours(2))) {
-                // 如果預約的時間在兩小時內，則不可修改
-                return false;
-            }
-        } else if (appointmentDate.toLocalDate().isBefore(serverDate)) {
-            // 如果預約日期已經過期，則不可修改
+        // 如果預約日期是今天
+        if (existAppointmentDate.toLocalDate().isEqual(serverDate) || existAppointmentDate.toLocalDate().isBefore(serverDate)) {
             return false;
         }
-
         return true;
     }
-    //傳入一個時間區間的字串(x:xx ~ x:xx)。
-    // 條件，只有在傳入的時間在當前伺服器時間兩小時後成功修改
-    public static boolean validateNewTimeSlot(String timeSlot) {
+
+    public static boolean validateNewTime(Date newDate) {
         // 步驟 1：抓取伺服器時間（亞洲台北時區）
         LocalDateTime serverDateTime = LocalDateTime.now(ZoneId.of("Asia/Taipei"));
 
         // 步驟 2：取得傳進來的時間區間的開始時間
-        String startTime = timeSlot.split("~")[0].trim();
+        LocalDate serverDate = serverDateTime.toLocalDate();
 
-        // 將傳進來的時間轉換為 LocalTime
-        LocalTime startLocalTime = LocalTime.parse(startTime);
-
-        // 步驟 3：比較開始時間是否在當前伺服器時間之前，或者在當前伺服器時間兩小時後之前
-        if (startLocalTime.isBefore(serverDateTime.toLocalTime()) || startLocalTime.isBefore(serverDateTime.toLocalTime().plusHours(2))) {
+        // 如果修改預約的日期是過往則不行。
+        if (newDate.toLocalDate().isBefore(serverDate)) {
             return false;
         }
-
         return true;
     }
 

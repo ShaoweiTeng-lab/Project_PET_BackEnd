@@ -1,7 +1,9 @@
 package project_pet_backEnd.groomer.petgroomer.dao;
 
+import org.springframework.data.relational.core.sql.In;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
+import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
@@ -67,12 +69,12 @@ public interface PetGroomerDao {
 
     /**
      * 取得美容師總筆數，方便進行分頁查詢。
-     * @param PGQueryParameter 分頁查詢參數
+     * @param pgQueryParameter 分頁查詢參數
      * @return 美容師總筆數
      */
-    public Integer countPetGroomer(PGQueryParameter PGQueryParameter);//取得筆數，方便分頁查詢
+    public Integer countPetGroomer(PGQueryParameter pgQueryParameter);//取得筆數，方便分頁查詢
 
-
-//    public List<PetGroomer> getGroomerByPgName(String petGroomerName);
+    //查詢美容師單筆 by ManId
+    public GetAllGroomers getGroomerByManId(Integer manId);
 
 }
