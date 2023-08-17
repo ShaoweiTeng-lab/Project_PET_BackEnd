@@ -9,12 +9,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
-import project_pet_backEnd.manager.dao.ManagerRepository;
-import project_pet_backEnd.manager.vo.Manager;
-import project_pet_backEnd.user.dao.UserRepository;
-import project_pet_backEnd.user.vo.User;
-import project_pet_backEnd.utils.ManagerJwtUtil;
-import project_pet_backEnd.utils.UserJwtUtil;
+
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
