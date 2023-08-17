@@ -287,8 +287,8 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         String sql = "SELECT pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY, COUNT(pet_groomer_appointment.PGA_NO) AS NUM_APPOINTMENTS\n" +
                 "FROM pet_groomer\n" +
                 "LEFT JOIN pet_groomer_appointment ON pet_groomer.PG_ID = pet_groomer_appointment.PG_ID\n" +
-                "WHERE MAN_ID = :manId" +
-                "GROUP BY pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY;\n";
+                "WHERE MAN_ID = :manId " +
+                "GROUP BY pet_groomer.PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY\n";
 
         Map<String, Object> map = new HashMap<>();
         map.put("manId", manId);

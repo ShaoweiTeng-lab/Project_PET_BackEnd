@@ -22,7 +22,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
-@Api(tags = "預約功能")
+@Api(tags = "美容師預約功能")
 @RestController
 @Validated
 public class AppointmentController {

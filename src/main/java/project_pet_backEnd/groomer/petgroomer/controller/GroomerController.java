@@ -196,7 +196,7 @@ public class GroomerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('美容師個人管理')")
-    @PostMapping("/manager/pg")
+    @GetMapping("/manager/pg")
     public ResultResponse<GetAllGroomerListSortRes> getPgByManIdForPgPage(@RequestAttribute(name = "managerId") Integer managerId){
         return petGroomerService.getPgInfoByManIdForPg(managerId);
     }
