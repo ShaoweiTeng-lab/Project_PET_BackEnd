@@ -15,6 +15,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 public class AllDogCatUtils {
@@ -95,7 +96,7 @@ public class AllDogCatUtils {
     /**
      * 日期轉換格式 java.sql.Date-> java.lang.String yyyy-MM-dd
      * */
-    public static String timestampToSqlDateFormat(Date date) {
+    public static String timestampToSqlDateFormat(java.sql.Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }
@@ -137,5 +138,17 @@ public class AllDogCatUtils {
     public static  String generateUUID(){
         UUID uuid = UUID.randomUUID();
         return  uuid.toString();
+    }
+
+    /**
+     * 透過value找回key
+     * */
+    public static <K, V> K getKeyByValue(Map<K, V> map, V value) {
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

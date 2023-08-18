@@ -30,20 +30,20 @@ public interface GroomerAppointmentService {
     List<PetGroomerScheduleForAppointment> getGroomerScheduleByPgId(Integer pgId);
 
     //前台 for User 預約美容師(新增預約單)
-    ResultResponse insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
+    ResultResponse<String> insertNewAppointmentAndUpdateSchedule(Integer userId,InsertAppointmentForUserReq insertNewAppointmentUpdateSchedule);
 
     //前台 for User 查詢美容師預約
     Page<List<AppoForUserListByUserIdRes>> getUserAppointmentByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter);
 
     //修改預約單 for User
-    ResultResponse modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq);
+    ResultResponse<String> modifyAppointmentByByPgaNo(AppointmentModifyReq appointmentModifyReq);
 
     //取消或完成預約單 for User
-    ResultResponse AppointmentCompleteOrCancel (AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
+    ResultResponse<String> AppointmentCompleteOrCancel (AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
     //查詢預約單 for Man
     public Page<List<AppoForMan>> getAllAppointmentWithSearch(GroomerAppointmentQueryParameter groomerAppointmentQueryParameter);
 
     //取消或完成預約單 for Man
-    public ResultResponse AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
+    public ResultResponse<String> AppointmentCompleteOrCancelForMan(AppointmentCompleteOrCancelReq appointmentCompleteOrCancelReq);
 }
 
