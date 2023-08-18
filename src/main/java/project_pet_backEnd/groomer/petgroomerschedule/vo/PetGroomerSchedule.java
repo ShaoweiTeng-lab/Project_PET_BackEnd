@@ -1,15 +1,20 @@
 package project_pet_backEnd.groomer.petgroomerschedule.vo;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
-@Table(name = "PET_GROOMER_SCHEDULE")
+
 @Data
+@Entity
+@DynamicInsert
+@DynamicUpdate
+@Table(name = "PET_GROOMER_SCHEDULE")
 public class PetGroomerSchedule {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PGS_ID")
     private Integer pgsId;
     @Column(name = "PG_ID")
