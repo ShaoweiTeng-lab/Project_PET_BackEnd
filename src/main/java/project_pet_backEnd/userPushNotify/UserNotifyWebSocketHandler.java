@@ -66,10 +66,15 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        //todo 當連線後先去 redis 拿取對應的 history
-        String key = AllDogCatUtils.getKeyByValue(sessionMap, session);
-        System.out.println(key);
-
+        // 當連線後先去 redis 拿對應的 history
+        String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
+        Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
+        for(long i =0; i<lsSize;i++){
+            if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
+                continue;
+            String msg =redisTemplate.opsForList().leftPop("userNotify:" + userId);
+            session.sendMessage(new TextMessage(msg));
+        }
     }
 
     /**
@@ -85,9 +90,8 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-
-        if (sessionMap.containsValue(session))
-            sessionMap.remove(session);
+        String key =AllDogCatUtils.getKeyByValue(sessionMap,session);
+        sessionMap.remove(key);
     }
 
     @Override
