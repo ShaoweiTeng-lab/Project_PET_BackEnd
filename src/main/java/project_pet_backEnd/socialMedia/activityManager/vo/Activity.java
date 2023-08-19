@@ -3,6 +3,7 @@ package project_pet_backEnd.socialMedia.activityManager.vo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data
@@ -21,6 +22,9 @@ public class Activity {
      * ENROLLMENT_LIMIT int
      * ENROLLMENT_COUNT int
      * ACTIVITY_STATUS tinyint
+     * 0: 已取消
+     * 1: 執行中
+     * DEFAULT:1
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +38,9 @@ public class Activity {
     @Column(name = "ACTIVITY_CONTENT")
     String activityContent;
     @Column(name = "ENROLL_START")
-    Timestamp startTime;
+    Date startTime;
     @Column(name = "ENROLL_END")
-    Timestamp endTime;
+    Date endTime;
     @Column(name = "ACTIVITY_TIME")
     Timestamp activityTime;
     @Column(name = "ENROLLMENT_LIMIT")

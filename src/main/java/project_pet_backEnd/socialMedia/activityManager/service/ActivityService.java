@@ -10,17 +10,18 @@ public interface ActivityService {
 
     ResultResponse<Activity> create(ActivityReq activityReq);
 
-    ResultResponse<Activity> update(Activity activity);
+    ResultResponse<Activity> update(int activityId, ActivityReq activityReq);
 
     /*
      * 取消活動 更改活動狀態 - 通知所有參與活動的使用者
      */
-    ResultResponse<Activity> cancel(Activity activity);
+    ResultResponse<String> cancel(int activityId);
 
     ResultResponse<Activity> findActivityById(Integer activityId);
 
     /*
      * 查詢活動列表-反向排序+分頁
      */
-    ResultResponse<Page<Activity>> getAllActivities();
+    ResultResponse<Page<Activity>> getAllActivities(int pageSize, int offset);
 }
+

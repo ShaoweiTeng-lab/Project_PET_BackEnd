@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -43,12 +44,11 @@ public class ManagerActivityController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-
     //@PreAuthorize("hasAnyAuthority('社群管理')")
     @PutMapping("/{activityId}")
-    public ResponseEntity<ResultResponse<Activity>> updateActivity(@RequestBody ActivityReq activityReq) {
-        return null;
-
+    public ResponseEntity<ResultResponse<Activity>> updateActivity(@PathVariable("activityId") int activityId, @RequestBody ActivityReq activityReq) {
+        ResultResponse<Activity> updateActivity = activityService.update(activityId, activityReq);
+        return ResponseEntity.status(HttpStatus.OK).body(updateActivity);
     }
 
 
@@ -56,22 +56,35 @@ public class ManagerActivityController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-
     //@PreAuthorize("hasAnyAuthority('社群管理')")
     @PutMapping("/cancel/{activityId}")
-    public ResponseEntity<ResultResponse<Activity>> cancelActivity() {
-        return null;
+    public ResponseEntity<ResultResponse<String>> cancelActivity(@PathVariable("activityId") int activityId) {
+        ResultResponse<String> cancelResult = activityService.cancel(activityId);
+        return ResponseEntity.status(HttpStatus.OK).body(cancelResult);
 
     }
 
+    @ApiOperation("社群管理員查詢單一活動資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @GetMapping("/{activityId}")
+    public ResponseEntity<ResultResponse<Activity>> getActivityById(@PathVariable("activityId") int activityId) {
+        ResultResponse<Activity> activity = activityService.findActivityById(activityId);
+        return ResponseEntity.status(HttpStatus.OK).body(activity);
+    }
+
+    //@RequestParam Optional<Integer> page
     @ApiOperation("社群管理員查詢活動清單(包含歷史清單)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-
     //@PreAuthorize("hasAnyAuthority('社群管理')")
-    public ResponseEntity<ResultResponse<List<Activity>>> getAllActivities() {
-        return null;
+    @GetMapping("/all/{page}")
+    public ResponseEntity<ResultResponse<Page<Activity>>> getAllActivities(@PathVariable("page") int page) {
+        ResultResponse<Page<Activity>> activities = activityService.getAllActivities(page, 5);
+        return ResponseEntity.status(HttpStatus.OK).body(activities);
 
     }
 
