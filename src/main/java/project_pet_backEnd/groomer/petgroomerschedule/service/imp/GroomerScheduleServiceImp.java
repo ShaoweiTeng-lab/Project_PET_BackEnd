@@ -50,6 +50,9 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
     public ResultResponse<List<GetScheduleRes>>getMonthScheduleForMan(Integer year,Integer pgId, Integer month) {
         List<String> dataByYearMonthAndPgId = petScheduleRepository.findDataByYearMonthAndPgId(year, month, pgId);
 
+        if(dataByYearMonthAndPgId.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師之班表");
+        }
         List<GetScheduleRes> scheduleResList = new ArrayList<>();
         for (String data : dataByYearMonthAndPgId) {
             String[] parts = data.split(",");
