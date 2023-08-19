@@ -25,7 +25,7 @@ public class ScheduleController {
     @Autowired
     GroomerScheduleService groomerScheduleService;
 
-    //排班頁面選擇美容師123
+    //排班頁面選擇美容師
     @ApiOperation("Man排班頁面表列美容師")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
