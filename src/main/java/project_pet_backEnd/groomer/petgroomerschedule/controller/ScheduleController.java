@@ -50,4 +50,5 @@ public class ScheduleController {
 
         return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
     }
+
 }
