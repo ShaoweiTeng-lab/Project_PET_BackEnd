@@ -3,7 +3,6 @@ package project_pet_backEnd.groomer.petgroomerschedule.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
@@ -14,7 +13,6 @@ import project_pet_backEnd.groomer.petgroomerschedule.service.GroomerScheduleSer
 
 import java.util.List;
 
-@Service
 public class GroomerScheduleServiceImp implements GroomerScheduleService {
     @Autowired
     PetScheduleRepository petScheduleRepository;
