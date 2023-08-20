@@ -67,7 +67,7 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
         List<String> dataByYearMonthAndPgId = petScheduleRepository.findDataByYearMonthAndPgId(year, month, pgId);
 
         if(dataByYearMonthAndPgId.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師之班表");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師"+month+"月班表。");
         }
         List<GetScheduleRes> scheduleResList = new ArrayList<>();
         for (String data : dataByYearMonthAndPgId) {
@@ -165,6 +165,40 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
         rs.setMessage("您欲新增之美容師編號:"+pgId+" 日期:"+scheduleInsertReq.getPgsDate()+"  的班表成功!");
         return rs;
     }
+    //--------------------------------美容師個人管理(排班)-----------------------------------------//
 
+    //查看排班
+    @Override
+    public ResultResponse<List<GetScheduleRes>> getMonthScheduleForPg(Integer manId, Integer year, Integer month) {
+
+        PetGroomer petGroomerByManId = petGroomerDao.getPetGroomerByManId(manId);
+        if(petGroomerByManId==null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "您尚未被新增為美容師。");
+
+
+        List<String> dataByYearMonthAndPgId = petScheduleRepository.findDataByYearMonthAndPgId(year, month, petGroomerByManId.getPgId());
+
+        if(dataByYearMonthAndPgId.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到任何"+month+"月班表");
+        }
+        List<GetScheduleRes> scheduleResList = new ArrayList<>();
+        for (String data : dataByYearMonthAndPgId) {
+            String[] parts = data.split(",");
+
+            if (parts.length == 5) {
+                GetScheduleRes scheduleRes = new GetScheduleRes();
+                scheduleRes.setPgsId(Integer.parseInt(parts[0]));
+                scheduleRes.setPgName(parts[1]);
+                scheduleRes.setPgId(Integer.parseInt(parts[2]));
+                scheduleRes.setPgsDate(parts[3]);
+                scheduleRes.setPgsState(parts[4]);
+
+                scheduleResList.add(scheduleRes);
+            }
+        }
+        ResultResponse<List<GetScheduleRes>> resultResponse = new ResultResponse<>();
+        resultResponse.setMessage(scheduleResList);
+        return resultResponse;
+    }
 
 }

@@ -15,6 +15,7 @@ import project_pet_backEnd.groomer.petgroomerschedule.dto.response.ListForSchedu
 import project_pet_backEnd.groomer.petgroomerschedule.service.GroomerScheduleService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import java.util.Calendar;
 import java.util.List;
 
 @Api(tags = "美容師班表功能")
@@ -44,10 +45,22 @@ public class ScheduleController {
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/schedule")
     public ResultResponse<List<GetScheduleRes>> getMonthScheduleByPgId(
-            @RequestParam(value = "year") Integer year,
             @RequestParam(value = "pgId") Integer pgId,
-            @RequestParam(value = "month") Integer month){
+            @RequestParam(value = "year",required = false)Integer yearParam,
+            @RequestParam(value = "month",required = false)Integer monthParam){
 
+        int year;
+        int month;
+
+        if (yearParam == null || monthParam == null) {
+            // Get current year and month from server's time
+            Calendar calendar = Calendar.getInstance();
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
+        } else {
+            year = yearParam;
+            month = monthParam;
+        }
         return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
     }
 
@@ -72,5 +85,69 @@ public class ScheduleController {
         return groomerScheduleService.insertNewSchedule(scheduleInsertReq);
     }
 
+    //--------------------------------美容師個人管理(排班)-----------------------------------------//
+    @ApiOperation("pg查詢排班")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @GetMapping("/manager/scheduleForPg")
+    public ResultResponse<List<GetScheduleRes>> getMonthScheduleForPg(
+            @RequestAttribute(name = "managerId") Integer managerId,
+            @RequestParam(value = "year",required = false)Integer yearParam,
+            @RequestParam(value = "month",required = false)Integer monthParam
+    ){
+        int year;
+        int month;
 
+        if (yearParam == null || monthParam == null) {
+            // Get current year and month from server's time
+            Calendar calendar = Calendar.getInstance();
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
+        } else {
+            year = yearParam;
+            month = monthParam;
+        }
+        return groomerScheduleService.getMonthScheduleForPg(managerId, year, month);
+    }
+
+
+    //排班頁面選擇美容師
+    @ApiOperation("pg排班頁面表列美容師")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @GetMapping("/manager/schedulePageGroomer")
+    public ResultResponse<List<ListForScheduleRes>> getAllGroomerForScheduleForPg(){
+        return groomerScheduleService.getAllGroomerForSchedule();
+    }
+
+    //查詢該月排班
+    @ApiOperation("pg排班表查詢")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師個人管理')")
+    @GetMapping("/manager/schedule")
+    public ResultResponse<List<GetScheduleRes>> getMonthScheduleByPgIdForPg(
+            @RequestParam(value = "pgId") Integer pgId,
+            @RequestParam(value = "year",required = false)Integer yearParam,
+            @RequestParam(value = "month",required = false)Integer monthParam){
+
+        int year;
+        int month;
+
+        if (yearParam == null || monthParam == null) {
+            // Get current year and month from server's time
+            Calendar calendar = Calendar.getInstance();
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
+        } else {
+            year = yearParam;
+            month = monthParam;
+        }
+        return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
+    }
 }

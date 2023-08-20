@@ -18,7 +18,9 @@ public interface GroomerScheduleService {
     //修改班表 for Man
     ResultResponse<String> modifySchedule(ScheduleModifyReq scheduleModifyReq);
 
-
+    //新增美容師 for Man
     ResultResponse<String> insertNewSchedule(ScheduleInsertReq scheduleInsertReq);
 
+
+    ResultResponse<List<GetScheduleRes>> getMonthScheduleForPg(Integer manId, Integer year, Integer month);
 }
