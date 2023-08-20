@@ -176,31 +176,7 @@ public class ManagerDaoImp implements ManagerDao {
         namedParameterJdbcTemplate.update(sql,map);
     }
 
-    @Override
-    public List<Manager> getManagers(QueryManagerParameter queryManagerParameter) {
-        String sql ="select * from Manager where 1=1";
-        Map<String ,Object> map =new HashMap<>();
-        if(queryManagerParameter.getSearch()!=null){
-            sql = sql +" AND  MANAGER_ACCOUNT like :search";
-            map.put("search","%"+queryManagerParameter.getSearch()+"%");
-        }
-        sql = sql+" limit  :limit "+" offset :offset";
-        map.put("limit",queryManagerParameter.getLimit());
-        map.put("offset",queryManagerParameter.getOffset());
-        List<Manager> managerList=namedParameterJdbcTemplate.query(sql, map, new RowMapper<Manager>() {
-            @Override
-            public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Manager manager =new Manager();
-                manager.setManagerId(rs.getInt("MANAGER_ID"));
-                manager.setManagerAccount(rs.getString("MANAGER_ACCOUNT"));
-                manager.setManagerPassword(rs.getString("Manager_PASSWORD"));
-                manager.setManagerCreated(rs.getTimestamp("MANAGER_CREATED"));
-                manager.setManagerState(rs.getInt("MANAGER_STATE"));
-                return manager;
-            }
-        });
-        return  managerList;
-    }
+
 
     @Override
     public Integer getManagersCount(QueryManagerParameter queryManagerParameter) {

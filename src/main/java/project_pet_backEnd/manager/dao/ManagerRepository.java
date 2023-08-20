@@ -1,9 +1,12 @@
 package project_pet_backEnd.manager.dao;
 
 
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.manager.vo.Function;
 import project_pet_backEnd.manager.vo.Manager;
@@ -26,6 +29,18 @@ public interface  ManagerRepository   extends JpaRepository<Manager, Integer> {
             "WHERE m.MANAGER_ACCOUNT = ?1", nativeQuery = true)
     List<String> findManagerFunctionsByAccount(String account);
 
+    @Query("SELECT m FROM Manager m WHERE (:account IS NULL OR m.managerAccount LIKE CONCAT('%', :account, '%'))")
+    Page<Manager> findByManagerAccount(@Param("account") String account, Pageable pageable);
 
+    @Modifying
+    @Query(value = "delete from permission p where p.MANAGER_ID = ?1", nativeQuery = true)
+    void deleteAllAuthoritiesById(Integer manager_id);
+
+//    @Modifying
+//    @Query(value = "INSERT INTO permission (MANAGER_ID, FUNCTION_ID) " +
+//            "SELECT ?1, f.FUNCTION_ID " +
+//            "FROM `function` f " +
+//            "WHERE f.FUNCTION_NAME IN :?2", nativeQuery = true)
+//    void batchUpdatePermission(Integer managerId,  List<String> functionNames);
 }
 

@@ -1,6 +1,7 @@
 package project_pet_backEnd.manager.service;
 
 import project_pet_backEnd.manager.dto.*;
+import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -14,7 +15,7 @@ public interface ManagerService {
     ResultResponse getManagerAuthoritiesByAccount(String account);
     ResultResponse adjustManager(AdjustManagerRequest adjustManagerRequest);
 
-    Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter);
+    ResponsePage<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter);
 
     ManagerProfileResponse getProfile(Integer managerId);
 
