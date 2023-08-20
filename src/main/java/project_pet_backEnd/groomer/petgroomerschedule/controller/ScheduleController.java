@@ -125,7 +125,7 @@ public class ScheduleController {
     }
 
     //查詢該月排班
-    @ApiOperation("pg排班表其他查詢")
+    @ApiOperation("pg排班頁面其他美容師查詢")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
