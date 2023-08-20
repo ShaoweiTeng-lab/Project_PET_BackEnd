@@ -38,8 +38,6 @@ public class UserManagerServiceImp implements UserManagerService {
         }
         Pageable pageable = PageRequest.of(userQueryParameter.getPage()-1, userQueryParameter.getSize(), sort);
         Page userPage = userRepository.findByUserAccount(userQueryParameter.getSearch(), pageable);
-        //List<User> userList=userManagerDao.getUsers(userQueryParameter);
-
         List<User> userList=userPage.getContent();
         List<UserDetailProfileResponse> rsList=new ArrayList<>();
         for(int i=0;i<userList.size();i++){
@@ -70,11 +68,11 @@ public class UserManagerServiceImp implements UserManagerService {
             rsList.add(userDetailProfileResponse);
         }
 
-        ResponsePage rspage =new ResponsePage();
-        rspage.setPage(userQueryParameter.getPage());
-        rspage.setSize(pageable.getPageSize());
-        rspage.setTotal((int)userPage.getTotalElements());
-        rspage.setBody(rsList);
-        return rspage;
+        ResponsePage rsPage =new ResponsePage();
+        rsPage.setPage(userQueryParameter.getPage());
+        rsPage.setSize(pageable.getPageSize());
+        rsPage.setTotal((int)userPage.getTotalElements());
+        rsPage.setBody(rsList);
+        return rsPage;
     }
 }
