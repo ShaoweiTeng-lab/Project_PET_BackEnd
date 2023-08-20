@@ -2,6 +2,9 @@ package project_pet_backEnd.manager.service.imp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +21,7 @@ import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.service.ManagerService;
 import project_pet_backEnd.manager.vo.Manager;
+import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.ManagerJwtUtil;
@@ -144,8 +148,10 @@ public class ManagerServiceImp  implements ManagerService {
     }
 
     @Override
-    public Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
-        List<Manager> managerList =managerDao.getManagers(queryManagerParameter);
+    public ResponsePage<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
+        Pageable pageable = PageRequest.of(queryManagerParameter.getPage()-1, queryManagerParameter.getSize(), Sort.by("managerId").ascending());
+        org.springframework.data.domain.Page<Manager> managerPage =managerRepository.findByManagerAccount(queryManagerParameter.getSearch(), pageable);
+        List<Manager> managerList = managerPage.getContent();
         List<ManagerQueryResponse> managerQueryResponseList=new ArrayList<>();
         for(int i =0 ;i<managerList.size();i++){
             Manager manager =managerList.get(i);
@@ -155,11 +161,11 @@ public class ManagerServiceImp  implements ManagerService {
             managerQueryResponse.setManagerState(manager.getManagerState()==1?"開啟":"停權");
             managerQueryResponseList.add(managerQueryResponse);
         }
-        Page<List<ManagerQueryResponse>> rs =new Page<>();
-        rs.setLimit(queryManagerParameter.getLimit());
-        rs.setOffset(queryManagerParameter.getOffset());
-        rs.setTotal(managerDao.getManagersCount(queryManagerParameter));
-        rs.setRs(managerQueryResponseList);
+        ResponsePage<List<ManagerQueryResponse>> rs =new ResponsePage<>();
+        rs.setPage(managerPage.getPageable().getPageNumber()+1);//pageable預設從第0頁開始
+        rs.setSize(pageable.getPageSize());
+        rs.setTotal((int)managerPage.getTotalElements());
+        rs.setBody(managerQueryResponseList);
         return rs;
     }
 
