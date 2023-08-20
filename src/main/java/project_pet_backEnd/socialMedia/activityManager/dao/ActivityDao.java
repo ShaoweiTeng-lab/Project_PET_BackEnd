@@ -16,5 +16,12 @@ public interface ActivityDao extends JpaRepository<Activity, Integer>
 
     Page<Activity> findAll(Pageable pageable);
 
+    /**
+     * 使用者關鍵字搜尋
+     */
+    Page<Activity> findByActivityTitle(String activityTitle, Pageable pageable);
+
+
+    Page<Activity> findByActivityContentContaining(String activityContent, Pageable pageable);
 
 }
