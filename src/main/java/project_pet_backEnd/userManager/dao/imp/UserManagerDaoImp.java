@@ -22,20 +22,21 @@ public class UserManagerDaoImp implements UserManagerDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     @Override
     public List<User> getUsers(UserQueryParameter userQueryParameter) {
-        String sql="select * from `USER` where 1=1 ";
-        Map <String , Object> map =new HashMap<>();
-        if(userQueryParameter.getSearch()!=null){
-            sql =sql + " AND USER_NAME LIKE :search or USER_NickNAME LIKE :search";
-            map.put("search","%" + userQueryParameter.getSearch()+ "%");
-        }
-        //排序
-        sql =sql +" ORDER BY  "+userQueryParameter.getOrder()+" "+userQueryParameter.getSort();
-        //分頁
-        sql =sql +" LIMIT :limit OFFSET :offset ";
-        map.put("limit",userQueryParameter.getLimit());
-        map.put("offset",userQueryParameter.getOffset());
-        List<User> userList=namedParameterJdbcTemplate.query(sql,map,new UserRowMapper());
-        return userList;
+//        String sql="select * from `USER` where 1=1 ";
+//        Map <String , Object> map =new HashMap<>();
+//        if(userQueryParameter.getSearch()!=null){
+//            sql =sql + " AND USER_NAME LIKE :search or USER_NickNAME LIKE :search";
+//            map.put("search","%" + userQueryParameter.getSearch()+ "%");
+//        }
+//        //排序
+//        sql =sql +" ORDER BY  "+userQueryParameter.getOrder()+" "+userQueryParameter.getSort();
+//        //分頁
+//        sql =sql +" LIMIT :limit OFFSET :offset ";
+//        map.put("limit",userQueryParameter.getLimit());
+//        map.put("offset",userQueryParameter.getOffset());
+//        List<User> userList=namedParameterJdbcTemplate.query(sql,map,new UserRowMapper());
+//        return userList;
+        return  null;
     }
 
     @Override

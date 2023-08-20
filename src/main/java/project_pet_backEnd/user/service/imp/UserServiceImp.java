@@ -161,7 +161,6 @@ public class UserServiceImp implements UserService {
     @Override
     public ResultResponse forgetPassword(String userEmail) {
         User user= userRepository.findByUserEmail(userEmail);
-        //User user = userDao.getUserByEmail(userEmail);
         if(user==null||user.getIdentityProvider()!=IdentityProvider.Local)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
         String uuid= AllDogCatUtils.generateUUID();

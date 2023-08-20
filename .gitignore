@@ -34,3 +34,4 @@ build/
 
 ### env.properties ###
 /src/main/resources/keyEnv.properties
+/spring.log

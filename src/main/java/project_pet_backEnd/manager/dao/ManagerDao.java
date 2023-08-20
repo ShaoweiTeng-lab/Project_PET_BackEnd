@@ -28,7 +28,7 @@ public interface  ManagerDao {
 
     void updateManager(AdjustManagerRequest adjustManagerRequest);
 
-    List<Manager>getManagers(QueryManagerParameter queryManagerParameter);
+
 
     Integer getManagersCount(QueryManagerParameter queryManagerParameter);
 }
