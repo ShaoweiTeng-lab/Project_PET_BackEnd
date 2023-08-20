@@ -1,6 +1,6 @@
 package project_pet_backEnd.groomer.petgroomerschedule.service;
 
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.ListForScheduleRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -13,6 +13,8 @@ public interface GroomerScheduleService {
     ResultResponse<List<ListForScheduleRes>> getAllGroomerForSchedule();
 
     //按月份取得班表 for Man
-    public ResultResponse<List<GetScheduleRes>> getMonthScheduleForMan(Integer year,Integer pgId, Integer month);
+    ResultResponse<List<GetScheduleRes>> getMonthScheduleForMan(Integer year, Integer pgId, Integer month);
 
-    }
+    ResultResponse<String> modifySchedule(ScheduleModifyReq scheduleModifyReq);
+
+}

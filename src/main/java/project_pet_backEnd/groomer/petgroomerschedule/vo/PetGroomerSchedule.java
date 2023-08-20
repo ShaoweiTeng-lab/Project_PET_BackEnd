@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.petgroomerschedule.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -12,10 +13,11 @@ import java.sql.Date;
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "PET_GROOMER_SCHEDULE")
+@AllArgsConstructor
 public class PetGroomerSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PGS_ID")
+    @Column(name = "PGS_ID",insertable = false,updatable = false)
     private Integer pgsId;
     @Column(name = "PG_ID")
     private Integer pgId;

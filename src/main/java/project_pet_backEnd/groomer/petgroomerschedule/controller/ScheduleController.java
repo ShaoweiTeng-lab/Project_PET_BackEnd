@@ -7,9 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.ListForScheduleRes;
 import project_pet_backEnd.groomer.petgroomerschedule.service.GroomerScheduleService;
@@ -50,5 +49,19 @@ public class ScheduleController {
 
         return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
     }
+
+    //修改該筆班表
+    @ApiOperation("Man排班表修改")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師管理')")
+    @PostMapping("/manager/modifySchedule")
+    public ResultResponse<String> modifySchedule(@RequestBody ScheduleModifyReq scheduleModifyReq){
+        return groomerScheduleService.modifySchedule(scheduleModifyReq);
+    }
+
+
+
 
 }
