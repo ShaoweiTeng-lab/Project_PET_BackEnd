@@ -25,7 +25,6 @@ import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.ManagerJwtUtil;
-import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +87,13 @@ public class ManagerServiceImp  implements ManagerService {
     }
     @Transactional
     public  ResultResponse adjustPermission(AdjustPermissionRequest adjustPermissionRequest){
-        Integer managerId=managerDao.getManagerIdByAccount(adjustPermissionRequest.getAccount());
-        if(managerId==null)
+        Manager manager=managerRepository.findByManagerAccount(adjustPermissionRequest.getAccount());
+        if(manager==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(adjustPermissionRequest.getAccount());
-        if(managerAuthorities.contains(ManagerAuthorities.管理員管理))
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
+        Integer managerId=manager.getManagerId();
+        List<String> authorities=  managerRepository.findManagerFunctionsById(managerId);
+        if(authorities.contains( ManagerAuthorities.管理員管理.name()))
+               throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
         managerDao.deleteAllAuthoritiesById(managerId);
         managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
@@ -105,7 +105,6 @@ public class ManagerServiceImp  implements ManagerService {
     public  ResultResponse getManagerAuthoritiesById(Integer managerId){
         ResultResponse rs =new ResultResponse();
         Manager manager =managerRepository.findById(managerId).orElse(null);
-        // List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
         List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
         List<String> managerFunctions=managerRepository.findManagerFunctionsById(managerId);
         managerFunctions.forEach(function ->{
@@ -120,7 +119,6 @@ public class ManagerServiceImp  implements ManagerService {
     }
     public  ResultResponse getManagerAuthoritiesByAccount(String account){
         ResultResponse rs =new ResultResponse();
-        //List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
         List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
         List<String> managerFunctions=managerRepository.findManagerFunctionsByAccount(account);
         managerFunctions.forEach(function ->{
