@@ -2,6 +2,9 @@ package project_pet_backEnd.manager.service.imp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,10 +21,10 @@ import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.service.ManagerService;
 import project_pet_backEnd.manager.vo.Manager;
+import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.ManagerJwtUtil;
-import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,13 +87,21 @@ public class ManagerServiceImp  implements ManagerService {
     }
     @Transactional
     public  ResultResponse adjustPermission(AdjustPermissionRequest adjustPermissionRequest){
-        Integer managerId=managerDao.getManagerIdByAccount(adjustPermissionRequest.getAccount());
-        if(managerId==null)
+        Manager manager=managerRepository.findByManagerAccount(adjustPermissionRequest.getAccount());
+        if(manager==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-        List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(adjustPermissionRequest.getAccount());
-        if(managerAuthorities.contains(ManagerAuthorities.管理員管理))
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
-        managerDao.deleteAllAuthoritiesById(managerId);
+        Integer managerId=manager.getManagerId();
+        List<String> authorities=  managerRepository.findManagerFunctionsById(managerId);
+        if(authorities.contains( ManagerAuthorities.管理員管理.name()))
+               throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
+        managerRepository.deleteAllAuthoritiesById(managerId);
+        //todo 未來再將此改為jpa update
+//        List<String> stringList = new ArrayList<>();
+//        for (ManagerAuthorities enumValue : adjustPermissionRequest.getAuthorities()) {
+//            stringList.add(enumValue.name());
+//        }
+//        managerRepository.batchUpdatePermission(managerId,stringList);
+
         managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
@@ -101,7 +112,6 @@ public class ManagerServiceImp  implements ManagerService {
     public  ResultResponse getManagerAuthoritiesById(Integer managerId){
         ResultResponse rs =new ResultResponse();
         Manager manager =managerRepository.findById(managerId).orElse(null);
-        // List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesById(managerId);
         List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
         List<String> managerFunctions=managerRepository.findManagerFunctionsById(managerId);
         managerFunctions.forEach(function ->{
@@ -116,7 +126,6 @@ public class ManagerServiceImp  implements ManagerService {
     }
     public  ResultResponse getManagerAuthoritiesByAccount(String account){
         ResultResponse rs =new ResultResponse();
-        //List<ManagerAuthorities> managerAuthorities=managerDao.getManagerAuthoritiesByAccount(account);
         List<ManagerAuthorities> managerAuthoritiesList =new ArrayList<>();
         List<String> managerFunctions=managerRepository.findManagerFunctionsByAccount(account);
         managerFunctions.forEach(function ->{
@@ -144,8 +153,10 @@ public class ManagerServiceImp  implements ManagerService {
     }
 
     @Override
-    public Page<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
-        List<Manager> managerList =managerDao.getManagers(queryManagerParameter);
+    public ResponsePage<List<ManagerQueryResponse>> getManagers(QueryManagerParameter queryManagerParameter) {
+        Pageable pageable = PageRequest.of(queryManagerParameter.getPage()-1, queryManagerParameter.getSize(), Sort.by("managerId").ascending());
+        org.springframework.data.domain.Page<Manager> managerPage =managerRepository.findByManagerAccount(queryManagerParameter.getSearch(), pageable);
+        List<Manager> managerList = managerPage.getContent();
         List<ManagerQueryResponse> managerQueryResponseList=new ArrayList<>();
         for(int i =0 ;i<managerList.size();i++){
             Manager manager =managerList.get(i);
@@ -155,11 +166,11 @@ public class ManagerServiceImp  implements ManagerService {
             managerQueryResponse.setManagerState(manager.getManagerState()==1?"開啟":"停權");
             managerQueryResponseList.add(managerQueryResponse);
         }
-        Page<List<ManagerQueryResponse>> rs =new Page<>();
-        rs.setLimit(queryManagerParameter.getLimit());
-        rs.setOffset(queryManagerParameter.getOffset());
-        rs.setTotal(managerDao.getManagersCount(queryManagerParameter));
-        rs.setRs(managerQueryResponseList);
+        ResponsePage<List<ManagerQueryResponse>> rs =new ResponsePage<>();
+        rs.setPage(managerPage.getPageable().getPageNumber()+1);//pageable預設從第0頁開始
+        rs.setSize(pageable.getPageSize());
+        rs.setTotal((int)managerPage.getTotalElements());
+        rs.setBody(managerQueryResponseList);
         return rs;
     }
 

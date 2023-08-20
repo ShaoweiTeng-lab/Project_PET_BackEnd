@@ -1,10 +1,7 @@
 package project_pet_backEnd.userManager.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.userManager.dao.UserManagerDao;
 import project_pet_backEnd.userManager.dto.UserDetailProfileResponse;

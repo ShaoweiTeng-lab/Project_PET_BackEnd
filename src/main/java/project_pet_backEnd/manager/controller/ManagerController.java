@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
@@ -53,17 +55,17 @@ public class ManagerController {
     })
     @PreAuthorize("hasAnyAuthority('管理員管理')")
     @GetMapping("/manageManager")
-    public  ResponseEntity<ResultResponse<Page<List<ManagerQueryResponse>>>> getManagers(@RequestParam(required = false) String search,
-                                                                         @RequestParam(defaultValue = "5") Integer limit,
-                                                                         @RequestParam(defaultValue = "0") Integer offset){
+    public  ResultResponse<ResponsePage<List<ManagerQueryResponse>>> getManagers(@RequestParam(required = false) String search,
+                                                                         @RequestParam(defaultValue = "1") @Min(1) Integer page,
+                                                                         @RequestParam(defaultValue = "5") Integer size){
         ResultResponse rs =new ResultResponse();
         QueryManagerParameter queryManagerParameter =new QueryManagerParameter();
         queryManagerParameter.setSearch(search);
-        queryManagerParameter.setLimit(limit);
-        queryManagerParameter.setOffset(offset);
-        Page<List<ManagerQueryResponse>> page =managerService.getManagers(queryManagerParameter);
-        rs.setMessage(page);
-        return  ResponseEntity.status(200).body(rs);
+        queryManagerParameter.setSize(size);
+        queryManagerParameter.setPage(page);
+        ResponsePage<List<ManagerQueryResponse>> pgList =managerService.getManagers(queryManagerParameter);
+        rs.setMessage(pgList);
+        return  rs;
     }
 
     /**
