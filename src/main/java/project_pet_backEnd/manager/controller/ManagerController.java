@@ -57,7 +57,7 @@ public class ManagerController {
     @GetMapping("/manageManager")
     public  ResultResponse<ResponsePage<List<ManagerQueryResponse>>> getManagers(@RequestParam(required = false) String search,
                                                                          @RequestParam(defaultValue = "1") @Min(1) Integer page,
-                                                                         @RequestParam(defaultValue = "5") Integer size){
+                                                                         @RequestParam(defaultValue = "5") @Min(1) Integer size){
         ResultResponse rs =new ResultResponse();
         QueryManagerParameter queryManagerParameter =new QueryManagerParameter();
         queryManagerParameter.setSearch(search);
