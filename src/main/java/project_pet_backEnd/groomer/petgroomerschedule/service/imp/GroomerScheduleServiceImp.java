@@ -10,7 +10,9 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
+import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetScheduleRepository;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleInsertReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.ListForScheduleRes;
@@ -34,6 +36,9 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
 
     @Autowired
     PetGroomerDao petGroomerDao;
+
+    @Autowired
+    PetGroomerScheduleDao petGroomerScheduleDao;
 
     //取得美容師列表供選擇查看班表
     @Override
@@ -133,4 +138,33 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
             //<<需推播給User 預約單被取消。
         return rs;
     }
+    //新增單筆班表
+    @Override
+    public ResultResponse<String> insertNewSchedule(ScheduleInsertReq scheduleInsertReq) {
+        final int pgId=scheduleInsertReq.getPgId();
+        Date date;
+        try {
+            date = AllDogCatUtils.dateFormatToSqlDate(scheduleInsertReq.getPgsDate());//yyyy->sql.date
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "修改班表日期格式有誤");
+        }
+
+        PetGroomerSchedule pgScheduleByPgIdAndPgsDate = petGroomerScheduleDao.getPgScheduleByPgIdAndPgsDate(pgId, date);
+
+        if(pgScheduleByPgIdAndPgsDate!=null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增失敗，重複班表。已有該筆班表:[美容師ID:"+pgId+",日期:"+scheduleInsertReq.getPgsDate()+"]。");
+        }
+
+        PetGroomerSchedule petGroomerSchedule = new PetGroomerSchedule();
+        petGroomerSchedule.setPgId(pgId);
+        petGroomerSchedule.setPgsDate(date);
+        petGroomerSchedule.setPgsState(scheduleInsertReq.getPgsState());
+
+        petScheduleRepository.save(petGroomerSchedule);
+        ResultResponse<String> rs=new ResultResponse<>();
+        rs.setMessage("您欲新增之美容師編號:"+pgId+" 日期:"+scheduleInsertReq.getPgsDate()+"  的班表成功!");
+        return rs;
+    }
+
+
 }

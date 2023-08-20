@@ -1,13 +1,11 @@
 package project_pet_backEnd.groomer.petgroomerschedule.dto.request;
 
 import lombok.Data;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 @Data
-public class ScheduleModifyReq {
-
-    @NotNull
-    private Integer pgsId;
+public class ScheduleInsertReq {
     @NotNull
     private Integer pgId;
     @NotBlank

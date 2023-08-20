@@ -2,6 +2,7 @@ package project_pet_backEnd.groomer.petgroomerschedule.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -14,6 +15,7 @@ import java.sql.Date;
 @DynamicUpdate
 @Table(name = "PET_GROOMER_SCHEDULE")
 @AllArgsConstructor
+@NoArgsConstructor
 public class PetGroomerSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
