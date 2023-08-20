@@ -7,6 +7,7 @@ import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 
+import java.sql.Date;
 import java.util.List;
 
 public interface GroomerAppointmentDao {
@@ -71,4 +72,8 @@ public interface GroomerAppointmentDao {
      *修改預約單使用。查詢單一筆預約單返回。
      */
     public PetGroomerAppointment getAppointmentByPgaNo(Integer pgaNo);
+    /*
+     *供修改班表使用。
+     */
+    List<PetGroomerAppointment> getAppointmentByPgIdAndDate(Integer pgId, Date date);
 }

@@ -1,8 +1,12 @@
 package project_pet_backEnd.groomer.petgroomerschedule.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class GetScheduleRes {
     private Integer pgsId;
     private String pgName;

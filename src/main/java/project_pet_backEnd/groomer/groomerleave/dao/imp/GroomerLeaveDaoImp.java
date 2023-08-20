@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.groomerleave.dao.GroomerLeaveDao;
 import project_pet_backEnd.groomer.groomerleave.dto.GroomerLeaveQueryParameter;
-import project_pet_backEnd.groomer.groomerleave.dto.PGLeaveSearchRes;
+import project_pet_backEnd.groomer.groomerleave.dto.response.PGLeaveSearchRes;
 import project_pet_backEnd.groomer.groomerleave.vo.GroomerLeave;
 
 import java.sql.ResultSet;
