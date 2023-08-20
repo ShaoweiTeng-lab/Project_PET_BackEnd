@@ -86,7 +86,7 @@ public class ScheduleController {
     }
 
     //--------------------------------美容師個人管理(排班)-----------------------------------------//
-    @ApiOperation("pg查詢排班")
+    @ApiOperation("pg排班查詢")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
@@ -119,18 +119,18 @@ public class ScheduleController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('美容師個人管理')")
-    @GetMapping("/manager/schedulePageGroomer")
+    @GetMapping("/manager/scheduleGetGroomers")
     public ResultResponse<List<ListForScheduleRes>> getAllGroomerForScheduleForPg(){
         return groomerScheduleService.getAllGroomerForSchedule();
     }
 
     //查詢該月排班
-    @ApiOperation("pg排班表查詢")
+    @ApiOperation("pg排班表其他查詢")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PreAuthorize("hasAnyAuthority('美容師個人管理')")
-    @GetMapping("/manager/schedule")
+    @GetMapping("/manager/scheduleForOtherPg")
     public ResultResponse<List<GetScheduleRes>> getMonthScheduleByPgIdForPg(
             @RequestParam(value = "pgId") Integer pgId,
             @RequestParam(value = "year",required = false)Integer yearParam,
