@@ -94,7 +94,14 @@ public class ManagerServiceImp  implements ManagerService {
         List<String> authorities=  managerRepository.findManagerFunctionsById(managerId);
         if(authorities.contains( ManagerAuthorities.管理員管理.name()))
                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
-        managerDao.deleteAllAuthoritiesById(managerId);
+        managerRepository.deleteAllAuthoritiesById(managerId);
+        //todo 未來再將此改為jpa update
+//        List<String> stringList = new ArrayList<>();
+//        for (ManagerAuthorities enumValue : adjustPermissionRequest.getAuthorities()) {
+//            stringList.add(enumValue.name());
+//        }
+//        managerRepository.batchUpdatePermission(managerId,stringList);
+
         managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
