@@ -11,5 +11,5 @@ public class LeaveAllRes {
     private String leaveCreated; //yyyy-mm-dd
     private String leaveDate; //yyyy-mm-dd
     private String leaveTime;
-    private int leaveState;
+    private String leaveState;//審核狀態 0:未審核 1:審核通過 2:審核未通過
 }

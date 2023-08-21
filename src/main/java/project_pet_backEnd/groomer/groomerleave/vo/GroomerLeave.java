@@ -27,7 +27,7 @@ public class GroomerLeave {
     @Column(name = "LEAVE_DATE")
     private Date leaveDate; //sql.date
     @Column(name = "LEAVE_TIME")
-    private String leaveTime;
+    private String leaveTime;//24
     @Column(name = "LEAVE_STATE")
     private int leaveState;
 
