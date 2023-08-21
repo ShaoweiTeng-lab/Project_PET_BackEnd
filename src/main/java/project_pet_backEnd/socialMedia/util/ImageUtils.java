@@ -1,4 +1,4 @@
-package project_pet_backEnd.socialMedia.post.utils;
+package project_pet_backEnd.socialMedia.util;
 
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;

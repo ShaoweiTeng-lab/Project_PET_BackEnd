@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import project_pet_backEnd.socialMedia.post.dao.MediaDao;
-import project_pet_backEnd.socialMedia.post.utils.ImageUtils;
+import project_pet_backEnd.socialMedia.util.ImageUtils;
 import project_pet_backEnd.socialMedia.post.vo.MediaData;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
