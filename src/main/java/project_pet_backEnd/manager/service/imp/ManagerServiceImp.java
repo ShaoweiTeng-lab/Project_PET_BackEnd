@@ -13,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.manager.dao.ManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.manager.dao.ManagerRepository;
@@ -41,8 +40,7 @@ public class ManagerServiceImp  implements ManagerService {
     private PermissionRepository permissionRepository;
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
-    @Autowired
-    private ManagerDao managerDao;
+
     @Autowired
     private ManagerRepository managerRepository;
 
@@ -103,7 +101,6 @@ public class ManagerServiceImp  implements ManagerService {
             stringList.add(enumValue.name());
         }
         permissionRepository.batchUpdatePermission(managerId,stringList);
-        //managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
         rs.setMessage("更新完成");
