@@ -17,6 +17,7 @@ import project_pet_backEnd.manager.dao.ManagerDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.manager.dao.ManagerRepository;
+import project_pet_backEnd.manager.dao.PermissionRepository;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.manager.security.ManagerDetailsImp;
 import project_pet_backEnd.manager.service.ManagerService;
@@ -36,6 +37,8 @@ public class ManagerServiceImp  implements ManagerService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private  ManagerJwtUtil managerJwtUtil;
+    @Autowired
+    private PermissionRepository permissionRepository;
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
     @Autowired
@@ -95,14 +98,12 @@ public class ManagerServiceImp  implements ManagerService {
         if(authorities.contains( ManagerAuthorities.管理員管理.name()))
                throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"最高管理員不可更改自身權限");
         managerRepository.deleteAllAuthoritiesById(managerId);
-        //todo 未來再將此改為jpa update
-//        List<String> stringList = new ArrayList<>();
-//        for (ManagerAuthorities enumValue : adjustPermissionRequest.getAuthorities()) {
-//            stringList.add(enumValue.name());
-//        }
-//        managerRepository.batchUpdatePermission(managerId,stringList);
-
-        managerDao.adjustPermission(managerId,adjustPermissionRequest);
+        List<String> stringList = new ArrayList<>();
+        for (ManagerAuthorities enumValue : adjustPermissionRequest.getAuthorities()) {
+            stringList.add(enumValue.name());
+        }
+        permissionRepository.batchUpdatePermission(managerId,stringList);
+        //managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
         rs.setMessage("更新完成");

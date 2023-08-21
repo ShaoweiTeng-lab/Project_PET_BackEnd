@@ -36,8 +36,8 @@ public interface  ManagerRepository   extends JpaRepository<Manager, Integer> {
     @Query(value = "delete from permission p where p.MANAGER_ID = ?1", nativeQuery = true)
     void deleteAllAuthoritiesById(Integer manager_id);
 
-//    @Modifying
-//    @Query(value = "INSERT INTO permission (MANAGER_ID, FUNCTION_ID) " +
+//     @Modifying
+//    @Query(value= "INSERT INTO permission (MANAGER_ID, FUNCTION_ID) " +
 //            "SELECT ?1, f.FUNCTION_ID " +
 //            "FROM `function` f " +
 //            "WHERE f.FUNCTION_NAME IN :?2", nativeQuery = true)
