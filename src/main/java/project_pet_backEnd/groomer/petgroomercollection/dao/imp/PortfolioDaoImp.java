@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.petgroomercollection.dao.impl;
+package project_pet_backEnd.groomer.petgroomercollection.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomercollection.dao.PortfolioDao;
+import project_pet_backEnd.groomer.petgroomercollection.vo.Portfolio;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
