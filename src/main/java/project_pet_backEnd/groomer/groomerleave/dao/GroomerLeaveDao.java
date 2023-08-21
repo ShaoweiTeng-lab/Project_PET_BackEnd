@@ -38,5 +38,5 @@ public interface GroomerLeaveDao {
      * @param PgId 美容師編號
      * @return 該美容師的請假記錄列表
      */
-    public List<GroomerLeave> getGroomerLeaveByPgId(Integer PgId);
+    public List<PGLeaveSearchRes> getGroomerLeaveByPgId(Integer PgId);
 }

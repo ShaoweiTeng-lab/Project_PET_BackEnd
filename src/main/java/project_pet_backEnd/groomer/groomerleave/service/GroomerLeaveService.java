@@ -1,6 +1,7 @@
 package project_pet_backEnd.groomer.groomerleave.service;
 
 import project_pet_backEnd.groomer.groomerleave.dto.request.ChangeLeaveReq;
+import project_pet_backEnd.groomer.groomerleave.dto.request.InsertLeaveReq;
 import project_pet_backEnd.groomer.groomerleave.dto.response.LeaveAllRes;
 import project_pet_backEnd.groomer.groomerleave.vo.GroomerLeave;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -16,9 +17,9 @@ public interface GroomerLeaveService {
     ResultResponse<String> changeLeave(ChangeLeaveReq changeLeaveReq);
 
     //查看自己假單
-    ResultResponse<List<GroomerLeave>> getLeaveByPgIdForPg(Integer manId);
+    ResultResponse<List<LeaveAllRes>> getLeaveForPg(Integer manId);
 
     //新增假單
-    ResultResponse<List<GroomerLeave>> insertLeaveForPg();
+    ResultResponse<String> insertLeaveForPg(Integer manId, InsertLeaveReq insertLeaveReq);
 
 }
