@@ -33,7 +33,7 @@ public class GroomerLeaveController {
     }
 
 
-    //審核請假單 (改變假單狀態) ，前端需提示修改預約單等
+    //審核請假單 (改變假單狀態) ，前端需提示修改預約單等。要注意為覆蓋班表(前端注意)。
     @ApiOperation("Man審核請假單")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")

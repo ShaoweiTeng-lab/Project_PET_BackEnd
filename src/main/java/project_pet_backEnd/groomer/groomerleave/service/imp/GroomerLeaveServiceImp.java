@@ -1,7 +1,6 @@
 package project_pet_backEnd.groomer.groomerleave.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -188,8 +187,13 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
         } catch (ParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請假日期格式有誤!");
         }
+        //查詢對應的當天班表
+        PetGroomerSchedule pgSchedule = petGroomerScheduleDao.getPgScheduleByPgIdAndPgsDate(petGroomerByManId.getPgId(), date);
+        if(pgSchedule==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無對應當日班表，申請有誤!");
 
         GroomerLeave groomerLeave = new GroomerLeave();
+        groomerLeave.setLeaveState(0);
         groomerLeave.setLeaveDate(date);
         groomerLeave.setLeaveTime(insertLeaveReq.getLeaveTime());//24 time String
         groomerLeave.setPgId(petGroomerByManId.getPgId());
