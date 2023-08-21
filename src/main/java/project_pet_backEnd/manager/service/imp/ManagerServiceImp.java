@@ -102,7 +102,7 @@ public class ManagerServiceImp  implements ManagerService {
         for (ManagerAuthorities enumValue : adjustPermissionRequest.getAuthorities()) {
             stringList.add(enumValue.name());
         }
-       permissionRepository.batchUpdatePermission(managerId,stringList);
+        permissionRepository.batchUpdatePermission(managerId,stringList);
         //managerDao.adjustPermission(managerId,adjustPermissionRequest);
         redisTemplate.delete("Manager_Login_"+managerId);//需重新登入
         ResultResponse rs =new ResultResponse();
