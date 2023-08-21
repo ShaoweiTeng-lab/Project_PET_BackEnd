@@ -64,7 +64,7 @@ public class ScheduleController {
         return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
     }
 
-    //修改該筆班表
+    //修改該筆班表，，前端需顯示可能會取消已預約的預約單，讓使用者確認。
     @ApiOperation("Man排班表修改")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")

@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import project_pet_backEnd.groomer.groomerleave.dto.request.ChangeLeaveReq;
 import project_pet_backEnd.groomer.groomerleave.dto.response.LeaveAllRes;
 import project_pet_backEnd.groomer.groomerleave.service.GroomerLeaveService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -32,6 +35,15 @@ public class GroomerLeaveController {
     }
 
 
-
+    //審核請假單 (改變假單狀態) ，前端需提示修改預約單等
+    @ApiOperation("Man審核請假單")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師管理')")
+    @PostMapping("/manager/changeLeave")
+    public ResultResponse<String> changeLeave(@RequestBody ChangeLeaveReq changeLeaveReq){
+        return groomerLeaveService.changeLeave(changeLeaveReq);
+    }
 
 }

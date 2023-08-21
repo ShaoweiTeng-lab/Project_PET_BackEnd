@@ -67,14 +67,14 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
         resultResponse.setMessage(convertedList);
         return resultResponse;
     }
-    //審核請假單 (改變假單狀態)
+    //審核請假單 (改變假單狀態) ，前端需提示修改預約單等
     @Transactional
     @Override
     public ResultResponse<String> changeLeave(ChangeLeaveReq changeLeaveReq) {
         GroomerLeave byLeaveNo = groomerLeaveRepository.findByLeaveNo(changeLeaveReq.getLeaveNo());
         if(byLeaveNo==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此請假單");
-        if (byLeaveNo.getLeaveState()==1){
+        if (byLeaveNo.getLeaveState().equals(1)){
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此請假單狀態為審核通過，不可修改。");
         }
 
@@ -106,17 +106,27 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
                     char[] appArray = appointment.getPgaTime().toCharArray();
                     if(appointment.getPgaState()==0){//預約單狀態 0:未完成(預約單尚未完成)
                         for(int i = 0; i < appArray.length; i++){
-                            if(appArray[i]=='1'&& leaveTime[i]=='1'){//預約單'1'預約，並且假單時段改為不可預約'1'
-
+                            if(appArray[i]=='1'&& leaveTime[i]=='1'){//預約單'1'預約，並且假單時為不可預約'1'
+                                appointment.setPgaState(2);
+                                groomerAppointmentDao.updateAppointmentByPgaNo(appointment);
                             }
 
                         }
                     }
-
                 }
-                    return null;
+                //假單狀態改為審核通過'1'
+                byLeaveNo.setLeaveState(1);
+                groomerLeaveRepository.save(byLeaveNo);
+                //覆蓋班表
+                pgSchedule.setPgsState(byLeaveNo.getLeaveTime());
+                petScheduleRepository.save(pgSchedule);
+                ResultResponse<String> rs=new ResultResponse<>();
+                rs.setMessage("該請假單審核已通過!，當日班表已更新。 " +
+                        "因該請假單編號:["+byLeaveNo.getLeaveNo()+"]當日已有預約單。" +
+                        "如有未完成之預約單，會將將預約單進行取消。");
+                //推播取消...<<
+                return rs;
             }
-
         }else if(changeLeaveReq.getLeaveState().equals(2)){
             //審核不通過情況
             byLeaveNo.setLeaveState(2);

@@ -29,7 +29,7 @@ public class GroomerLeave {
     @Column(name = "LEAVE_TIME")
     private String leaveTime;//24
     @Column(name = "LEAVE_STATE")
-    private int leaveState;
+    private Integer leaveState;
 
     // 此處省略建構子、Getter 和 Setter 方法
 }
