@@ -146,17 +146,28 @@ public class GroomerLeaveDaoImp implements GroomerLeaveDao {
     }
 
     @Override
-    public List<GroomerLeave> getGroomerLeaveByPgId(Integer pgId) {
-        String sql = "SELECT LEAVE_NO, PG_ID, LEAVE_CREATED, LEAVE_DATE, LEAVE_TIME, LEAVE_STATE " +
-                "FROM GROOMER_LEAVE " +
-                "WHERE PG_ID = :pgId " +
-                "ORDER BY LEAVE_DATE "; // Default sorting by LEAVE_DATE from earliest to latest
-
+    public List<PGLeaveSearchRes> getGroomerLeaveByPgId(Integer pgId) {
+        String sql = "SELECT gl.LEAVE_NO, gl.PG_ID, gl.LEAVE_CREATED, gl.LEAVE_DATE, gl.LEAVE_TIME, gl.LEAVE_STATE, pg.PG_NAME " +
+                "FROM GROOMER_LEAVE gl " +
+                "JOIN PET_GROOMER pg ON gl.PG_ID = pg.PG_ID "+
+                "WHERE PG_ID = :pgId "+
+                "ORDER BY LEAVE_DATE ";
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pgId", pgId);
-
-        List<GroomerLeave> groomerLeaveList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(GroomerLeave.class));
-        return groomerLeaveList;
+        List<PGLeaveSearchRes> GroomerLeaveList = namedParameterJdbcTemplate.query(sql, params, new RowMapper<PGLeaveSearchRes>() {
+            @Override
+            public PGLeaveSearchRes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PGLeaveSearchRes pgLeaveSearchRes = new PGLeaveSearchRes();
+                pgLeaveSearchRes.setLeaveNo(rs.getInt("LEAVE_NO"));
+                pgLeaveSearchRes.setPgId(rs.getInt("PG_ID"));
+                pgLeaveSearchRes.setLeaveCreated(rs.getDate("LEAVE_CREATED"));
+                pgLeaveSearchRes.setLeaveDate(rs.getDate("LEAVE_DATE"));
+                pgLeaveSearchRes.setLeaveTime(rs.getString("LEAVE_TIME"));
+                pgLeaveSearchRes.setLeaveState(rs.getInt("LEAVE_STATE"));
+                pgLeaveSearchRes.setPgName(rs.getString("PG_NAME"));
+                return pgLeaveSearchRes;
+            }
+        });
+        return GroomerLeaveList;
     }
 }
 
