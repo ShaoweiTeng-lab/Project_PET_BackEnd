@@ -11,10 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.socialMedia.postMessage.dto.req.MessageRequest;
-import project_pet_backEnd.socialMedia.postMessage.dto.req.UpMesReq;
+import project_pet_backEnd.socialMedia.postMessage.dto.req.MesReq;
+import project_pet_backEnd.socialMedia.postMessage.dto.res.MesRes;
 import project_pet_backEnd.socialMedia.postMessage.service.MesService;
-import project_pet_backEnd.socialMedia.postMessage.vo.Message;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.validation.Valid;
@@ -22,7 +21,7 @@ import java.util.List;
 
 @Api(tags = "貼文留言功能")
 @RestController
-@RequestMapping("/user/social")
+@RequestMapping("/user/social/post")
 @Validated
 public class PostMessageController {
 
@@ -32,47 +31,36 @@ public class PostMessageController {
     /**
      * 使用者 @RequestAttribute("userId") Integer userId
      */
-    @ApiOperation("User發布留言")
+    @ApiOperation("User發布貼文留言")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @PostMapping("/message")
-    public ResponseEntity<ResultResponse<Message>> create(@Valid @RequestBody MessageRequest messageRequest, @RequestAttribute("userId") Integer userId) {
-        ResultResponse successMes = mesService.create(userId, messageRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(successMes);
+    @PostMapping("/{postId}/message")
+    public ResponseEntity<ResultResponse<String>> create(@PathVariable("postId") int postId, @Valid @RequestBody MesReq mesReq, @RequestParam("userId") Integer userId) {
+        ResultResponse<String> response = mesService.create(userId, postId, mesReq);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @ApiOperation("User修改留言")
+    @ApiOperation("User修改貼文留言")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<Message>> updateMessageById(@PathVariable("messageId") int mesId, @Valid @RequestBody UpMesReq upMesReq, @RequestAttribute("userId") Integer userId) {
-        ResultResponse updateResult = mesService.update(userId, mesId, upMesReq);
+    public ResponseEntity<ResultResponse<MesRes>> updateMessageById(@PathVariable("messageId") int mesId, @Valid @RequestBody MesReq mesReq, @RequestParam("userId") Integer userId) {
+        ResultResponse<MesRes> updateResult = mesService.update(userId, mesId, mesReq);
         return ResponseEntity.status(HttpStatus.OK).body(updateResult);
 
     }
 
 
-    @ApiOperation("User刪除留言")
+    @ApiOperation("User刪除貼文留言")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<String>> deleteMessageById(@PathVariable("messageId") int mesId, @RequestAttribute("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> deleteMessageById(@PathVariable("messageId") int mesId, @RequestParam("userId") Integer userId) {
         ResultResponse<String> deleteResult = mesService.delete(userId, mesId);
         return ResponseEntity.status(HttpStatus.OK).body(deleteResult);
-    }
-
-
-    @ApiOperation("User查詢單一貼文所有留言")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
-    })
-    @GetMapping("/message/post/{postId}")
-    public ResponseEntity<ResultResponse<List<Message>>> getMessagesByPostId(@PathVariable("postId") int postId) {
-        ResultResponse<List<Message>> messages = mesService.findMessageByPostId(postId);
-        return ResponseEntity.status(HttpStatus.OK).body(messages);
     }
 
     @ApiOperation("User查看單一留言")
@@ -80,8 +68,21 @@ public class PostMessageController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<Message>> getMessageById(@PathVariable("messageId") int messageId) {
-        ResultResponse<Message> message = mesService.getMesById(messageId);
+    public ResponseEntity<ResultResponse<MesRes>> getMessageById(@PathVariable("messageId") int messageId) {
+        ResultResponse<MesRes> message = mesService.getMesById(messageId);
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
+
+
+    @ApiOperation("User查詢單一貼文所有留言")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @GetMapping("/{postId}/messages")
+    public ResponseEntity<ResultResponse<List<MesRes>>> getMessagesByPostId(@PathVariable("postId") int postId) {
+        ResultResponse<List<MesRes>> messages = mesService.findMessageByPostId(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(messages);
+    }
+
+
 }
