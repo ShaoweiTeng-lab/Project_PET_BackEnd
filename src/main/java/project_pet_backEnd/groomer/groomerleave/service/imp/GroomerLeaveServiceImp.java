@@ -78,6 +78,7 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此請假單狀態為審核通過，不可修改。");
         }
 
+        //審核通過情況
         if(changeLeaveReq.getLeaveState().equals(1)){
             //查詢對應的預約單
             List<PetGroomerAppointment> appointmentList = groomerAppointmentDao.getAppointmentByPgIdAndDate(byLeaveNo.getPgId(), byLeaveNo.getLeaveDate());
