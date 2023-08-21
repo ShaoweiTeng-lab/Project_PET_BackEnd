@@ -1,9 +1,13 @@
-package project_pet_backEnd.groomer.petgroomercollection.vo;
+package project_pet_backEnd.groomer.groomerworkmanager.vo;
 
 import lombok.Data;
 
+import javax.persistence.Table;
+
+@Table(name = "PICTURE_INFO")
 @Data
 public class PictureInfo {
+    //作品圖片
     private Integer piNo;
     private Integer porId;
     private byte[] piPicture;
