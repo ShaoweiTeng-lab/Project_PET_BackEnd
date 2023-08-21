@@ -1,6 +1,7 @@
 package project_pet_backEnd.groomer.groomerleave.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,18 +10,22 @@ import project_pet_backEnd.groomer.appointment.dao.GroomerAppointmentDao;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 import project_pet_backEnd.groomer.groomerleave.dao.GroomerLeaveDao;
 import project_pet_backEnd.groomer.groomerleave.dao.GroomerLeaveRepository;
+import project_pet_backEnd.groomer.groomerleave.dto.request.InsertLeaveReq;
 import project_pet_backEnd.groomer.groomerleave.dto.response.LeaveAllRes;
 import project_pet_backEnd.groomer.groomerleave.dto.response.PGLeaveSearchRes;
 import project_pet_backEnd.groomer.groomerleave.dto.request.ChangeLeaveReq;
 import project_pet_backEnd.groomer.groomerleave.service.GroomerLeaveService;
 import project_pet_backEnd.groomer.groomerleave.vo.GroomerLeave;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
+import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetScheduleRepository;
 import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import java.sql.Date;
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,9 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
 
     @Autowired
     GroomerAppointmentDao groomerAppointmentDao;
+
+    @Autowired
+    PetGroomerDao petGroomerDao;
 
     @Override
     public ResultResponse<List<LeaveAllRes>> getAllLeave() {
@@ -139,12 +147,55 @@ public class GroomerLeaveServiceImp implements GroomerLeaveService {
     }
 
     @Override
-    public ResultResponse<List<GroomerLeave>> getLeaveByPgIdForPg(Integer manId) {
-        return null;
+    public ResultResponse<List<LeaveAllRes>> getLeaveForPg(Integer manId) {
+        PetGroomer petGroomerByManId = petGroomerDao.getPetGroomerByManId(manId);
+        if (petGroomerByManId==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您非美容師，或已被停權!");
+
+        List<PGLeaveSearchRes> all = groomerLeaveDao.getGroomerLeaveByPgId(petGroomerByManId.getPgId());
+        if (all==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您沒有任何請假單紀錄。");
+
+        List<LeaveAllRes> convertedList = all.stream().map(pgLeaveSearchRes -> {
+            LeaveAllRes leaveAllRes = new LeaveAllRes();
+            leaveAllRes.setLeaveNo(pgLeaveSearchRes.getLeaveNo());
+            leaveAllRes.setPgId(pgLeaveSearchRes.getPgId());
+            leaveAllRes.setPgName(pgLeaveSearchRes.getPgName());
+            leaveAllRes.setLeaveCreated(AllDogCatUtils.timestampToSqlDateFormat(pgLeaveSearchRes.getLeaveCreated()));
+            leaveAllRes.setLeaveDate(AllDogCatUtils.timestampToSqlDateFormat(pgLeaveSearchRes.getLeaveDate()));
+            leaveAllRes.setLeaveTime(pgLeaveSearchRes.getLeaveTime());
+            String state;
+            switch (pgLeaveSearchRes.getLeaveState()){//審核狀態 0:未審核 1:審核通過 2:審核未通過
+                case 0-> leaveAllRes.setLeaveState("未審核");
+                case 1-> leaveAllRes.setLeaveState("審核通過");
+                case 2-> leaveAllRes.setLeaveState("審核未通過");
+            }
+            return leaveAllRes;
+        }).collect(Collectors.toList());
+        ResultResponse<List<LeaveAllRes>> resultResponse = new ResultResponse<>();
+        resultResponse.setMessage(convertedList);
+        return resultResponse;
     }
 
     @Override
-    public ResultResponse<List<GroomerLeave>> insertLeaveForPg() {
-        return null;
+    public ResultResponse<String> insertLeaveForPg(Integer manId, InsertLeaveReq insertLeaveReq) {
+        PetGroomer petGroomerByManId = petGroomerDao.getPetGroomerByManId(manId);
+        if (petGroomerByManId==null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您非美容師，或已被停權!");
+        Date date;
+        try {
+            date = AllDogCatUtils.dateFormatToSqlDate(insertLeaveReq.getLeaveDate());
+        } catch (ParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請假日期格式有誤!");
+        }
+
+        GroomerLeave groomerLeave = new GroomerLeave();
+        groomerLeave.setLeaveDate(date);
+        groomerLeave.setLeaveTime(insertLeaveReq.getLeaveTime());//24 time String
+        groomerLeave.setPgId(petGroomerByManId.getPgId());
+        groomerLeaveRepository.save(groomerLeave);
+        ResultResponse<String> resultResponse = new ResultResponse<>();
+        resultResponse.setMessage("假單申請成功!");
+        return resultResponse;
     }
 }
