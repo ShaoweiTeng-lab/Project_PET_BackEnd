@@ -7,8 +7,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data        // 新增商品
-public class CreateProductInfoRequest {
+@Data        // req:新增商品、(編輯商品)修改商品資訊  res:(編輯商品)顯示商品資訊
+public class ProductInfo {
 
     @NotNull
     @NotBlank

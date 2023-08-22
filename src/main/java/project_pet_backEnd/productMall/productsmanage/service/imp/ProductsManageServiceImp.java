@@ -3,10 +3,9 @@ package project_pet_backEnd.productMall.productsmanage.service.imp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project_pet_backEnd.productMall.productsmanage.dao.CreateProductPicRepository;
+import project_pet_backEnd.productMall.productsmanage.dao.CreateProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
-import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
-import project_pet_backEnd.productMall.productsmanage.dto.CreateProductInfoRequest;
+import project_pet_backEnd.productMall.productsmanage.dto.ProductInfo;
 import project_pet_backEnd.productMall.productsmanage.service.ProductsManageService;
 import project_pet_backEnd.productMall.productsmanage.vo.Product;
 import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
@@ -25,27 +24,26 @@ public class ProductsManageServiceImp implements ProductsManageService {
     private ProductRepository productRepository;
 
     @Autowired
-    private CreateProductPicRepository createProductPicRepository;
+    private CreateProductPicDao createProductPicDao;
 
     @Transactional
-    public Product addProductInfoWithPic(CreateProductInfoRequest createProductInfoRequest, List<ProductPic> pics) {
+    public Product addProductInfoWithPic(ProductInfo productInfo, List<ProductPic> pics) {
         // 1.創建商品資訊 2.上傳圖片 3.條件(驗證)
 
         // 創建商品資訊
         Product product = new Product();
-        product.setPdName(createProductInfoRequest.getPdName());
-        product.setPdPrice(createProductInfoRequest.getPdPrice());
-        product.setPdFormat(createProductInfoRequest.getPdFormat());
-        product.setPdStatus(createProductInfoRequest.getPdStatus());
-        product.setPdDescription(createProductInfoRequest.getPdDescription());
+        product.setPdName(productInfo.getPdName());
+        product.setPdPrice(productInfo.getPdPrice());
+        product.setPdFormat(productInfo.getPdFormat());
+        product.setPdStatus(productInfo.getPdStatus());
+        product.setPdDescription(productInfo.getPdDescription());
 
         productRepository.save(product);
 
         //上傳商品圖片(需轉換格式)
-//        ProductPic productPic = new ProductPic();
-        pics = new ArrayList<>();
+        List<ProductPic> piclist = new ArrayList<>();
         for (ProductPic pic : pics) {
-//            (pic.getPdPic()).convertMultipartFileToByteArray;
+            pic.getPdPic();
         }
 
         try {
