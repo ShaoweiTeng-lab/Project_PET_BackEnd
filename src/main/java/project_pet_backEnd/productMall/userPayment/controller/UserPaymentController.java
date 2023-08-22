@@ -28,6 +28,7 @@ public class UserPaymentController {
     @PostMapping("/successPay/{orderId}")
     public ResponseEntity<String> successPayCallBack(@PathVariable("orderId") String orderId){
         userPaymentService.successPayCallBack(orderId);
+        System.out.println("付款成功");
         return  ResponseEntity.status(HttpStatus.CREATED).body("付款成功");
 
     }

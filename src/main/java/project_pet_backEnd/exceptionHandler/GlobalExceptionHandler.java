@@ -12,6 +12,8 @@ import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.validation.ConstraintViolationException;
 
+import static project_pet_backEnd.ecpay.payment.integration.AllInOne.log;
+
 /**
  * 全域 異常處理 防止部分驗證回傳 500
  */
@@ -64,6 +66,7 @@ public class GlobalExceptionHandler  {
         ResultResponse rs = new ResultResponse();
         String msg = "前端參數異常";
         rs.setMessage(msg);
+        log.warn(ex.getMessage());
         rs.setCode(500);//改成將異常code丟入訊息中
         return new ResponseEntity<>(rs, HttpStatus.OK);
     }

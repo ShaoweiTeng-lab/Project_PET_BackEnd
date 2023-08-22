@@ -22,15 +22,16 @@ public class UserPaymentServiceImp implements UserPaymentService {
     @Autowired
     private OrdersRepository ordersRepository;
     private  final  static Logger log= LoggerFactory.getLogger(UserPaymentServiceImp.class);
-    @Value("${ecpay-returnHttps}")
-    private String returnHttps;
+    @Value("${ecpay-RedirectHttpsUrl}")
+    private String ecpayRedirectHttpsUrl;
     @Override
     public String getPaymentForm(Integer userId,Integer orderId) {
         //todo 先判斷該使用者有無此訂單編號
         Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null|| orders.getUserId()!=userId)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"您輸入的訂單編號錯誤");
-
+        if(orders.getOrdPayStatus().intValue()==1)
+            throw  new ResponseStatusException(HttpStatus.GONE,"您已經完成訂單");//回傳410 表示所請求的資源不再可用
         String form=generateEcpayForm(orderId,"測試商品",orders.getTotalAmount());
 
         return form;
@@ -42,7 +43,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
         orders.setOrdPayStatus((byte)1); //修改為1 完成訂單
-
+        ordersRepository.save(orders);
     }
 
 
@@ -59,7 +60,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         // 交易結果回傳網址，只接受 https 開頭的網站 ;
         obj.setNeedExtraPaidInfo("N");
         // 商店轉跳網址 (Optional)
-        obj.setReturnURL(returnHttps+"/successPay/"+orderId);
+        obj.setReturnURL(ecpayRedirectHttpsUrl+"/user/successPay/"+orderId);
         String form = all.aioCheckOut(obj, null);
         obj.getMerchantTradeNo();
 
