@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import project_pet_backEnd.userManager.dto.UserDetailProfileResponse;
+import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.user.dto.UserProfileResponse;
 import project_pet_backEnd.userManager.dto.Sort;
@@ -38,19 +40,19 @@ public class UserManagerController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/users")
-    public ResultResponse<Page<List<UserProfileResponse>>>  getUsers(
+    public ResultResponse<ResponsePage<List<UserDetailProfileResponse>>>  getUsers(
             @RequestParam(required = false)String search,
             @RequestParam(required = false, defaultValue = "USER_CREATED") UserOrderBy orderBy,
             @RequestParam(required = false,defaultValue = "desc") Sort sort,
-            @RequestParam(defaultValue = "5")@Max(50) @Min(0) Integer limit,
-            @RequestParam(defaultValue = "0")@Min(0)Integer offset){
+            @RequestParam(defaultValue = "1")@Min(1) Integer page,
+            @RequestParam(defaultValue = "5")@Min(1)Integer size){
         UserQueryParameter userQueryParameter=new UserQueryParameter();
         userQueryParameter.setSearch(search);
         userQueryParameter.setOrder(orderBy);
         userQueryParameter.setSort(sort);
-        userQueryParameter.setLimit(limit);
-        userQueryParameter.setOffset(offset);
-        Page<List<UserProfileResponse>> userList = userManagerService.getUsers(userQueryParameter);
+        userQueryParameter.setPage(page);
+        userQueryParameter.setSize(size);
+        ResponsePage<List<UserDetailProfileResponse>> userList = userManagerService.getUsers(userQueryParameter);
         ResultResponse rs =new ResultResponse();
         rs.setMessage(userList);
         return rs;

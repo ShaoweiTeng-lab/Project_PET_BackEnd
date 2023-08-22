@@ -1,10 +1,9 @@
 package project_pet_backEnd.manager.vo;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.relational.core.sql.In;
 
 import javax.persistence.*;
 @DynamicInsert
