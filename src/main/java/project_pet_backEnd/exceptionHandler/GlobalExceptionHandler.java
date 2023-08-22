@@ -50,9 +50,8 @@ public class GlobalExceptionHandler  {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleRequestValidError(MethodArgumentNotValidException  ex) throws JsonProcessingException {
-        // 返回錯誤訊息和 400 Bad Request 狀態碼
         ResultResponse rs = new ResultResponse();
-        String msg = ex.getMessage();
+        String msg = ex.getBindingResult().getFieldError().getDefaultMessage();
         rs.setMessage(msg);
         rs.setCode(400);//改成將異常code丟入訊息中
         return new ResponseEntity<>(rs, HttpStatus.OK);
