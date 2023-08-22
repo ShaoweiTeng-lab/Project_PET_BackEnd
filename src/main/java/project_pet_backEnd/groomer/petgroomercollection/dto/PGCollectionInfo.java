@@ -4,6 +4,8 @@ import lombok.Data;
 
 public class PGCollectionInfo {
 
+    //收藏清單
+
     private Integer pgId;
     private String pgName;
     private String pgPic;
