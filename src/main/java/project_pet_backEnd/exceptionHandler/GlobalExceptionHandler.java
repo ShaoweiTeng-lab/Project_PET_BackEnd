@@ -31,6 +31,19 @@ public class GlobalExceptionHandler  {
         //return new ResponseEntity<>(rs, httpStatus);
         return new ResponseEntity<>(rs, HttpStatus.OK);
     }
+
+    /**
+     * 處理在DataBase驗證過程中的約束違規錯誤
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleRequestValidError(ConstraintViolationException ex) throws JsonProcessingException {
+        ResultResponse rs = new ResultResponse();
+        String msg = ex.getMessage();
+        rs.setMessage(msg);
+        rs.setCode(400);//改成將異常code丟入訊息中
+        return new ResponseEntity<>(rs, HttpStatus.OK);
+    }
+
     /**
      * 驗證參數異常
      */
