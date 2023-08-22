@@ -31,20 +31,6 @@ public class GlobalExceptionHandler  {
         //return new ResponseEntity<>(rs, httpStatus);
         return new ResponseEntity<>(rs, HttpStatus.OK);
     }
-
-//    /**
-//     * 驗證參數異常
-//     */
-//    @ExceptionHandler(ConstraintViolationException.class)
-//    public ResponseEntity<?> handleRequestValidError(ConstraintViolationException ex) throws JsonProcessingException {
-//        // 返回錯誤訊息和 400 Bad Request 狀態碼
-//        ResultResponse rs = new ResultResponse();
-//        String msg = ex.getMessage();
-//        rs.setMessage(msg);
-//        rs.setCode(400);//改成將異常code丟入訊息中
-//        return new ResponseEntity<>(rs, HttpStatus.OK);
-//    }
-
     /**
      * 驗證參數異常
      */
