@@ -39,19 +39,19 @@ public class PortfolioController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/portfolio/insert")
-    public ResponseEntity<?> insert(
-            @RequestParam @NotNull Integer pgId,
-            @RequestParam @NotNull String porTitle,
-            @RequestParam @NotBlank String porText
-    ) {
-        Portfolio rest = new Portfolio();
-        rest.setPgId(pgId);
-        rest.setPorTitle(porTitle);
-        rest.setPorText(porText);
-        ResultResponse resultResponse = service.insert(rest);
-        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
-    }
+//    @PostMapping("/portfolio/insert")
+//    public ResponseEntity<?> insert(
+//            @RequestParam @NotNull Integer pgId,
+//            @RequestParam @NotNull String porTitle,
+//            @RequestParam @NotBlank String porText
+//    ) {
+//        Portfolio rest = new Portfolio();
+//        rest.setPgId(pgId);
+//        rest.setPorTitle(porTitle);
+//        rest.setPorText(porText);
+//        ResultResponse resultResponse = service.insert(rest);
+//        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+//    }
 
     /**
      * 更新作品
@@ -62,45 +62,45 @@ public class PortfolioController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/portfolio/update")
-    public ResponseEntity<?> update(
-            @RequestParam @NotNull Integer porId,
-            @RequestParam @NotNull Integer pgId,
-            @RequestParam @NotNull String porTitle,
-            @RequestParam @NotBlank String porText
-    ) {
-        Portfolio rest = new Portfolio();
-        rest.setPorId(porId);
-        rest.setPgId(pgId);
-        rest.setPorTitle(porTitle);
-        rest.setPorText(porText);
-        ResultResponse resultResponse = service.update(rest);
-        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
-    }
+//    @PostMapping("/portfolio/update")
+//    public ResponseEntity<?> update(
+//            @RequestParam @NotNull Integer porId,
+//            @RequestParam @NotNull Integer pgId,
+//            @RequestParam @NotNull String porTitle,
+//            @RequestParam @NotBlank String porText
+//    ) {
+//        Portfolio rest = new Portfolio();
+//        rest.setPorId(porId);
+//        rest.setPgId(pgId);
+//        rest.setPorTitle(porTitle);
+//        rest.setPorText(porText);
+//        ResultResponse resultResponse = service.update(rest);
+//        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+//    }
 
     /**
      * 删除作品
      * @param porId
      * @return
      */
-    //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/portfolio/delete")
-    public ResponseEntity<?> delete(
-            @RequestParam @NotNull Integer porId
-    ) {
-        Portfolio rest = new Portfolio();
-        rest.setPorId(porId);
-        ResultResponse resultResponse = service.delete(rest);
-        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
-    }
+//    //    @PreAuthorize("hasAnyAuthority('美容師管理')")
+//    @PostMapping("/portfolio/delete")
+//    public ResponseEntity<?> delete(
+//            @RequestParam @NotNull Integer porId
+//    ) {
+//        Portfolio rest = new Portfolio();
+//        rest.setPorId(porId);
+//        ResultResponse resultResponse = service.delete(rest);
+//        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+//    }
 
     /**
-     * 查询作品详情
+     * 查询作品詳情
      * @param porId
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/portfolio/findById")
+    @PostMapping("/user/portfolio/findById")
     public ResponseEntity<?> findById(
             @RequestParam @NotNull Integer porId
     ) {
@@ -120,7 +120,7 @@ public class PortfolioController {
      * @param offset
      * @return
      */
-    @GetMapping("/portfolio/list")
+    @GetMapping("/custom/portfolio/list")
     public ResponseEntity<Page<List<PortfolioRes>>> list(
             @RequestParam(value = "pgId", required = false) Integer pgId,
             @RequestParam(value = "search", required = false) String search,

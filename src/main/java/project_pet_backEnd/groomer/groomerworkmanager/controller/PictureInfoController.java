@@ -42,7 +42,7 @@ public class PictureInfoController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/picture/insert")
+    @PostMapping("/manager/picture/insert")
     public ResponseEntity<?> insert(
             @RequestParam @NotNull Integer porId,
             @RequestParam @NotNull MultipartFile piPicture
@@ -55,14 +55,14 @@ public class PictureInfoController {
     }
 
     /**
-     * 修改作品图片
+     * 修改作品圖片
      * @param piNo
      * @param porId
      * @param piPicture
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/picture/update")
+    @PostMapping("/manager/picture/update")
     public ResponseEntity<?> update(
             @RequestParam @NotNull Integer piNo,
             @RequestParam @NotNull Integer porId,
@@ -83,7 +83,7 @@ public class PictureInfoController {
      * @return
      */
     //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/picture/delete")
+    @PostMapping("/manager/picture/delete")
     public ResponseEntity<?> delete(
             @RequestParam @NotNull Integer piNo
     ) {
@@ -99,7 +99,7 @@ public class PictureInfoController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/picture/findById")
+    @PostMapping("/manager/picture/findById")
     public ResponseEntity<?> findById(
             @RequestParam @NotNull Integer piNo
     ) {
@@ -119,7 +119,7 @@ public class PictureInfoController {
      * @param offset
      * @return
      */
-    @GetMapping("/picture/list")
+    @GetMapping("/manager/picture/list")
     public ResponseEntity<Page<List<PictureInfoRes>>> list(
             @RequestParam(value = "porId", required = false) Integer porId,
             @RequestParam(value = "search", required = false) String search,

@@ -37,7 +37,7 @@ public class PortfolioCollectController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/collect/insert")
+    @PostMapping("/user/collect/insert")
     public ResponseEntity<?> insert(
             @RequestParam @NotNull Integer porId,
             @RequestParam @NotNull Integer userId
@@ -58,7 +58,7 @@ public class PortfolioCollectController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/collect/update")
+    @PostMapping("/user/collect/update")
     public ResponseEntity<?> update(
             @RequestParam @NotNull Integer pcNo,
             @RequestParam @NotNull Integer porId,
@@ -79,7 +79,7 @@ public class PortfolioCollectController {
      * @return
      */
     //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/collect/delete")
+    @PostMapping("/user/collect/delete")
     public ResponseEntity<?> delete(
             @RequestParam @NotNull Integer pcNo
     ) {
@@ -96,7 +96,7 @@ public class PortfolioCollectController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/collect/findById")
+    @PostMapping("/user/collect/findById")
     public ResponseEntity<?> findById(
             @RequestParam @NotNull Integer pcNo
     ) {
@@ -117,7 +117,7 @@ public class PortfolioCollectController {
      * @param offset
      * @return
      */
-    @GetMapping("/collect/list")
+    @GetMapping("/user/collect/list")
     public ResponseEntity<Page<List<PortfolioCollectRes>>> list(
             @RequestParam(value = "userId", required = false) Integer userId,
             @RequestParam(value = "search", required = false) String search,
