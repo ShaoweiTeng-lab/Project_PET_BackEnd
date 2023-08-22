@@ -6,18 +6,18 @@ import javax.validation.constraints.*;
 import java.sql.Date;
 @Data
 public class AdjustUserProfileRequest {
-    @NotBlank
+    @NotBlank(message = "使用者名稱不可為空")
     private String  userName;
     private  String  userNickName;
     @NotNull
     @Min(0)
     @Max(1)
     private Integer userGender;
-    @NotBlank
+    @NotBlank(message = "密碼不可為空")
     private String  userPassword;
-    @NotBlank
+    @NotBlank(message = "使用者電話不可為空")
     private String  userPhone;
-    @NotBlank
+    @NotBlank(message = "使用者地址不可為空")
     private  String userAddress;
     private Date userBirthday;
     private byte[] userPic;

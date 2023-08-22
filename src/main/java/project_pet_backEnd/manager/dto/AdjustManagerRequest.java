@@ -11,10 +11,11 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AdjustManagerRequest {
     private Integer  managerId;
-    @NotBlank
+    @NotBlank(message = "帳號不可為空")
     private  String  orgManagerAccount;//修改前的帳號名稱
-    @NotBlank
+    @NotBlank(message = "帳號不可為空")
     private  String  managerAccount;
+    @NotBlank(message = "密碼不可為空")
     private  String  managerPassword;
     @Min(0)
     @Max(1)
