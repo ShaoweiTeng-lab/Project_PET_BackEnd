@@ -22,7 +22,7 @@ public class DateUtils {
      * */
 
     // datetime str -> datetime sql(timestamp)完整轉換
-    public static Timestamp dateTimeStrToSql(String dateTimeStr) {
+    public static java.sql.Timestamp dateTimeStrToSql(String dateTimeStr) {
         SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATETIME_FORMAT);
         Date date = null;
         try {
@@ -35,7 +35,7 @@ public class DateUtils {
     }
 
     // datetime sql(timestamp) -> datetime str完整轉換
-    public static String dateTimeSqlToStr(Timestamp dateTime) {
+    public static String dateTimeSqlToStr(java.sql.Timestamp dateTime) {
         SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATETIME_FORMAT);
         String dateTimeStr = sdf.format(dateTime);
         return dateTimeStr;
@@ -69,6 +69,19 @@ public class DateUtils {
         return sdf.format(date);
     }
 
+    public static Timestamp getCurrentFormatTimeStamp() {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat(STANDARD_DATETIME_FORMAT);
+        Date date = null;
+        try {
+            date = sdf.parse(String.valueOf(timestamp));
+        } catch (ParseException e) {
+            return new Timestamp(System.currentTimeMillis());
+        }
+        Timestamp newTime = new Timestamp(date.getTime());
+        return newTime;
+
+    }
 
     /**
      * 日期時間字串->日期格式（yyyy-MM-dd HH:mm:ss）
@@ -97,4 +110,5 @@ public class DateUtils {
 
 
 }
+
 

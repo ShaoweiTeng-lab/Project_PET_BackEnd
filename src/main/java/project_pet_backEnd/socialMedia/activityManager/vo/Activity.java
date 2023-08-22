@@ -14,7 +14,7 @@ public class Activity {
     /**
      * ACTIVITY_ID int UN AI PK
      * EMP_ID int
-     * ACTIVITY_TITILE varchar(20)
+     * ACTIVITY_TITLE varchar(20)
      * ACTIVITY_CONTENT text
      * ENROLL_START date
      * ENROLL_END date
@@ -33,8 +33,11 @@ public class Activity {
 
     @Column(name = "EMP_ID")
     Integer adminId;
-    @Column(name = "ACTIVITY_TITILE")
+    @Column(name = "ACTIVITY_TITLE")
     String activityTitle;
+    @Column(name = "ACTIVITY_PIC")
+    @Lob
+    byte[] activityPicture;
     @Column(name = "ACTIVITY_CONTENT")
     String activityContent;
     @Column(name = "ENROLL_START")

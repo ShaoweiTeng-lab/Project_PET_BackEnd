@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.socialMedia.report.dto.req.MessageReportRequest;
 import project_pet_backEnd.socialMedia.report.dto.req.PostReportRequest;
+import project_pet_backEnd.socialMedia.report.dto.req.ReportRequest;
 import project_pet_backEnd.socialMedia.report.service.ReportService;
 import project_pet_backEnd.socialMedia.report.vo.MesReport;
 import project_pet_backEnd.socialMedia.report.vo.PostReport;
@@ -36,9 +37,9 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @PostMapping("/message/{messageId}/{userId}")
-    public ResponseEntity<ResultResponse<MesReport>> create(@Valid @RequestBody MessageReportRequest messageReportRequest, @PathVariable("userId") int userId) {
-        ResultResponse<MesReport> response = reportService.create(userId, messageReportRequest);
+    @PostMapping("/message/{messageId}")
+    public ResponseEntity<ResultResponse<String>> createMesReport(@PathVariable("messageId") int messageId, @Valid @RequestBody ReportRequest reportRequest, @RequestParam("userId") int userId) {
+        ResultResponse<String> response = reportService.createMesRep(userId, messageId, reportRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
@@ -47,9 +48,9 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @PostMapping("/post/{postId}/{userId}")
-    public ResponseEntity<ResultResponse<PostReport>> create(@RequestBody PostReportRequest postReportRequest, @PathVariable("userId") int userId) {
-        ResultResponse<PostReport> response = reportService.create(userId, postReportRequest);
+    @PostMapping("/post/{postId}")
+    public ResponseEntity<ResultResponse<String>> createPostReport(@PathVariable("postId") int postId, @Valid @RequestBody ReportRequest reportRequest, @RequestParam("userId") int userId) {
+        ResultResponse<String> response = reportService.createPostRep(userId, postId, reportRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
