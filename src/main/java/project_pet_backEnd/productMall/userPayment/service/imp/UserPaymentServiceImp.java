@@ -30,7 +30,6 @@ public class UserPaymentServiceImp implements UserPaymentService {
     private String ecpayRedirectHttpsUrl;
     @Override
     public String getPaymentForm(Integer userId,Integer orderId) {
-        //todo 先判斷該使用者有無此訂單編號
         Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null|| orders.getUserId()!=userId)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"您輸入的訂單編號錯誤");
