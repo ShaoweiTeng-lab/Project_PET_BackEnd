@@ -13,10 +13,14 @@ public class PostReportDetails {
     //被檢舉人
     String toUserName;
     String toUserEmail;
+    //貼文內容
+    String postContent;
     //檢舉內容
     String postReportContent;
     //檢舉時間
-    Timestamp createTime;
+    String createTime;
     //檢舉狀態
+    Integer postRepStatus;
+    //貼文狀態
     Integer postStatus;
 }

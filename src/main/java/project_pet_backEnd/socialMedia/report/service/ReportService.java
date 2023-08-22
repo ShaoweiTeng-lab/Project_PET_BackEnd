@@ -4,8 +4,15 @@ package project_pet_backEnd.socialMedia.report.service;
 
 import project_pet_backEnd.socialMedia.report.dto.req.MessageReportRequest;
 import project_pet_backEnd.socialMedia.report.dto.req.PostReportRequest;
+import project_pet_backEnd.socialMedia.report.dto.req.ReportRequest;
+import project_pet_backEnd.socialMedia.report.dto.req.ReviewReq;
+import project_pet_backEnd.socialMedia.report.dto.res.MesRepRes;
+import project_pet_backEnd.socialMedia.report.dto.res.MesReportDetails;
+import project_pet_backEnd.socialMedia.report.dto.res.PostRepRes;
+import project_pet_backEnd.socialMedia.report.dto.res.PostReportDetails;
 import project_pet_backEnd.socialMedia.report.vo.MesReport;
 import project_pet_backEnd.socialMedia.report.vo.PostReport;
+import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
@@ -13,26 +20,25 @@ import java.util.List;
 public interface ReportService {
 
 
-    // ================= message report ================= //
-    ResultResponse<MesReport> create(int userId, MessageReportRequest messageReportRequest);
+    // =================== user report =================== //
+    ResultResponse<String> createMesRep(int userId, int messageId, ReportRequest reportRequest);
 
-
-    // ================= post report ================= //
-    ResultResponse<PostReport> create(int userId, PostReportRequest postReportRequest);
+    ResultResponse<String> createPostRep(int userId, int postId, ReportRequest reportRequest);
 
 
     // ================= manager report  ================= //
-    ResultResponse<List<MesReport>> getAllMesReport(Integer managerId);
 
-    ResultResponse<List<PostReport>> getAllPostReport(Integer managerId);
+    ResultResponse<PageRes<MesRepRes>> getAllMesReport(Integer page, Integer status);
 
-    ResultResponse<MesReport> getMesReportById(int mesRepId, Integer managerId);
+    ResultResponse<PageRes<PostRepRes>> getAllPostReport(Integer page, Integer status);
 
-    ResultResponse<PostReport> getPostReportById(int postRepId, Integer managerId);
+    ResultResponse<MesReportDetails> getMesReportById(int mesRepId);
 
-    ResultResponse<MesReport> reviewReportById(int mesRepId, Integer managerId);
+    ResultResponse<PostReportDetails> getPostReportById(int postRepId);
 
-    ResultResponse<String> sendEmailToUsers(String[] toEmail, String body, String subject);
+    ResultResponse<MesReport> reviewMesReportById(int mesRepId, ReviewReq reviewReq);
+
+    ResultResponse<PostReport> reviewPostReportById(int postRepId, ReviewReq reviewReq);
 
 
 }
