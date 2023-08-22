@@ -41,8 +41,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         Orders orders= ordersRepository.findById(Integer.parseInt(orderId)).orElse(null);
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
-        //todo 確認映射是否為 byte ?
-        //orders.setOrdPayStatus(1);
+        orders.setOrdPayStatus((byte)1); //修改為1 完成訂單
 
     }
 
