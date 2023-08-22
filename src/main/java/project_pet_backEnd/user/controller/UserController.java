@@ -32,7 +32,7 @@ public class UserController {
     private OAuthService oAuthService;
     @ApiOperation("使用者登入")
     @PostMapping("/login")
-    public ResponseEntity<ResultResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest){
+    public ResponseEntity<ResultResponse<String>> login(@RequestBody @Valid UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
