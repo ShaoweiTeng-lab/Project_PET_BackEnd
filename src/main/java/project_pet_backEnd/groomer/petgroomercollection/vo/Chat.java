@@ -4,15 +4,16 @@ import lombok.Data;
 
 import javax.persistence.Table;
 
-@Table(name = "PORTFOLIO")
+@Table(name = "GROOMER_CHAT")
 @Data
-public class Portfolio {
+public class Chat {
     // 作品
-    private Integer porId;
+    private Integer chatNo;
+    private Integer userId;
     private Integer pgId;
-    private String porTitle;
-    private String porText;
-    private java.sql.Date porUpload;//util.date
+    private String chatText;
+    private String chatStatus;
+    private java.sql.Date chatCreated;//util.date
 
     // 此處省略建構子、Getter 和 Setter 方法
 }
