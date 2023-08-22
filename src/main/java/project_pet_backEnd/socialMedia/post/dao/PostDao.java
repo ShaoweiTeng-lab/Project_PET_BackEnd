@@ -2,45 +2,33 @@ package project_pet_backEnd.socialMedia.post.dao;
 
 
 
-import project_pet_backEnd.socialMedia.post.dto.req.UpPostRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
 import project_pet_backEnd.socialMedia.post.vo.POST;
 
 import java.util.List;
 
-public interface PostDao {
+@Repository
+public interface PostDao extends
+        PagingAndSortingRepository<POST, Integer>
+        , JpaRepository<POST, Integer> {
 
-    /**
-     * user發布貼文
-     */
-
-    POST create(POST post);
-
-
-    /**
-     * 獲取所有貼文
-     */
-
-    List<POST> getAllPosts();
+    Page<POST> findAllByPostStatus(Pageable pageable, Integer postStatus);
 
 
-    /**
-     * 使用postId查詢貼文
-     */
-
-    POST getPostById(int postId);
-
-
-    /**
-     * user修改貼文內容
-     */
-
-    POST update(int postId, UpPostRequest upPostRequest);
-
-    /**
-     * user刪除貼文
-     */
-
-    void delete(int postId);
+    //    POST create(POST post);
+//
+//    List<POST> getAllPosts();
+//
+//    POST getPostById(int postId);
+//
+//    POST update(int postId, UpPostRequest upPostRequest);
+//
+//    void delete(int postId);
 
 
 }

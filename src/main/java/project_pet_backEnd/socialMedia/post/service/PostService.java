@@ -2,22 +2,38 @@ package project_pet_backEnd.socialMedia.post.service;
 
 
 
-import project_pet_backEnd.socialMedia.post.dto.req.UpPostRequest;
-import project_pet_backEnd.socialMedia.post.vo.POST;
+import org.springframework.web.multipart.MultipartFile;
+import project_pet_backEnd.socialMedia.post.dto.req.PostReq;
+import project_pet_backEnd.socialMedia.post.dto.res.PostRes;
+import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
-import java.util.List;
+import java.io.IOException;
 
 
 public interface PostService {
 
-    ResultResponse<POST> create(POST post);
+    ResultResponse<String> create(Integer userId, PostReq postReq);
 
-    ResultResponse<POST> update(int postId, UpPostRequest upPostRequest);
+    ResultResponse<PostRes> update(int userId, int postId, PostReq postReq);
 
-    ResultResponse<String> delete(int postId);
+    ResultResponse<String> delete(int userId, int postId);
 
-    ResultResponse<List<POST>> getAllPosts();
+    ResultResponse<PageRes<PostRes>> getAllPosts(int page);
 
-    ResultResponse<POST> getPostById(int postId);
+    ResultResponse<PostRes> getPostById(int postId);
+
+    // 上傳影片
+
+
+    //上傳圖片
+    ResultResponse<String> uploadImage(MultipartFile file) throws IOException;
+
+    //上傳圖片-base64
+//    ResultResponse<String> uploadBase64Image(MultipartFile file) throws IOException;
+
+    //get 圖片
+
+
+    //get 影片
 }

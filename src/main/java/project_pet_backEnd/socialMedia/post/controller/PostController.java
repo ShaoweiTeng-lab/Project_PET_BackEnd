@@ -9,18 +9,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.socialMedia.post.dto.req.UpPostRequest;
 import project_pet_backEnd.socialMedia.post.dto.res.PostRes;
 import project_pet_backEnd.socialMedia.post.dto.req.PostReq;
 import project_pet_backEnd.socialMedia.post.service.PostService;
-import project_pet_backEnd.socialMedia.post.vo.POST;
+import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @Api(tags = "貼文功能")
 @RestController
-@RequestMapping("user/social/post")
+@RequestMapping("/user/social/post")
 @Validated
 public class PostController {
 
@@ -35,27 +34,9 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping
-    public ResponseEntity<ResultResponse<PostRes>> create(@RequestBody PostReq postReq) {
-        POST post = new POST();
-        //set info
-        post.setUserId(postReq.getUserId());
-        post.setPostContent(postReq.getContent());
-        post.setPostStatus(0);
-
-
-        ResultResponse<POST> response = postService.create(post);
-
-        //改變回傳結果
-        PostRes postRes = new PostRes();
-        postRes.setPostStatus(response.getMessage().getPostStatus());
-        postRes.setPostContent(response.getMessage().getPostContent());
-        postRes.setUpdateTime(response.getMessage().getCreateTime());
-        postRes.setUserId(response.getMessage().getUserId());
-        postRes.setPostId(response.getMessage().getPostId());
-
-        ResultResponse<PostRes> resultResponse = new ResultResponse<>();
-        resultResponse.setMessage(postRes);
-        return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
+    public ResponseEntity<ResultResponse<String>> create(@Valid @RequestBody PostReq postReq, @RequestParam("userId") Integer userId) {
+        ResultResponse<String> response = postService.create(userId, postReq);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 
@@ -64,16 +45,9 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/{postId}")
-    public ResponseEntity<PostRes> update(@PathVariable("postId") int postId, @RequestBody UpPostRequest upPostRequest) {
-        ResultResponse<POST> resultResponse = postService.update(postId, upPostRequest);
-        postService.update(postId, upPostRequest);
-//        PostRes postRes = new PostRes();
-//        postRes.setPostId(updatePost.getPostId());
-//        postRes.setUserId(updatePost.getUserId());
-//        postRes.setPostContent(updatePost.getPostContent());
-//        postRes.setUpdateTime(updatePost.getUpdateTime());
-//        postRes.setPostStatus(updatePost.getPostStatus());
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+    public ResponseEntity<ResultResponse<PostRes>> update(@PathVariable("postId") int postId, @RequestBody PostReq postReq, @RequestParam("userId") Integer userId) {
+        ResultResponse<PostRes> response = postService.update(userId, postId, postReq);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @ApiOperation("User刪除單一貼文")
@@ -81,10 +55,10 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> delete(@PathVariable("postId") int postId) {
+    public ResponseEntity<?> delete(@PathVariable("postId") int postId, @RequestParam("userId") Integer userId) {
         // 關聯問題 目前無法刪除
         System.out.println(postId);
-        postService.delete(postId);
+        postService.delete(userId, postId);
         return ResponseEntity.status(HttpStatus.OK).body("刪除成功");
 
     }
@@ -93,9 +67,9 @@ public class PostController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @GetMapping
-    public ResponseEntity<ResultResponse<List<POST>>> getAllPost() {
-        ResultResponse<List<POST>> posts = postService.getAllPosts();
+    @GetMapping("/all")
+    public ResponseEntity<ResultResponse<PageRes<PostRes>>> getAllPost(@RequestParam("page") int page) {
+        ResultResponse<PageRes<PostRes>> posts = postService.getAllPosts(page);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
@@ -105,14 +79,8 @@ public class PostController {
     })
     @GetMapping("/{postId}")
     public ResponseEntity<ResultResponse<PostRes>> getPostById(@PathVariable("postId") int postId) {
-        ResultResponse<POST> post = postService.getPostById(postId);
-        PostRes postRes = new PostRes();
-//        postRes.setUserId(post.getUserId());
-//        postRes.setPostId(post.getPostId());
-//        postRes.setPostContent(post.getPostContent());
-//        postRes.setPostStatus(post.getPostStatus());
-//        postRes.setUpdateTime(post.getUpdateTime());
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        ResultResponse<PostRes> post = postService.getPostById(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
 
@@ -136,8 +104,8 @@ public class PostController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @PostMapping("/{postId}/uploadVedio")
-    public ResponseEntity<?> uploadVedio() {
+    @PostMapping("/{postId}/uploadVideo")
+    public ResponseEntity<?> uploadVideo() {
 
 
         return null;
@@ -148,8 +116,8 @@ public class PostController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @GetMapping("/{postId}/vedio")
-    public ResponseEntity<ResultResponse<?>> getVedioByPostId(@PathVariable("postId") int postId) {
+    @GetMapping("/{postId}/video")
+    public ResponseEntity<ResultResponse<?>> getVideoByPostId(@PathVariable("postId") int postId) {
 
         return null;
     }
@@ -164,6 +132,37 @@ public class PostController {
     })
     @GetMapping("/{postId}/image")
     public ResponseEntity<ResultResponse<?>> getImageByPostId(@PathVariable("postId") int postId) {
+
+        return null;
+    }
+
+
+    @ApiOperation("User建立貼文標籤")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PostMapping("/{postId}/tags")
+    public ResponseEntity<ResultResponse<?>> createTagsByPostId(@PathVariable("postId") int postId) {
+
+        return null;
+    }
+
+    @ApiOperation("User刪除貼文標籤")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @DeleteMapping("/{postId}/tags")
+    public ResponseEntity<ResultResponse<?>> deleteTagsByPostId(@PathVariable("postId") int postId) {
+
+        return null;
+    }
+
+    @ApiOperation("User查詢貼文所有標籤")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @GetMapping("/{postId}/tags")
+    public ResponseEntity<ResultResponse<?>> queryTagsByPostId(@PathVariable("postId") int postId) {
 
         return null;
     }

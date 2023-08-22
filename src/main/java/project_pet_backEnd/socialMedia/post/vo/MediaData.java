@@ -1,5 +1,6 @@
 package project_pet_backEnd.socialMedia.post.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,5 +34,10 @@ public class MediaData {
     @Column(name = "POST_MEDIA")
     @Lob
     private byte[] mediaData;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "POST_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private POST post;
 
 }

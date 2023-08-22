@@ -1,6 +1,7 @@
 package project_pet_backEnd.socialMedia.util;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -47,6 +48,26 @@ public class ImageUtils {
             // do something
         }
         return stream.toByteArray();
+    }
+
+
+    /**
+     * byte[]轉base 64
+     */
+
+    public static String base64Encode(byte[] byteArray) {
+        if (byteArray == null)
+            return null;
+        return Base64.getEncoder().encodeToString(byteArray);
+    }
+
+    /**
+     * base 64轉byte[]
+     */
+    public static byte[] base64Decode(String base64String) {
+        if (base64String == null)
+            return null;
+        return Base64.getDecoder().decode(base64String);
     }
 
 

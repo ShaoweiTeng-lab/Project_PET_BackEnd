@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class PostReq {
-    int userId;
     @NotNull
     String content;
 }
