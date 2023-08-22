@@ -38,12 +38,25 @@ public class UserPaymentServiceImp implements UserPaymentService {
     }
 
     @Override
-    public void successPayCallBack(String orderId) {
-        Orders orders= ordersRepository.findById(Integer.parseInt(orderId)).orElse(null);
+    public void successPayCallBack(Integer orderId) {
+        Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
         orders.setOrdPayStatus((byte)1); //修改為1 完成訂單
         ordersRepository.save(orders);
+    }
+
+    @Override
+    public String checkIsPay(Integer orderId) {
+        Orders orders= ordersRepository.findById(orderId).orElse(null);
+        if(orders==null) {
+            log.warn("orderId : " + orderId + " 回傳異常");
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此訂單");
+        }
+        int ordPayStatus=orders.getOrdPayStatus().intValue();
+        if(ordPayStatus==1)
+            return "isPay";
+        return  "unPay";
     }
 
 
