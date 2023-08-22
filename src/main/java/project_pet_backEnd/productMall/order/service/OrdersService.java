@@ -1,5 +1,6 @@
 package project_pet_backEnd.productMall.order.service;
 
+import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
@@ -8,7 +9,7 @@ import java.util.List;
 public interface OrdersService {
 
     //新增訂單商業邏輯
-    public abstract void insertOrders(OrdersRes ordersRes);
+    public abstract void createOrders(CreateOrderDTO createOrderDTO);
 
     //刪除訂單商業邏輯--byOrdNo
     public abstract void deleteOrdersByOrdNo(Integer ordNo);
