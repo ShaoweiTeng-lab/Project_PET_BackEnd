@@ -12,15 +12,19 @@ import project_pet_backEnd.ecpay.payment.integration.AllInOne;
 import project_pet_backEnd.ecpay.payment.integration.domain.AioCheckOutALL;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.productMall.userPayment.dao.OrderListRepository;
 import project_pet_backEnd.productMall.userPayment.service.UserPaymentService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserPaymentServiceImp implements UserPaymentService {
     @Autowired
     private OrdersRepository ordersRepository;
+    @Autowired
+    private OrderListRepository orderListRepository;
     private  final  static Logger log= LoggerFactory.getLogger(UserPaymentServiceImp.class);
     @Value("${ecpay-RedirectHttpsUrl}")
     private String ecpayRedirectHttpsUrl;
@@ -32,7 +36,10 @@ public class UserPaymentServiceImp implements UserPaymentService {
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"您輸入的訂單編號錯誤");
         if(orders.getOrdPayStatus().intValue()==1)
             throw  new ResponseStatusException(HttpStatus.GONE,"您已經完成訂單");//回傳410 表示所請求的資源不再可用
-        String form=generateEcpayForm(orderId,"測試商品",orders.getTotalAmount());
+        List<String> products=orderListRepository.findOrderProductByOrderId(orderId);
+        StringBuilder str =new StringBuilder();
+        products.forEach(val->str.append(val+"  "));
+        String form=generateEcpayForm(orderId,str.toString(),orders.getTotalAmount());
 
         return form;
     }
