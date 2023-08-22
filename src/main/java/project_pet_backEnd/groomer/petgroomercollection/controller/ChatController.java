@@ -40,7 +40,7 @@ public class ChatController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/chat/insert")
+    @PostMapping("/user/chat/insert")
     public ResponseEntity<?> insert(
             @RequestParam @NotNull Integer userId,
             @RequestParam @NotNull Integer pgId,
@@ -66,7 +66,7 @@ public class ChatController {
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/chat/update")
+    @PostMapping("/user/chat/update")
     public ResponseEntity<?> update(
             @RequestParam @NotNull Integer chatNo,
             @RequestParam @NotNull Integer userId,
@@ -90,7 +90,7 @@ public class ChatController {
      * @return
      */
     //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/chat/delete")
+    @PostMapping("/user/chat/delete")
     public ResponseEntity<?> delete(
             @RequestParam @NotNull Integer chatNo
     ) {
@@ -111,7 +111,7 @@ public class ChatController {
      * @param offset
      * @return
      */
-    @GetMapping("/chat/list")
+    @GetMapping("/user/chat/list")
     public ResponseEntity<Page<List<ChatRes>>> list(
             @RequestParam @NotNull Integer userId,
             @RequestParam @NotNull Integer pgId,
