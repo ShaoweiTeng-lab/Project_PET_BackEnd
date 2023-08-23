@@ -3,6 +3,7 @@ package project_pet_backEnd.productMall.productsmanage.vo;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -12,6 +13,9 @@ public class ProductPic {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "PD_PIC_NO")
         private Integer pdPicNo;
+
+        @NotNull
+        private Integer pdNo; // 商品編號 (Foreign Key)
 
         @Column(name = "PD_PIC")
         @Lob

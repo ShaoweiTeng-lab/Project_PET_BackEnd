@@ -1,15 +1,17 @@
 package project_pet_backEnd.productMall.productsmanage.dao.imp;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
+import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
 import project_pet_backEnd.productMall.productsmanage.dto.AdjustProductListResponse;
 import project_pet_backEnd.productMall.productsmanage.dto.ProductInfo;
@@ -18,20 +20,19 @@ import project_pet_backEnd.productMall.productsmanage.dto.ProductListResponse;
 import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static project_pet_backEnd.productMall.productsmanage.dto.ProductOrderBy.pdNo;
-
-
 @Repository
-public class ProductsManageDaoImp implements ProductsManageDao {
+public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override
-    public List<ProductListResponse> getAllProduct() {
+    @Override  //ok商品列表列出全部商品
+    public List<ProductListResponse> getAllProduct(Integer pdNo) {
         String sql ="SELECT PD_NO, PD_NAME, PD_PRICE, PD_STATUS "+
                     "FROM PRODUCT " +
                     "WHERE PD_NO =:pdNo" +
@@ -40,30 +41,65 @@ public class ProductsManageDaoImp implements ProductsManageDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pdNo", pdNo);
 
-        List<ProductListResponse> ProductList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ProductListResponse.class));
-        return ProductList;
+        List<ProductListResponse> productList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ProductListResponse.class));
+        return productList;
     }
 
-    @Override //關鍵字搜尋要再找資料看
+    @Override //ok關鍵字搜尋、分頁搜尋
     public List<ProductListResponse> getAllProductWithSearch(ProductListQueryParameter productListQueryParameter) {
-//        String sql = "SELECT a.PGA_NO, a.PG_ID, a.USER_ID, a.PGA_DATE, a.PGA_TIME, a.PGA_STATE, a.PGA_OPTION, a.PGA_NOTES, a.PGA_PHONE, g.PG_NAME, u.USER_NAME " +
-//                "FROM PET_GROOMER_APPOINTMENT a " +
-//                "LEFT JOIN PET_GROOMER g ON a.PG_ID = g.PG_ID " +
-//                "LEFT JOIN USER u ON a.USER_ID = u.USER_ID " +
-//                "WHERE 1=1 ";
-//
-//        MapSqlParameterSource params = new MapSqlParameterSource();
-//
-//        if (groomerAppointmentQueryParameter.getSearch() != null) {
-//            sql += "AND (u.USER_NAME LIKE :search OR a.USER_ID LIKE :search OR g.PG_ID LIKE :search OR g.PG_NAME LIKE :search " +
-//                    "OR a.PGA_NO LIKE :search OR a.PGA_DATE LIKE :search OR a.PGA_STATE LIKE :search) ";
-//            params.addValue("search", "%" + groomerAppointmentQueryParameter.getSearch() + "%");
-//        }
+        String sql = "SELECT PD_NO, PD_NAME, PD_STATUS " +
+                "FROM PRODUCT " +
+                "WHERE 1=1 ";
 
-        return null;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+
+        if (productListQueryParameter.getSearch() != null) {
+            sql += "AND (PD_NO LIKE :search OR PD_NAME LIKE :search OR PD_STATUS LIKE :search ";
+            params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
+        }
+
+        // Sort
+        if (productListQueryParameter.getOrder() != null) {
+            String orderBy;
+            switch (productListQueryParameter.getOrder()) {
+                case PD_NAME:
+                    orderBy = "PD_NAME";
+                    break;
+                case PD_STATUS:
+                    orderBy = "PD_STATUS";
+                    break;
+                default:
+                    orderBy = "PD_NO"; // Default sorting by PD_NO
+            }
+            sql += "ORDER BY " + orderBy + " ";
+        }
+
+        // Sort
+        if (productListQueryParameter.getSort() != null) {
+            sql += productListQueryParameter.getSort() + " ";
+        }
+
+        // Limit and Offset
+        sql += "LIMIT :limit OFFSET :offset ";
+        params.addValue("limit", productListQueryParameter.getLimit());
+        params.addValue("offset", productListQueryParameter.getOffset());
+
+        List<ProductListResponse> productList = namedParameterJdbcTemplate.query(sql, params, new RowMapper<ProductListResponse>() {
+            @Override
+            public ProductListResponse mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ProductListResponse productListResponse = new ProductListResponse();
+                productListResponse.setPdNo(rs.getInt("PD_NO"));
+                productListResponse.setPdName(rs.getString("PD_NAME"));
+                productListResponse.setPdStatus(rs.getInt("PD_STATUS"));
+                return  productListResponse;
+            }
+        });
+
+        return productList;
+
     }
 
-    @Override //分頁搜尋要再找資料看
+    @Override //ok計算搜尋商品總筆數
     public Integer countAllProductWithSearch(ProductListQueryParameter productListQueryParameter) {
         String sql = "SELECT COUNT(*) " +
                 "FROM PRODUCT pd " +
@@ -75,68 +111,13 @@ public class ProductsManageDaoImp implements ProductsManageDao {
             sql += "AND (PD_NAME LIKE :search OR PD_NO LIKE :search OR PD_PRICE LIKE :search OR PD_STATUS LIKE :search) ";
         params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
         }
-//
-          //這裡開始看
-         /* 這裡是飛飛的 */
-//        Integer totalCount = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
-//        return totalCount;
-//        ------------------------------------------------------------------------------------------------
-//       /* 這裡是chatGPT的 */
-//        if (productListQueryParameter.getSearch() != null) {
-//        sql += "AND (PD_NAME LIKE :search OR PD_NO = :exactSearch OR PD_PRICE = :exactSearch OR PD_STATUS = :exactSearch) ";
-//        params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
-//        try {
-//            Integer searchAsInt = Integer.parseInt(productListQueryParameter.getSearch());
-//            params.addValue("exactSearch", searchAsInt);
-//        } catch (NumberFormatException e) {
-//            // Handle the case where search cannot be parsed as an integer
-//            params.addValue("exactSearch", -1); // Using a value that won't match any record
-//        }
-//    }
-//
-//       // Execute the query and return the result count
-//    return namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
-//}
-        return  null;
+
+        Integer totalCount = namedParameterJdbcTemplate.queryForObject(sql, params, Integer.class);
+        return totalCount;
+
     }
 
-    @Override
-    public void updateproductstatusByPdNo(AdjustProductListResponse adjustProductListResponse) {
-        String sql = "UPDATE PRODUCT " +
-                "SET PD_STATUS = :pdStatus, " +
-                "WHERE PD_NO = :pdNo";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pdNo",adjustProductListResponse.getPdNo());
-        params.addValue("pdStatus", adjustProductListResponse.getPdStatus());
-
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-    @Override   //FK PdNo
-    public void insertProductPic(ProductPic prodictpic) {
-        String sql = "INSERT INTO PRODUCT_PIC (PD_PIC) " +
-                "VALUES(:pdPic)";
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("pdPic", prodictpic.getPdPic());
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map), keyHolder);
-    }
-
-    @Override   //FK PdNo
-    public void updateproductPicByPdNo(ProductPic prodictpic) {
-        String sql = "UPDATE PRODUCT_PIC " +
-                "SET PD_PIC = :pdPic, " +
-                "WHERE PD_PIC_NO = :pdPicNo";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pdPic",prodictpic.getPdPic());
-        params.addValue("pdPicNo", prodictpic.getPdPicNo());
-
-        namedParameterJdbcTemplate.update(sql, params);
-    }
-
-
+    @Override   //ok(可改用JPA就不用寫)新增商品資訊
     public void insertProductInfo(ProductInfo productInfo) {
         String sql = "INSERT INTO PET_GROOMER_APPOINTMENT (PD_NAME, PD_PRICE, PD_FORMAT, PD_STATUS, PD_DESCRIPTION) " +
                 "VALUES (:pdName, :pdPrice, :pdFormat, :pdStatus, :pdDescription)";
@@ -149,6 +130,77 @@ public class ProductsManageDaoImp implements ProductsManageDao {
 
         namedParameterJdbcTemplate.update(sql, params);
 
+    }
+
+    @Override   //ok批次新增商品圖片
+    public void batchinsertProductPic(List<ProductPic> pics){
+        String sql ="INSERT INTO PRODUCT_PIC (PD_PIC, PD_NO) " +
+                "VALUES(:pdPic, :pdNo)";
+        Map<String, Object> [] maps =new HashMap[pics.size()];
+        for(int i = 0; i < pics.size(); i++){
+            ProductPic productPic = pics.get(i);
+            maps[i] = new HashMap<>();
+            maps[i].put("pdPic", productPic.getPdPic());
+            maps[i].put("pdNo", productPic.getPdNo());
+        }
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.batchUpdate(sql, maps);
+
+    }
+
+    @Override //ok編輯商品顯示(獲取)商品圖片(pic)
+    public List<ProductPic> getAllProductPic(Integer PdNo) {
+        String sql ="SELECT FROM PRODUCT_PIC WHERE PD_NO = :pdNo";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pdNo", PdNo);
+
+        List<ProductPic> pics = namedParameterJdbcTemplate.query(sql, params, new RowMapper<ProductPic>() {
+            @Override
+            public ProductPic mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ProductPic productPic = new ProductPic();
+                productPic.setPdPicNo(rs.getInt("PD_PIC_NO"));
+
+                return productPic;
+            }
+    });
+    return pics;
+}
+
+    @Override  //ok批次修改狀態
+    public void batchupdateproductstatusByPdNo(List<AdjustProductListResponse> adjustProductListResponse) {
+        String sql = "UPDATE PRODUCT " +
+                "SET PD_STATUS = :pdStatus " +
+                "WHERE PD_NO = :pdNo";
+
+        for (AdjustProductListResponse adjust: adjustProductListResponse) {
+            MapSqlParameterSource params = new MapSqlParameterSource();
+            params.addValue("pdStatus", adjust.getPdStatus());
+            params.addValue("pdNo", adjust.getPdNo());
+
+            namedParameterJdbcTemplate.update(sql, params);
+        }
+    }
+
+    @Override   //ok批次修改商品圖片們
+    public void batchupdateproductPicByPdNo(List<ProductPic> pics) {
+        String sql = "UPDATE PRODUCT_PIC " +
+                "SET PD_No = :pdNo, " +
+                "PD_PIC = :pdPic, " +
+                "WHERE PD_PIC_NO = :pdPicNo";
+
+        SqlParameterSource[] batchParams = new SqlParameterSource[pics.size()];
+        for (int i = 0; i < pics.size(); i++) {
+            ProductPic productPic = pics.get(i);
+
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pdNo", productPic.getPdNo());
+        params.addValue("pdPic",productPic.getPdPic());
+        params.addValue("pdPicNo", productPic.getPdPicNo());
+            batchParams[i] = params;
+        }
+
+        namedParameterJdbcTemplate.batchUpdate(sql, batchParams);
     }
 
 }

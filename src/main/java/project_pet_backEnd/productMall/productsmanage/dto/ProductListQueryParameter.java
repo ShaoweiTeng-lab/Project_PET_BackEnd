@@ -7,7 +7,7 @@ import project_pet_backEnd.userManager.dto.Sort;
 @Data
 public class ProductListQueryParameter {
     private  String search;
-    private ProductOrderBy order;
+    private ProductListOrderBy order;
 //  pdNo 商品編號
 //  pdName 商品名稱
 //  pdPrice 商品價錢
