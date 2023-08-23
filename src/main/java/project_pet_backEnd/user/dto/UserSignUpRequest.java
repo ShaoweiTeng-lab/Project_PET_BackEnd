@@ -10,21 +10,21 @@ import java.sql.Date;
 
 @Data
 public class UserSignUpRequest {
-    @NotBlank
+    @NotBlank(message = "使用者姓名不可為空")
     private String  userName;
     private  String  userNickName;
-    @NotNull
+    @NotNull(message = "性別不可為空")
     @Min(0)
     @Max(1)
     private Integer userGender;
-    @NotBlank
-    @Email
+    @NotBlank(message = "信箱不可為空")
+    @Email(message = "信箱格式異常")
     private  String  userEmail;
-    @NotBlank
+    @NotBlank(message = "密碼不可為空")
     private String  userPassword;
-    @NotBlank
+    @NotBlank(message = "電話不可為空")
     private String  userPhone;
-    @NotBlank
+    @NotBlank(message = "地址不可為空")
     private  String userAddress;
     @ApiModelProperty(value = "Hidden property", hidden = true)
     private  byte[] userPic;
@@ -32,6 +32,6 @@ public class UserSignUpRequest {
     private Date userBirthday;
     @ApiModelProperty(value = "Hidden property", hidden = true)
     private IdentityProvider identityProvider;
-    @NotBlank
+    @NotBlank(message = "驗證碼不可為空")
     private String captcha;//驗證碼
 }

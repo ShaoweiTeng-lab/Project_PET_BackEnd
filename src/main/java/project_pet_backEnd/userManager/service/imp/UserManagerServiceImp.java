@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.vo.User;
-import project_pet_backEnd.userManager.dao.UserManagerDao;
 import project_pet_backEnd.userManager.dto.UserDetailProfileResponse;
 import project_pet_backEnd.userManager.dto.UserQueryParameter;
 import project_pet_backEnd.userManager.service.UserManagerService;
@@ -20,8 +19,7 @@ import java.util.List;
 
 @Service
 public class UserManagerServiceImp implements UserManagerService {
-    @Autowired
-    private UserManagerDao userManagerDao;
+
     @Autowired
     private  UserRepository userRepository;
 

@@ -17,7 +17,7 @@ public class UserPaymentController {
     /**
      * 得到渲染後的form表單
      * */
-    @GetMapping("/productMall/order")
+    @GetMapping("/productMall/order/getPaymentForm")
     public ResultResponse<String> getPaymentForm(@RequestAttribute Integer userId, @RequestParam Integer orderId){
         ResultResponse rs =new ResultResponse();
         String  form =userPaymentService.getPaymentForm(userId,orderId);
@@ -26,9 +26,19 @@ public class UserPaymentController {
     }
 
     @PostMapping("/successPay/{orderId}")
-    public ResponseEntity<String> successPayCallBack(@PathVariable("orderId") String orderId){
+    public ResponseEntity<String> successPayCallBack(@PathVariable("orderId") Integer orderId){
         userPaymentService.successPayCallBack(orderId);
+        System.out.println("付款成功");
         return  ResponseEntity.status(HttpStatus.CREATED).body("付款成功");
+
+    }
+
+    @GetMapping("/productMall/order")
+    public ResultResponse<String> checkIsPay(@RequestParam Integer orderId){
+
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(userPaymentService.checkIsPay(orderId));
+        return  rs;
 
     }
 }

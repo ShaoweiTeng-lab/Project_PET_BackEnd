@@ -29,13 +29,13 @@ public class ProductMallController {
     private OrdersService ordersService;
 
     //新增訂單 Spring Jpa寫法
-    @PostMapping("/insertOrders")
-    public ResponseEntity<ResultResponse<String>> insertOrders(@RequestBody OrdersRes ordersRes){
-        ResultResponse rs = new ResultResponse();
-        ordersService.insertOrders(ordersRes);
-        rs.setMessage("新增成功");
-        return ResponseEntity.status(HttpStatus.OK).body(rs);
-    }
+//    @PostMapping("/insertOrders")
+//    public ResponseEntity<ResultResponse<String>> insertOrders(@RequestBody OrdersRes ordersRes){
+//        ResultResponse rs = new ResultResponse();
+//        ordersService.insertOrders(ordersRes);
+//        rs.setMessage("新增成功");
+//        return ResponseEntity.status(HttpStatus.OK).body(rs);
+//    }
 
     //刪除單一訂單By OrdId --練習
     @DeleteMapping("/deleteOrdersByOrdNo/{ordNo}")
