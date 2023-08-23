@@ -1,7 +1,10 @@
 package project_pet_backEnd.socialMedia.activityUser.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
+import project_pet_backEnd.user.vo.User;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -27,13 +30,23 @@ public class JoinActivity {
     @Id
     @Column(name = "USER_ID")
     Integer userId;
-    @Column(name = "ENTER_TIME")
     @CreationTimestamp
+    @Column(name = "ENTER_TIME")
     Timestamp enterTime;
     @Column(name = "ENTER_COUNT")
     Integer peopleCount;
     @Column(name = "ENTER_STATUS")
     Integer status;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ACTIVITY_ID", referencedColumnName = "ACTIVITY_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private Activity activity;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private User user;
 
 
 }

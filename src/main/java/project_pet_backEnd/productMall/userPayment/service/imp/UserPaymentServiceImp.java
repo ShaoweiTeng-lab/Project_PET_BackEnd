@@ -12,38 +12,57 @@ import project_pet_backEnd.ecpay.payment.integration.AllInOne;
 import project_pet_backEnd.ecpay.payment.integration.domain.AioCheckOutALL;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.productMall.userPayment.dao.OrderListRepository;
 import project_pet_backEnd.productMall.userPayment.service.UserPaymentService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class UserPaymentServiceImp implements UserPaymentService {
     @Autowired
     private OrdersRepository ordersRepository;
+    @Autowired
+    private OrderListRepository orderListRepository;
     private  final  static Logger log= LoggerFactory.getLogger(UserPaymentServiceImp.class);
-    @Value("${ecpay-returnHttps}")
-    private String returnHttps;
+    @Value("${ecpay-RedirectHttpsUrl}")
+    private String ecpayRedirectHttpsUrl;
     @Override
     public String getPaymentForm(Integer userId,Integer orderId) {
-        //todo 先判斷該使用者有無此訂單編號
         Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null|| orders.getUserId()!=userId)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"您輸入的訂單編號錯誤");
-
-        String form=generateEcpayForm(orderId,"測試商品",orders.getTotalAmount());
+        if(orders.getOrdPayStatus().intValue()==1)
+            throw  new ResponseStatusException(HttpStatus.GONE,"您已經完成訂單");//回傳410 表示所請求的資源不再可用
+        List<String> products=orderListRepository.findOrderProductByOrderId(orderId);
+        StringBuilder str =new StringBuilder();
+        products.forEach(val->str.append(val+"  "));
+        String form=generateEcpayForm(orderId,str.toString(),orders.getTotalAmount());
 
         return form;
     }
 
     @Override
-    public void successPayCallBack(String orderId) {
-        Orders orders= ordersRepository.findById(Integer.parseInt(orderId)).orElse(null);
+    public void successPayCallBack(Integer orderId) {
+        Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
-        //todo 確認映射是否為 byte ?
-        //orders.setOrdPayStatus(1); //修改為1 完成訂單
+        orders.setOrdPayStatus((byte)1); //修改為1 完成訂單
+        ordersRepository.save(orders);
+    }
 
+    @Override
+    public String checkIsPay(Integer orderId) {
+        Orders orders= ordersRepository.findById(orderId).orElse(null);
+        if(orders==null) {
+            log.warn("orderId : " + orderId + " 回傳異常");
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此訂單");
+        }
+        int ordPayStatus=orders.getOrdPayStatus().intValue();
+        if(ordPayStatus==1)
+            return "isPay";
+        return  "unPay";
     }
 
 
@@ -60,7 +79,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         // 交易結果回傳網址，只接受 https 開頭的網站 ;
         obj.setNeedExtraPaidInfo("N");
         // 商店轉跳網址 (Optional)
-        obj.setReturnURL(returnHttps+"/successPay/"+orderId);
+        obj.setReturnURL(ecpayRedirectHttpsUrl+"/user/successPay/"+orderId);
         String form = all.aioCheckOut(obj, null);
         obj.getMerchantTradeNo();
 

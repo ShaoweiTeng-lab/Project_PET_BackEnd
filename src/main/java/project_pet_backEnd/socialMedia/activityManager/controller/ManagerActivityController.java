@@ -12,8 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityReq;
+import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
 import project_pet_backEnd.socialMedia.activityManager.service.ActivityService;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
+import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
@@ -34,8 +36,8 @@ public class ManagerActivityController {
     })
     //@PreAuthorize("hasAnyAuthority('社群管理')")
     @PostMapping
-    public ResponseEntity<ResultResponse<Activity>> createActivity(@RequestBody ActivityReq activityReq) {
-        ResultResponse<Activity> activityResult = activityService.create(activityReq);
+    public ResponseEntity<ResultResponse<ActivityRes>> createActivity(@RequestBody ActivityReq activityReq) {
+        ResultResponse<ActivityRes> activityResult = activityService.create(activityReq);
         return ResponseEntity.status(HttpStatus.CREATED).body(activityResult);
 
     }
@@ -46,8 +48,8 @@ public class ManagerActivityController {
     })
     //@PreAuthorize("hasAnyAuthority('社群管理')")
     @PutMapping("/{activityId}")
-    public ResponseEntity<ResultResponse<Activity>> updateActivity(@PathVariable("activityId") int activityId, @RequestBody ActivityReq activityReq) {
-        ResultResponse<Activity> updateActivity = activityService.update(activityId, activityReq);
+    public ResponseEntity<ResultResponse<ActivityRes>> updateActivity(@PathVariable("activityId") int activityId, @RequestBody ActivityReq activityReq) {
+        ResultResponse<ActivityRes> updateActivity = activityService.update(activityId, activityReq);
         return ResponseEntity.status(HttpStatus.OK).body(updateActivity);
     }
 
@@ -70,8 +72,8 @@ public class ManagerActivityController {
     })
     //@PreAuthorize("hasAnyAuthority('社群管理')")
     @GetMapping("/{activityId}")
-    public ResponseEntity<ResultResponse<Activity>> getActivityById(@PathVariable("activityId") int activityId) {
-        ResultResponse<Activity> activity = activityService.findActivityById(activityId);
+    public ResponseEntity<ResultResponse<ActivityRes>> getActivityById(@PathVariable("activityId") int activityId) {
+        ResultResponse<ActivityRes> activity = activityService.findActivityById(activityId);
         return ResponseEntity.status(HttpStatus.OK).body(activity);
     }
 
@@ -81,11 +83,12 @@ public class ManagerActivityController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     //@PreAuthorize("hasAnyAuthority('社群管理')")
-    @GetMapping("/all/{page}")
-    public ResponseEntity<ResultResponse<Page<Activity>>> getAllActivities(@PathVariable("page") int page) {
-        ResultResponse<Page<Activity>> activities = activityService.getAllActivities(page, 5);
+    @GetMapping("/all")
+    public ResponseEntity<ResultResponse<PageRes<ActivityRes>>> getAllActivities(@RequestParam("page") int page) {
+        ResultResponse<PageRes<ActivityRes>> activities = activityService.getAllActivities(page, 10);
         return ResponseEntity.status(HttpStatus.OK).body(activities);
 
     }
 
 }
+
