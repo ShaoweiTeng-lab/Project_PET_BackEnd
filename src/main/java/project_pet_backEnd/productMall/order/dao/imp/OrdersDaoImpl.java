@@ -39,7 +39,7 @@ public class OrdersDaoImpl implements OrdersDao {
                 ordersRes.setUserPoint(rs.getInt("USER_POINT"));
                 ordersRes.setTotalAmount(rs.getInt("TOTAL_AMOUNT"));
                 ordersRes.setOrderAmount(rs.getInt("ORDER_AMOUNT"));
-                ordersRes.setRecipient(rs.getString("RECIPIENT"));
+                ordersRes.setRecipientName(rs.getString("RECIPIENT"));
                 ordersRes.setRecipientAddress(rs.getString("RECIPIENT_ADDRESS"));
                 ordersRes.setRecipientPh(rs.getString("RECIPIENT_PH"));
                 return ordersRes;
