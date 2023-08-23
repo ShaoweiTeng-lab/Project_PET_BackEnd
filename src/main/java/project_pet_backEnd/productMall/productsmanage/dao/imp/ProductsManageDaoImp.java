@@ -47,23 +47,32 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
 
     @Override //ok關鍵字搜尋、分頁搜尋
     public List<ProductListResponse> getAllProductWithSearch(ProductListQueryParameter productListQueryParameter) {
-        String sql = "SELECT PD_NO, PD_NAME, PD_STATUS " +
+        String sql = "SELECT PD_NO, PD_NAME, PD_PRICE, PD_STATUS " +
                 "FROM PRODUCT " +
                 "WHERE 1=1 ";
 
         MapSqlParameterSource params = new MapSqlParameterSource();
 
         if (productListQueryParameter.getSearch() != null) {
-            sql += "AND (PD_NO LIKE :search OR PD_NAME LIKE :search OR PD_STATUS LIKE :search ";
+            sql += "AND (PD_NO LIKE :search OR PD_NAME LIKE :search OR PD_PRICE LIKE :search OR PD_STATUS LIKE :search ";
             params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
         }
 
-        // Sort
+//        if判斷書入價格區間between
+        if (productListQueryParameter.getSearch() != null) {
+            sql += "AND (PD_NO LIKE :search OR PD_NAME LIKE :search OR PD_PRICE LIKE :search OR PD_STATUS LIKE :search ";
+            params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
+        }
+
+        // Sort  再加回case
         if (productListQueryParameter.getOrder() != null) {
             String orderBy;
             switch (productListQueryParameter.getOrder()) {
                 case PD_NAME:
                     orderBy = "PD_NAME";
+                    break;
+                case PD_PRICE:
+                    orderBy = "PD_PRICE";
                     break;
                 case PD_STATUS:
                     orderBy = "PD_STATUS";

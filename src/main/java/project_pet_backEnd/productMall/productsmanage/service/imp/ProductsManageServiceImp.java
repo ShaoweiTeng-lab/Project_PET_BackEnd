@@ -35,7 +35,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
     @Override  //後台 查看全部商品列表
     public Page<List<ProductListResponse>> getAllProductsForMan(ProductListQueryParameter productListQueryParameter) {
 //        List<ProductListResponse> allProductsList = productsManageDao.getAllProductsWithSearch(ProductListQueryParameter);
-//        List<ProductListResponse> rsList = new ArrayList<>();
+//        List<GetAllProductsListSortRes> rsList = new ArrayList<>();
 //        if (allGroomersList == null || allGroomersList.isEmpty()) {
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "找不到寵物美容師");
 //        }
@@ -68,7 +68,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
 //        Integer total = petGroomerDao.countPetGroomer(PGQueryParameter);
 //        page.setTotal(total);
 //        page.setRs(rsList);
-//        return page;
+        return null;
     }
 
     @Override  //後台 商品列表查詢 (order by PdNo / PdName / PdStatus)

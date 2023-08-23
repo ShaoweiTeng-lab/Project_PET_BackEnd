@@ -14,7 +14,8 @@ public class ProductPic {
         @Column(name = "PD_PIC_NO")
         private Integer pdPicNo;
 
-        @NotNull
+        @Column(name = "PD_NO",insertable = false,updatable = false)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer pdNo; // 商品編號 (Foreign Key)
 
         @Column(name = "PD_PIC")
