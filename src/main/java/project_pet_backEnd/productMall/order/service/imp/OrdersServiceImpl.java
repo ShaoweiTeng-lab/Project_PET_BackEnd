@@ -89,6 +89,12 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
+    public List<Orders> getByUserIdAndOrdStatusNot(Integer userId) {
+        Integer ordStatus = 0;
+        return ordersRepository.findByUserIdAndOrdStatus(userId, ordStatus);
+    }
+
+    @Override
     public void deleteOrdersByOrdNo(Integer ordNo) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if (ordNo < 0){

@@ -24,7 +24,7 @@ public class Orders {
     @NotNull
     private Integer userId;
 
-    @Column(name = "ORD_STATUS")
+    @Column(name = "ORD_STATUS", insertable = false)
     private Integer ordStatus;
 
     @Column(name = "ORD_PAY_STATUS")

@@ -11,6 +11,9 @@ public interface OrdersService {
     //新增訂單商業邏輯
     public abstract void createOrders(CreateOrderDTO createOrderDTO);
 
+    //查詢該位會員所有未出貨之訂單
+    public abstract List<Orders> getByUserIdAndOrdStatusNot(Integer userId);
+
     //刪除訂單商業邏輯--byOrdNo
     public abstract void deleteOrdersByOrdNo(Integer ordNo);
 

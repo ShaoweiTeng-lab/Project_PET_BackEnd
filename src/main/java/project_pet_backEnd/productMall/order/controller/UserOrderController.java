@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
+import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
+import java.util.List;
 
 @Api(tags="前台會員訂單相關功能")
 @Validated
@@ -42,5 +42,16 @@ public class UserOrderController {
             return ResponseEntity.status(HttpStatus.OK).body(rs);
         }
 
+    }
+
+    @ApiOperation(value = "傳入userId", notes = "查詢該位會員未出貨訂單")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @GetMapping("/getUserOrders")
+    public ResponseEntity<ResultResponse<List<Orders>>> getByUserIdAndOrdStatusNot(@RequestAttribute(name = "userId") Integer userId){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.getByUserIdAndOrdStatusNot(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 }
