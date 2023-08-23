@@ -523,33 +523,7 @@ public class EmailService {
                 "                            </td>\n" +
                 "                        </tr>\n" +
                 "                    </table>\n" +
-                "                    <table class=\"es-content\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\"\n" +
-                "                        style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%\">\n" +
-                "                        <tr style=\"border-collapse:collapse\">\n" +
-                "                            <td align=\"center\" style=\"padding:0;Margin:0\">\n" +
-                "                                <table class=\"es-content-body\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#ffffff\"\n" +
-                "                                    align=\"center\"\n" +
-                "                                    style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px\">\n" +
-                "                                    <tr style=\"border-collapse:collapse\">\n" +
-                "                                        <td align=\"left\"\n" +
-                "                                            style=\"Margin:0;padding-top:20px;padding-left:20px;padding-right:20px;padding-bottom:30px\">\n" +
-                "                                            <table class=\"es-left\" cellspacing=\"0\" cellpadding=\"0\" align=\"left\"\n" +
-                "                                                style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left\">\n" +
-                "                                                <tr style=\"border-collapse:collapse\">\n" +
-                "                                                    <td class=\"es-m-p20b\" align=\"left\"\n" +
-                "                                                        style=\"padding:0;Margin:0;width:280px\">\n" +
-                "                                                        <table\n" +
-                "                                                            style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;background-color:#fef9ef;border-color:#efefef;border-width:1px 0px 1px 1px;border-style:solid\"\n" +
-                "                                                            width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"\n" +
-                "                                                            bgcolor=\"#fef9ef\">\n" +
-                "                                                            <tr style=\"border-collapse:collapse\">\n" +
-                "                                                                <td align=\"center\"\n" +
-                "                                                                    style=\"padding:0;Margin:0;display:none\"></td>\n" +
-                "                                                            </tr>\n" +
-                "                                                        </table>\n" +
-                "                                                    </td>\n" +
-                "                                                </tr>\n" +
-                "                                            </table>\n" +
+
                 "                                            <table class=\"es-right\" cellspacing=\"0\" cellpadding=\"0\" align=\"right\"\n" +
                 "                                                style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right\">\n" +
                 "                                                <tr style=\"border-collapse:collapse\">\n" +
@@ -676,7 +650,7 @@ public class EmailService {
                 "                                                                <td align=\"left\" style=\"padding:0;Margin:0\">\n" +
                 "                                                                    <p\n" +
                 "                                                                        style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:26px;color:#333333;font-size:17px\">\n" +
-                "                                                                        <strong>聯絡方式:</strong></p>\n" +
+                "                                                                        <strong>聯絡方式:</strong> alldogcat29@gmail.com</p>\n" +
                 "                                                                    <p\n" +
                 "                                                                        style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px\">\n" +
                 "                                                                        <br></p>\n" +
