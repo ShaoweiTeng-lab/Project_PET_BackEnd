@@ -15,6 +15,11 @@ import java.util.List;
 public class HomepageManageServiceImp implements HomepageManageService {
     @Autowired
     private HomepageManageDao homepageManageDao;
+    @Autowired
+    private NewsRepository newsRepository;
+
+    @Autowired
+    private NewsPicRepository newsPicRepository;
 
     @Override
     public void addRotePic(AddRotePicRequest addRotePicRequest) {
@@ -44,8 +49,9 @@ public class HomepageManageServiceImp implements HomepageManageService {
     }
 
     @Override
-    public void editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest) {
+    public ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest) {
         homepageManageDao.editNewsByNewsNo(adjustNewsRequest);
+        return null;
     }
 
     @Override
@@ -59,23 +65,45 @@ public class HomepageManageServiceImp implements HomepageManageService {
     }
 
     @Override
-    public void addNewsPic(AddNewsPicRequest addNewsPicRequest) {
+    public ResultResponse addNewsPic(AddNewsPicRequest addNewsPicRequest) {
         homepageManageDao.addNewsPic(addNewsPicRequest);
+
+
+        return null;
     }
 
     @Override
-    public void editNewsPic(AdjustNewsPicRequest adjustNewsPicRequest) {
+    public ResultResponse editNewsPicByPicNo(AdjustNewsPicRequest adjustNewsPicRequest) {
         homepageManageDao.editNewsPic(adjustNewsPicRequest);
+        return null;
     }
 
     @Override
-    public void deleteNewsPicByNewsNo(Integer newsNo, byte[] newsPic) {
+    public void deleteNewsPicByPicNo(Integer newsNo) {
         homepageManageDao.deleteNewsPicByNewsNo(newsNo);
     }
 
     @Override
     public List<NewsPic> getAllNewsPic() {
         return homepageManageDao.getAllNewsPic();
+    }
+
+    @Override
+    public ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest) {
+        News news = new News();
+        news.setNewsNo(addNewsPicWithNewsRequest.getNewsNo());
+        news.setPic(addNewsPicWithNewsRequest.getPic());
+
+        newsRepository.save(news);
+
+        NewsPic newsPic = new NewsPic();
+        //設置關聯的News對象
+        newsPic.setNewsNo(newsNo);
+
+        newsPicRepository.save(newsPic);
+
+        // 返回结果
+        return new ResultResponse();
     }
 
 

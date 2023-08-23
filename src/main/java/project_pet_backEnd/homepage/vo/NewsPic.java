@@ -11,4 +11,8 @@ public class NewsPic {
     @Lob
     private byte[] pic;
 
+    public void setPic(byte[] pic) {
+        this.pic = pic;
+    }
+
 }

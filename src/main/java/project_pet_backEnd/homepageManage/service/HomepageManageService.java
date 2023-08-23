@@ -15,16 +15,25 @@ public interface HomepageManageService {
         void deleteRotePicByPicNo(Integer picNo);
         void addRotePic(AddRotePicRequest addRotePicRequest);
 
+        //===================================================
+
         ResultResponse addNews(AddNewsRequest addNewsRequest);
-        void editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);
+
+        ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);
+
         void deleteNewsByNewsNo(Integer newsNo);
 
 
         List<News> getAllNews();
 
-        void addNewsPic(AddNewsPicRequest addNewsPicRequest);
-        void editNewsPic(AdjustNewsPicRequest adjustNewsPicRequest);
-        void deleteNewsPicByNewsNo(Integer newsPicNo, byte[] newsPic);
+        //===========================================
+
+        ResultResponse addNewsPic(AddNewsPicRequest addNewsPicRequest);
+        ResultResponse editNewsPicByPicNo(AdjustNewsPicRequest adjustNewsPicRequest);
+
+        void deleteNewsPicByPicNo(Integer newsPicNo);
         List<NewsPic> getAllNewsPic();
 
+
+        ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest);
 }
