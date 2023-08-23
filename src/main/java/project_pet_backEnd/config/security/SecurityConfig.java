@@ -16,6 +16,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import project_pet_backEnd.filter.ManagerJWTFilter;
 import project_pet_backEnd.filter.UserJWTFilter;
+import project_pet_backEnd.filter.UserPointFilter;
 import project_pet_backEnd.utils.ManagerJwtUtil;
 import project_pet_backEnd.utils.UserJwtUtil;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -30,6 +31,8 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
     private UserJWTFilter userJWTFilter;
     @Autowired
     private ManagerJWTFilter managerJWTFilter;
+    @Autowired
+    private UserPointFilter userPointFilter;
     @Bean
     public PasswordEncoder bCryptPasswordEncoder(){
 
@@ -61,6 +64,8 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(managerJWTFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(userPointFilter,UserJWTFilter.class);
+
         //配置異常處理
         http.exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
