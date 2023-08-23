@@ -48,7 +48,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         Orders orders= ordersRepository.findById(orderId).orElse(null);
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
-        orders.setOrdPayStatus((byte)1); //修改為1 完成訂單
+        orders.setOrdPayStatus(1); //修改為1 完成訂單
         ordersRepository.save(orders);
     }
 
@@ -59,7 +59,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
             log.warn("orderId : " + orderId + " 回傳異常");
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此訂單");
         }
-        int ordPayStatus=orders.getOrdPayStatus().intValue();
+        int ordPayStatus=orders.getOrdPayStatus();
         if(ordPayStatus==1)
             return "isPay";
         return  "unPay";
