@@ -7,9 +7,9 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class UserLoginRequest {
-    @NotBlank
+    @NotBlank(message = "信箱不可為空")
     @Email
     private String email;
-    @NotBlank
+    @NotBlank(message = "密碼不可為空")
     private String  password;
 }

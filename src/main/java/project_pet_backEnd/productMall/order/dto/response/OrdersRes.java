@@ -18,7 +18,7 @@ public class OrdersRes {
     private Integer userPoint;
     private Integer totalAmount;
     private Integer orderAmount;
-    private String recipient;
+    private String recipientName;
     private String recipientAddress;
     private String recipientPh;
 }

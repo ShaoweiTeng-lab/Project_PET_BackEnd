@@ -14,6 +14,7 @@ import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
 import project_pet_backEnd.groomer.appointment.dto.response.UserPhAndNameRes;
 import project_pet_backEnd.groomer.appointment.vo.PetGroomerAppointment;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -331,5 +332,33 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
             return appListByPgaNo.get(0);
         }
         return null;
+    }
+    @Override
+    public List<PetGroomerAppointment> getAppointmentByPgIdAndDate(Integer pgId, Date date) {
+        String sql ="SELECT PGA_NO,PG_ID,USER_ID,PGA_DATE,PGA_TIME,PGA_STATE,PGA_OPTION,PGA_NOTES,PGA_PHONE\n" +
+                "FROM all_dog_cat.pet_groomer_appointment pga WHERE pga.PG_ID= :pgId AND pga.PGA_DATE= :date";
+        Map<String, Object> map = new HashMap<>();
+        map.put("pgId", pgId);
+        map.put("date", date);
+        List<PetGroomerAppointment>  appList= namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomerAppointment>() {
+            @Override
+            public PetGroomerAppointment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PetGroomerAppointment appList = new  PetGroomerAppointment();
+                appList.setPgaNo(rs.getInt("PGA_NO"));
+                appList.setPgId(rs.getInt("PG_ID"));
+                appList.setUserId(rs.getInt("USER_ID"));
+                appList.setPgaDate(rs.getDate("PGA_DATE"));
+                appList.setPgaTime(rs.getString("PGA_TIME"));
+                appList.setPgaState(rs.getInt("PGA_STATE"));
+                appList.setPgaOption(rs.getInt("PGA_OPTION"));
+                appList.setPgaNotes(rs.getString("PGA_NOTES"));
+                appList.setPgaPhone(rs.getString("PGA_PHONE"));
+                return appList;
+            }
+        });
+        if(appList.isEmpty()){
+            return null;
+        }
+        return appList;
     }
 }

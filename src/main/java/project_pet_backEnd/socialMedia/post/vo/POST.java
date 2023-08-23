@@ -1,8 +1,12 @@
 package project_pet_backEnd.socialMedia.post.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import project_pet_backEnd.socialMedia.postMessage.vo.Message;
+import project_pet_backEnd.user.vo.User;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -29,15 +33,17 @@ public class POST {
     @UpdateTimestamp
     @Column(name = "POST_MTIME")
     Timestamp updateTime;
+    /**
+     * 0: 上架
+     * 1: 下架
+     */
     @Column(name = "POST_STATUS")
     Integer postStatus;
 
-    @OneToMany(cascade = {CascadeType.REMOVE})
-    @JoinColumn(name = "POST_ID")
-    private List<Message> message;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private User user;
 
-//    @OneToMany(cascade = {CascadeType.REMOVE})
-//    @JoinColumn(name = "PC_ID")
-//    private List<PostCol> postColList;
 
 }

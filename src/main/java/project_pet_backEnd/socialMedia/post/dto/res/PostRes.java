@@ -8,7 +8,12 @@ import java.sql.Timestamp;
 public class PostRes {
     Integer postId;
     Integer userId;
+    String userName;
+    //base64
+    String userPic;
     String postContent;
-    Timestamp updateTime;
+    String createTime;
+    String updateTime;
     Integer postStatus;
 }
+

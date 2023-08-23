@@ -4,6 +4,7 @@ import lombok.Data;
 
 public class PGCollectionManagement {
 
+// 收藏管理
     private String pgName;
     private String porTitle;
     private String porText;

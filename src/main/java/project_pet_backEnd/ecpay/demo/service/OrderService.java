@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Service
 public class OrderService {
-    @Value("${ecpay-returnHttps}")
+    @Value("${ecpay-RedirectHttpsUrl}")
     private String returnHttps;
 
     @Transactional

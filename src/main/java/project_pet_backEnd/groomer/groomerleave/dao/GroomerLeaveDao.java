@@ -1,9 +1,8 @@
 package project_pet_backEnd.groomer.groomerleave.dao;
 
 import project_pet_backEnd.groomer.groomerleave.dto.GroomerLeaveQueryParameter;
-import project_pet_backEnd.groomer.groomerleave.dto.PGLeaveSearchRes;
+import project_pet_backEnd.groomer.groomerleave.dto.response.PGLeaveSearchRes;
 import project_pet_backEnd.groomer.groomerleave.vo.GroomerLeave;
-import project_pet_backEnd.groomer.petgroomerschedule.vo.PetGroomerSchedule;
 
 import java.util.List;
 
@@ -39,5 +38,5 @@ public interface GroomerLeaveDao {
      * @param PgId 美容師編號
      * @return 該美容師的請假記錄列表
      */
-    public List<GroomerLeave> getGroomerLeaveByPgId(Integer PgId);
+    public List<PGLeaveSearchRes> getGroomerLeaveByPgId(Integer PgId);
 }
