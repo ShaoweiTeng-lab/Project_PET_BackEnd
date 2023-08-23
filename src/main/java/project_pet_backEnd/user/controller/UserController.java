@@ -32,7 +32,7 @@ public class UserController {
     private OAuthService oAuthService;
     @ApiOperation("使用者登入")
     @PostMapping("/login")
-    public ResponseEntity<ResultResponse<String>> login(@RequestBody UserLoginRequest userLoginRequest){
+    public ResponseEntity<ResultResponse<String>> login(@RequestBody @Valid UserLoginRequest userLoginRequest){
 
         ResultResponse responseResult= userService.localSignIn(userLoginRequest);
         return  ResponseEntity.status(HttpStatus.OK).body(responseResult );
@@ -87,12 +87,12 @@ public class UserController {
     public ResponseEntity<ResultResponse<String>> adjustUserProfile(
             @ApiParam(hidden = true)
             @RequestAttribute(name = "userId") Integer userId,
-            @RequestParam(required = false) @NotBlank String userName,
-            @RequestParam(required = false) @NotBlank  String userNickName,
+            @RequestParam(required = false) @NotBlank(message = "姓名不可為空") String userName,
+            @RequestParam(required = false) @NotBlank(message = "匿稱不可為空")  String userNickName,
             @RequestParam(required = false) @Max(1) @Min(0) Integer userGender,
-            @RequestParam(required = false) @NotBlank  String userPassword,
-            @RequestParam(required = false) @NotBlank  String userAddress,
-            @RequestParam(required = false) @NotBlank  String userPhone,
+            @RequestParam(required = false) @NotBlank(message = "密碼不可為空")  String userPassword,
+            @RequestParam(required = false) @NotBlank(message = "地址不可為空")  String userAddress,
+            @RequestParam(required = false) @NotBlank(message = "電話不可為空")  String userPhone,
             @RequestParam(required = false) Date userBirthday,
             @RequestParam(required = false) MultipartFile userPic
             ){

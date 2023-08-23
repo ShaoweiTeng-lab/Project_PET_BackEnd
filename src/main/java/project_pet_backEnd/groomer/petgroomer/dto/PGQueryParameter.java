@@ -7,6 +7,9 @@ import project_pet_backEnd.userManager.dto.Sort;
 public class PGQueryParameter {
     private  String search;
     private PGOrderBy order;
+    private Integer porId;
+    private Integer userId;
+    private Integer pgId;
     //NUM_APPOINTMENTS,PG_NAME
     private Sort sort;
     private  Integer limit;

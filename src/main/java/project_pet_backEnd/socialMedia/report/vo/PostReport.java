@@ -1,8 +1,11 @@
 package project_pet_backEnd.socialMedia.report.vo;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import project_pet_backEnd.socialMedia.post.vo.POST;
+import project_pet_backEnd.user.vo.User;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -36,5 +39,15 @@ public class PostReport {
     @CreationTimestamp
     @Column(name = "P_REPORT_TIME")
     Timestamp createTime;
-    
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "POST_ID", referencedColumnName = "POST_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private POST post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+    @JsonIgnore
+    private User user;
+
 }

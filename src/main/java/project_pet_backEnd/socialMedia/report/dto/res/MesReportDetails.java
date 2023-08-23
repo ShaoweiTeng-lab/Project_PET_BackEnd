@@ -15,8 +15,12 @@ public class MesReportDetails {
     String toUserEmail;
     //檢舉內容
     String mesReportContent;
+    //留言內容
+    String mesContent;
     //檢舉時間
-    Timestamp createTime;
+    String createTime;
     //檢舉狀態
+    Integer mesRepStatus;
+    //留言狀態
     Integer mesStatus;
 }
