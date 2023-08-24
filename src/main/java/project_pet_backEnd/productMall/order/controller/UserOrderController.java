@@ -9,7 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
+import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrderDetailResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -30,17 +34,12 @@ public class UserOrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
-    @PostMapping(value = "/orders",consumes = {"application/json"})
+    @PostMapping(value = "/order",consumes = {"application/json"})
     public ResponseEntity<ResultResponse<String>> postOrders(@RequestBody @Valid CreateOrderDTO createOrderDTO){
         ResultResponse rs = new ResultResponse();
-        try {
-            ordersService.createOrders(createOrderDTO);
-            rs.setMessage("新增成功");
-            return ResponseEntity.status(HttpStatus.OK).body(rs);
-        }catch (Exception e){
-            rs.setMessage("新增失敗");
-            return ResponseEntity.status(HttpStatus.OK).body(rs);
-        }
+        ordersService.createOrders(createOrderDTO);
+        rs.setMessage("新增成功");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
 
     }
 
@@ -48,10 +47,33 @@ public class UserOrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
-    @GetMapping("/getUserOrders")
+    @GetMapping("/getUserOrders/{userId}")
     public ResponseEntity<ResultResponse<List<Orders>>> getByUserIdAndOrdStatusNot(@RequestAttribute(name = "userId") Integer userId){
         ResultResponse rs = new ResultResponse();
         rs.setMessage(ordersService.getByUserIdAndOrdStatusNot(userId));
         return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+
+    @ApiOperation(value = "ordNo", notes = "會員查詢該筆訂單詳細資料")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @GetMapping("/order/{ordNo}")
+    public ResponseEntity<ResultResponse<List<FrontOrderResDTO>>> getOrderDetailByOrdNo(@PathVariable Integer ordNo){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.getOrderDetailByOrdNo(ordNo));
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+
+    @ApiOperation(value = "傳入ordNo",notes = "前台會員取消該筆訂單")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @PatchMapping("/updateUserOrders")
+    public ResponseEntity<ResultResponse<String>> updateOrderStatus(@RequestBody @Valid ChangeOrderStatusDTO changeOrderStatusDTO){
+        ordersService.updateOrderStatus(changeOrderStatusDTO.getOrdNo(), changeOrderStatusDTO.getOrdStatus());
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage("刪除成功!");
+        return ResponseEntity.status(200).body(rs);
     }
 }
