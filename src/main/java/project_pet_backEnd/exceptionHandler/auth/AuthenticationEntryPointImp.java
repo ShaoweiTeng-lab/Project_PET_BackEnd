@@ -20,7 +20,7 @@ public class AuthenticationEntryPointImp implements AuthenticationEntryPoint {
         //處理異常 認證失敗 回傳  json格式
         ResultResponse rs =new ResultResponse();
         rs.setMessage("認證異常");
-        rs.setCode(400);
+        rs.setCode(401);
         String json =mapper.writeValueAsString(rs);
         response.setStatus(200);
         response.setCharacterEncoding("utf-8");

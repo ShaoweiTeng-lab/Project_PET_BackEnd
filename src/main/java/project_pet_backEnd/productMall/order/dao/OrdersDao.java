@@ -1,9 +1,6 @@
 package project_pet_backEnd.productMall.order.dao;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
-import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
-import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
 
 public interface OrdersDao{
     /**
@@ -11,6 +8,6 @@ public interface OrdersDao{
      * @return
      * @測試用:用訂單編號查詢
      */
-    public abstract OrdersRes getByOrdNo(Integer ordNo);
+    public abstract OrdersResDTO getByOrdNo(Integer ordNo);
 
 }
