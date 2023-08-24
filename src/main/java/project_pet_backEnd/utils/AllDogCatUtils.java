@@ -151,4 +151,31 @@ public class AllDogCatUtils {
         }
         return null;
     }
+
+    /**
+     *Timestamp轉成String
+     *
+     * */
+
+    public static String timestampToString(long timestamp ) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = dateFormat.format(new Date(timestamp));
+        return  dateString;
+    }
+    /**
+     *String轉成Timestamp
+     *
+     * */
+    public  static  long  parseStringToTimeStamp(String dateString){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date parsedDate = null;
+        try {
+            parsedDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        long parsedTimestamp = parsedDate.getTime();
+        return parsedTimestamp;
+    }
+
 }

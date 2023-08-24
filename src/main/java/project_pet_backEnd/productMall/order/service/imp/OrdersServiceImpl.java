@@ -9,7 +9,9 @@ import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.OrderDetailDTO;
-import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
+import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
 import project_pet_backEnd.productMall.order.vo.OrderDetailPk;
@@ -18,6 +20,7 @@ import project_pet_backEnd.productMall.order.vo.Orders;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -60,12 +63,14 @@ public class OrdersServiceImpl implements OrdersService {
     public void createOrders(CreateOrderDTO createOrderDTO) {
         final Orders orders = createOrderDTO.getOrders();
         final List<OrderDetailDTO> orderDetails = createOrderDTO.getOrderDetailDTOS();
-        final var orderListOrderNo = orders.getOrdNo();
 
-        if(orders.getUserId() == null || orders.getUserId() < 0){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此使用者");
+        if(orders.getOrderAmount() == orders.getTotalAmount()-orders.getOrdFee()-orders.getUserPoint()){
+            ordersRepository.save(orders);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "金額有誤,請重新輸入訂單");
         }
-        ordersRepository.save(orders);
+
+        final var orderListOrderNo = orders.getOrdNo();
 
         if(orderDetails != null){
             orderDetails.forEach(orderDetail -> {
@@ -95,6 +100,25 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
+    public List<FrontOrderResDTO> getOrderDetailByOrdNo(Integer ordNo) {
+        List<FrontOrderResDTO> frontOrderResDTOS=ordersRepository.findFrontOrderResDtoList(ordNo);
+        return frontOrderResDTOS;
+    }
+
+    @Override
+    public String updateOrderStatus(Integer ordNo, Integer ordStatus) {
+        Optional<Orders> ordersOptional = ordersRepository.findById(ordNo);
+        if(ordersOptional.isPresent()){
+            Orders orders = ordersOptional.get();
+            orders.setOrdStatus(ordStatus);
+            ordersRepository.save(orders);
+        }else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderMaster not found with id :" + ordNo);
+        }
+        return null;
+    }
+
+    @Override
     public void deleteOrdersByOrdNo(Integer ordNo) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if (ordNo < 0){
@@ -108,7 +132,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void updateOrdersByOrdNo(Integer ordNo, OrdersRes ordersRes) {
+    public void updateOrdersByOrdNo(Integer ordNo, OrdersResDTO ordersResDTO) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if(orders == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此訂單,請重新輸入正確訂單編號");
@@ -116,22 +140,22 @@ public class OrdersServiceImpl implements OrdersService {
         if(ordNo < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }
-        orders.setUserId(ordersRes.getUserId());
-        orders.setOrdStatus(Integer.valueOf(ordersRes.getOrdStatus()));
-        orders.setOrdPayStatus(Integer.valueOf(ordersRes.getOrdPayStatus()));
-        orders.setOrdPick(Integer.valueOf(ordersRes.getOrdPick()));
-        orders.setOrdFee(ordersRes.getOrdFee());
-        orders.setTotalAmount(ordersRes.getTotalAmount());
-        orders.setOrderAmount(ordersRes.getOrderAmount());
-        orders.setRecipientName(ordersRes.getRecipientName());
-        orders.setRecipientPh(ordersRes.getRecipientPh());
-        orders.setRecipientAddress(ordersRes.getRecipientAddress());
-        orders.setUserPoint(ordersRes.getUserPoint());
+        orders.setUserId(ordersResDTO.getUserId());
+        orders.setOrdStatus(Integer.valueOf(ordersResDTO.getOrdStatus()));
+        orders.setOrdPayStatus(Integer.valueOf(ordersResDTO.getOrdPayStatus()));
+        orders.setOrdPick(Integer.valueOf(ordersResDTO.getOrdPick()));
+        orders.setOrdFee(ordersResDTO.getOrdFee());
+        orders.setTotalAmount(ordersResDTO.getTotalAmount());
+        orders.setOrderAmount(ordersResDTO.getOrderAmount());
+        orders.setRecipientName(ordersResDTO.getRecipientName());
+        orders.setRecipientPh(ordersResDTO.getRecipientPh());
+        orders.setRecipientAddress(ordersResDTO.getRecipientAddress());
+        orders.setUserPoint(ordersResDTO.getUserPoint());
         ordersRepository.save(orders);
     }
 
     @Override
-    public OrdersRes getByOrdNo(Integer ordNo) {
+    public OrdersResDTO getByOrdNo(Integer ordNo) {
         if(ordNo < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }else{
