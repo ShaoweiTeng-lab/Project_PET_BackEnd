@@ -9,6 +9,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.vo.User;
+import project_pet_backEnd.userPushNotify.NotifyMsg;
+import project_pet_backEnd.userPushNotify.NotifyType;
+import project_pet_backEnd.userPushNotify.UserNotifyWebSocketHandler;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
 import javax.servlet.FilterChain;
@@ -25,12 +28,16 @@ public class UserPointFilter extends OncePerRequestFilter {
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private UserRepository userRepository;
-
+    //todo 增加點數推波給使用者
+    @Autowired
+    private UserNotifyWebSocketHandler userNotifyWebSocketHandler;
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null)
+        if (userId == null){
             filterChain.doFilter(request, response);
+            return;
+        } 
         String key = "User:loginTimeStamp:userId_" + userId;
         String loginTimeStampStr = redisTemplate.opsForValue().get(key);
         long currentTimestamp = System.currentTimeMillis(); //當前時間戳
@@ -52,11 +59,13 @@ public class UserPointFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void userAddPoint(Integer userId) {
+    private void userAddPoint(Integer userId)  {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此使用者");
-        user.setUserPoint(user.getUserPoint()+50);//加上50點
+        user.setUserPoint(user.getUserPoint()+5);//加上5點
         userRepository.save(user);
+        userNotifyWebSocketHandler.publishPersonalNotifyMsg(userId,new NotifyMsg(NotifyType.GetPoint,null,"每日登入增加點數:5"));
+
     }
 }
