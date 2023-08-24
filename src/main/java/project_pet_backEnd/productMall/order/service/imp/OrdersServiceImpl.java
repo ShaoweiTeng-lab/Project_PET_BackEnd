@@ -101,8 +101,8 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<FrontOrderResDTO> getOrderDetailByOrdNo(Integer ordNo) {
-//        ordersRepository.findFrontOrderResDtoList(ordNo);
-        return null;
+        List<FrontOrderResDTO> frontOrderResDTOS=ordersRepository.findFrontOrderResDtoList(ordNo);
+        return frontOrderResDTOS;
     }
 
     @Override
