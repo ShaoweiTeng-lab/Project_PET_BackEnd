@@ -21,9 +21,6 @@ public class Product {
     @Column(name = "PD_PRICE")
     private Integer pdPrice;
 
-    @Column(name = "PD_FORMAT")
-    private String pdFormat;
-
     @Column(name = "PD_DESCRIPTION")
     private String pdDescription;
 

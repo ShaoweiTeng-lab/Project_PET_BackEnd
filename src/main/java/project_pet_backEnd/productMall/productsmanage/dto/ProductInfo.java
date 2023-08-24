@@ -10,14 +10,11 @@ import javax.validation.constraints.NotNull;
 @Data        // req:新增商品、(編輯商品)修改商品資訊  res:(編輯商品)顯示商品資訊
 public class ProductInfo {
 
-    @NotNull
     @NotBlank
     private String pdName; //商品名稱 VARCHAR(15) NOT NULL
 
     @NotNull
     private Integer pdPrice; //商品價錢 NOT NULL
-
-    private String pdFormat; //商品規格 VARCHAR(15)
 
     @Min(0)
     @Max(1)
