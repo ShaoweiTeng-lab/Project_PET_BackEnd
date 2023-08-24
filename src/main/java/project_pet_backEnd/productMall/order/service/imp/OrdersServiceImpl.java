@@ -1,6 +1,7 @@
 package project_pet_backEnd.productMall.order.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,18 +10,14 @@ import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.OrderDetailDTO;
-import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
-import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
-import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
+import project_pet_backEnd.productMall.order.dto.response.*;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
 import project_pet_backEnd.productMall.order.vo.OrderDetailPk;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -100,9 +97,39 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public List<FrontOrderResDTO> getOrderDetailByOrdNo(Integer ordNo) {
+    public List<OrderResDTO> getOrderDetailByOrdNo(Integer ordNo) {
         List<FrontOrderResDTO> frontOrderResDTOS=ordersRepository.findFrontOrderResDtoList(ordNo);
-        return frontOrderResDTOS;
+        Map<Integer, OrderResDTO> orderSummaryMap = new HashMap<>();
+
+        for(FrontOrderResDTO originalOrder : frontOrderResDTOS){
+            OrderResDTO orderRes = orderSummaryMap.getOrDefault(originalOrder.getOrdNo(), new OrderResDTO());
+            orderRes.setOrdNo(originalOrder.getOrdNo());
+            orderRes.setUserName(originalOrder.getUserName());
+            orderRes.setUserId(originalOrder.getUserId());
+            orderRes.setOrdStatus(originalOrder.getOrdStatus());
+            orderRes.setOrdPayStatus(originalOrder.getOrdPayStatus());
+            orderRes.setOrdPick(originalOrder.getOrdPick());
+            orderRes.setOrdCreate(originalOrder.getOrdCreate());
+            orderRes.setOrdFinish(originalOrder.getOrdFinish());
+            orderRes.setOrdFee(originalOrder.getOrdFee());
+            orderRes.setTotalAmount(originalOrder.getTotalAmount());
+            orderRes.setOrderAmount(originalOrder.getOrderAmount());
+            orderRes.setRecipientName(originalOrder.getRecipientName());
+            orderRes.setRecipientAddress(originalOrder.getRecipientAddress());
+            orderRes.setRecipientPh(originalOrder.getRecipientPh());
+            orderRes.setUserPoint(originalOrder.getUserPoint());
+
+            OrderDetailResDTO orderDetailResDTO = new OrderDetailResDTO();
+            orderDetailResDTO.setPdName(originalOrder.getPdName());
+            orderDetailResDTO.setQty(originalOrder.getQty());
+            orderDetailResDTO.setPrice(originalOrder.getPrice());
+
+            orderRes.getDetailList().add(orderDetailResDTO);
+            orderSummaryMap.put(originalOrder.getOrdNo(), orderRes);
+        }
+
+        List<OrderResDTO> orderSummaryList = new ArrayList<>(orderSummaryMap.values());
+        return orderSummaryList;
     }
 
     @Override
@@ -116,6 +143,12 @@ public class OrdersServiceImpl implements OrdersService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderMaster not found with id :" + ordNo);
         }
         return null;
+    }
+
+    @Override
+    public List<AllOrdersDTO> getAllOrders(Pageable pageable) {
+        List<AllOrdersDTO> allOrdersDTOS = ordersRepository.findAllOrdersList(pageable);
+        return allOrdersDTOS;
     }
 
     @Override
