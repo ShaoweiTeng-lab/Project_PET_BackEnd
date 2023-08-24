@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.productMall.order.dao.OrdersDao;
-import project_pet_backEnd.productMall.order.dto.response.OrdersRes;
+import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
 
 
 import java.sql.ResultSet;
@@ -22,27 +22,27 @@ public class OrdersDaoImpl implements OrdersDao {
 
     private final String sqlSelectByOrdNo = "SELECT * FROM ORDERS WHERE ORD_NO = :ordNo";
     @Override
-    public OrdersRes getByOrdNo(Integer ordNo) {
+    public OrdersResDTO getByOrdNo(Integer ordNo) {
         Map<String, Object> map = new HashMap<>();
         map.put("ordNo", ordNo);
-        List<OrdersRes> list = namedParameterJdbcTemplate.query(sqlSelectByOrdNo, map, new RowMapper<OrdersRes>() {
+        List<OrdersResDTO> list = namedParameterJdbcTemplate.query(sqlSelectByOrdNo, map, new RowMapper<OrdersResDTO>() {
             @Override
-            public OrdersRes mapRow(ResultSet rs, int rowNum) throws SQLException {
-                OrdersRes ordersRes = new OrdersRes();
-                ordersRes.setOrdNo(rs.getInt("ORD_NO"));
-                ordersRes.setOrdStatus(rs.getByte("ORD_STATUS"));
-                ordersRes.setOrdPayStatus(rs.getByte("ORD_PAY_STATUS"));
-                ordersRes.setOrdPick(rs.getByte("ORD_PICK"));
-                ordersRes.setOrdCreate(rs.getDate("ORD_CREATE"));
-                ordersRes.setOrdFinish(rs.getDate("ORD_FINISH"));
-                ordersRes.setOrdFee(rs.getInt("ORD_FEE"));
-                ordersRes.setUserPoint(rs.getInt("USER_POINT"));
-                ordersRes.setTotalAmount(rs.getInt("TOTAL_AMOUNT"));
-                ordersRes.setOrderAmount(rs.getInt("ORDER_AMOUNT"));
-                ordersRes.setRecipientName(rs.getString("RECIPIENT"));
-                ordersRes.setRecipientAddress(rs.getString("RECIPIENT_ADDRESS"));
-                ordersRes.setRecipientPh(rs.getString("RECIPIENT_PH"));
-                return ordersRes;
+            public OrdersResDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                OrdersResDTO ordersResDTO = new OrdersResDTO();
+                ordersResDTO.setOrdNo(rs.getInt("ORD_NO"));
+                ordersResDTO.setOrdStatus(rs.getByte("ORD_STATUS"));
+                ordersResDTO.setOrdPayStatus(rs.getByte("ORD_PAY_STATUS"));
+                ordersResDTO.setOrdPick(rs.getByte("ORD_PICK"));
+                ordersResDTO.setOrdCreate(rs.getDate("ORD_CREATE"));
+                ordersResDTO.setOrdFinish(rs.getDate("ORD_FINISH"));
+                ordersResDTO.setOrdFee(rs.getInt("ORD_FEE"));
+                ordersResDTO.setUserPoint(rs.getInt("USER_POINT"));
+                ordersResDTO.setTotalAmount(rs.getInt("TOTAL_AMOUNT"));
+                ordersResDTO.setOrderAmount(rs.getInt("ORDER_AMOUNT"));
+                ordersResDTO.setRecipientName(rs.getString("RECIPIENT"));
+                ordersResDTO.setRecipientAddress(rs.getString("RECIPIENT_ADDRESS"));
+                ordersResDTO.setRecipientPh(rs.getString("RECIPIENT_PH"));
+                return ordersResDTO;
             }
         });
         if(list.size() > 0){

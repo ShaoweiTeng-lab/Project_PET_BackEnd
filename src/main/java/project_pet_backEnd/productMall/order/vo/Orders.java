@@ -1,17 +1,20 @@
 package project_pet_backEnd.productMall.order.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import project_pet_backEnd.productMall.order.dto.OrderDetailDTO;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Data //生成符合 Java Bean getter setter 無參建構子
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "orders")
 public class Orders {
 
@@ -34,10 +37,10 @@ public class Orders {
     private Integer ordPick;
 
     @Column(name = "ORD_CREATE", insertable = false)
-    private Date ordCreate;
+    private LocalDateTime ordCreate;
 
     @Column(name = "ORD_FINISH", insertable = false)
-    private Date ordFinish;
+    private LocalDateTime ordFinish;
 
     @Column(name = "ORD_FEE")
     private Integer ordFee;
@@ -64,5 +67,6 @@ public class Orders {
     @Column(name = "USER_POINT", insertable = false)
     private Integer userPoint;
 
-//    private List<OrderDetailDTO> orderDetailDTOS;
+//    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<OrderDetail> detailList;
 }
