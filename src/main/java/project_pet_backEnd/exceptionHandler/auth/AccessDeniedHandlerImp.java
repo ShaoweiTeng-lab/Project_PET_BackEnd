@@ -20,6 +20,7 @@ public class AccessDeniedHandlerImp  implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         //處理異常 授權失敗 回傳  json格式
         ResultResponse rs =new ResultResponse();
+        rs.setCode(403);
         rs.setMessage("您無此權限");
         String json =mapper.writeValueAsString(rs);
         response.setStatus(200);
