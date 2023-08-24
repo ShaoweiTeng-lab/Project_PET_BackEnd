@@ -3,10 +3,9 @@ package project_pet_backEnd.productMall.order.dto.response;
 import lombok.Data;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 
 @Data
-public class OrdersRes {
+public class OrdersResDTO {
     private Integer ordNo;
     private Integer userId;
     private Byte ordStatus;
