@@ -64,6 +64,7 @@ public class UserServiceImp implements UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"密碼錯誤");//驗證錯誤
         String jwt=userJwtUtil.createJwt(validUser.getUserId().toString());
         ResultResponse responseResult=new ResultResponse();
+
         responseResult.setMessage(jwt);
         return  responseResult;
 
