@@ -4,7 +4,7 @@ import lombok.Data;
 import java.sql.Date;
 @Data
 public class AppointmentListForUser {
-
+    private Integer pgId;
     private Integer pgaNo; // 預約單編號 (Primary Key, AUTO_INCREMENT)
     private Date pgaDate; // sql.Date 預約日期
     private String pgaTime; // Varchar(24)  預約時段 (0:無預約 / 1:預約時段, 預設: 0)

@@ -61,7 +61,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 預約美容師(新增預約單)
+     * 前台 for User 預約美容師(新增預約單)V
      */
     @ApiOperation("User預約美容師")
     @ApiImplicitParams({
