@@ -54,9 +54,9 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         }
 
         for (String key : sessionMap.keySet()) {
-            String userId = key.split("-")[0]; //拿到userId_num
-            if (!notifyKeys.contains(userId))
-                redisTemplate.opsForList().leftPush("userNotify:" + userId, jsNotifyMsg);
+            String connector = key.split("-")[0]; //拿到userId_num
+            if (!notifyKeys.contains(connector))
+                redisTemplate.opsForList().leftPush("userNotify:" + connector, jsNotifyMsg);
             TextMessage textMessage = new TextMessage(message);
             sessionMap.get(key).sendMessage(textMessage);
         }
@@ -72,9 +72,9 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
             throw new RuntimeException(e);
         }
         TextMessage textMessage = new TextMessage(jsNotifyMsg);
-        Set<String> notifyKeys = getKeys("userNotify:*");
-        if (!notifyKeys.contains("userId_"+userId))
-            redisTemplate.opsForList().leftPush("userNotify:" + userId, jsNotifyMsg);
+        Set<String> notifyKeys = getKeys("userNotify:userId_*");
+        if (!notifyKeys.contains("userNotify:userId_"+userId))
+            redisTemplate.opsForList().leftPush("userNotify:userId_" + userId, jsNotifyMsg);
 
         for (String key : sessionMap.keySet()) {
             if( key.split("-")[0].contains("userId_"+userId) &&sessionMap.get(key).isOpen()) {
@@ -95,10 +95,12 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         // 當連線後先去 redis 拿對應的 history
         String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
         Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
+        System.out.println(lsSize);
         for(long i =0; i<lsSize;i++){
             if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
                 continue;
             String msg =redisTemplate.opsForList().leftPop("userNotify:" + userId);
+            System.out.println(userId);
             session.sendMessage(new TextMessage(msg));
         }
     }
