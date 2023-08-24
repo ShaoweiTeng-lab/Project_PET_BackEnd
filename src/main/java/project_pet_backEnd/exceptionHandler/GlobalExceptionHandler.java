@@ -61,13 +61,13 @@ public class GlobalExceptionHandler  {
     /**
      * json轉型成class異常
      */
-    @ExceptionHandler(JsonProcessingException.class)
-    public ResponseEntity<?> handleRequestValidError(JsonProcessingException  ex) throws JsonProcessingException {
-        ResultResponse rs = new ResultResponse();
-        String msg = "前端參數異常";
-        rs.setMessage(msg);
-        log.warn(ex.getMessage());
-        rs.setCode(500);//改成將異常code丟入訊息中
-        return new ResponseEntity<>(rs, HttpStatus.OK);
-    }
+//    @ExceptionHandler(JsonProcessingException.class)
+//    public ResponseEntity<?> handleRequestValidError(JsonProcessingException  ex) throws JsonProcessingException {
+//        ResultResponse rs = new ResultResponse();
+//        String msg = "前端參數異常";
+//        rs.setMessage(msg);
+//        log.warn(ex.getMessage());
+//        rs.setCode(500);//改成將異常code丟入訊息中
+//        return new ResponseEntity<>(rs, HttpStatus.OK);
+//    }
 }
