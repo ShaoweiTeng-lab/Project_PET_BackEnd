@@ -10,7 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
+
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
 import project_pet_backEnd.productMall.productsmanage.dto.AdjustProductListResponse;
@@ -181,13 +181,14 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
                 "SET PD_STATUS = :pdStatus " +
                 "WHERE PD_NO = :pdNo";
 
-        for (AdjustProductListResponse adjust: adjustProductListResponse) {
-            MapSqlParameterSource params = new MapSqlParameterSource();
-            params.addValue("pdStatus", adjust.getPdStatus());
-            params.addValue("pdNo", adjust.getPdNo());
-
-            namedParameterJdbcTemplate.update(sql, params);
+        Map<String, Object> [] maps =new HashMap[adjustProductListResponse.size()];
+        for(int i = 0; i < adjustProductListResponse.size(); i++){
+            AdjustProductListResponse adjustProductList = adjustProductListResponse.get(i);
+            maps[i] = new HashMap<>();
+            maps[i].put("pdStatus",adjustProductList.getPdStatus());
+            maps[i].put("pdNo",adjustProductList.getPdNo());
         }
+         namedParameterJdbcTemplate.batchUpdate(sql, maps);
     }
 
     @Override   //ok批次修改商品圖片們

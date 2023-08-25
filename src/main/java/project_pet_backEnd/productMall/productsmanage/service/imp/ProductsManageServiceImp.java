@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioCollectRes;
+import project_pet_backEnd.groomer.petgroomercollection.vo.PortfolioCollect;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
@@ -16,13 +18,16 @@ import project_pet_backEnd.productMall.productsmanage.dto.ProductListResponse;
 import project_pet_backEnd.productMall.productsmanage.service.ProductsManageService;
 import project_pet_backEnd.productMall.productsmanage.vo.Product;
 import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
+import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Service     // 1.設條件 2.呼叫方法  throw exception rollback
+@Service
 public class ProductsManageServiceImp implements ProductsManageService {
 
     @Autowired
@@ -36,7 +41,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
 
 
     @Override  //ok後台 查看全部商品列表
-    public List<ProductListResponse> getAllProductsForMan(Integer pdNo) {
+    public List<ProductListResponse> getAllProductsForMan() {
         List<Product> pdlist = new ArrayList<>();
         pdlist = productRepository.findAll();
         List<ProductListResponse> rsList =new ArrayList<>();
@@ -53,10 +58,29 @@ public class ProductsManageServiceImp implements ProductsManageService {
         return rsList;
     }
 
-    @Override  //後台 商品列表查詢 (order by PdNo / PdName / PdStatus)
-    // no,name查無商品 | price此區間無商品
+    @Override  //ok後台 商品列表查詢 (order by PdNo / PdName / PdStatus)
     public Page<List<ProductListResponse>> getAllProductsWithSearch(ProductListQueryParameter productListQueryParameter) {
-        return null;
+        List<Product> pdlist = new ArrayList<>();
+        pdlist = productRepository.findAll();
+        List<ProductListResponse> rsList =new ArrayList<>();
+        for(int i = 0; i < pdlist.size(); i++){
+            Product pd = pdlist.get(i);
+            ProductListResponse productListResponse=new ProductListResponse();
+            productListResponse.setPdNo(pd.getPdNo());
+            productListResponse.setPdName(pd.getPdName());
+            productListResponse.setPdPrice(pd.getPdPrice());
+            productListResponse.setPdStatus(pd.getPdStatus());
+
+            rsList.add(productListResponse);
+        }
+        Page<List<ProductListResponse>> page = new Page<>();
+        page.setLimit(productListQueryParameter.getLimit());
+        page.setOffset(productListQueryParameter.getOffset());
+        Integer total = productsManageDao.countAllProductWithSearch(productListQueryParameter);
+        page.setTotal(total);
+        page.setRs(rsList);
+
+        return page;
     }
 
     @Override  //ok後台 修改商品列表狀態
@@ -68,45 +92,29 @@ public class ProductsManageServiceImp implements ProductsManageService {
             return rs;
     }
 
-    @Override  //後台 查看編輯商品(資訊(名稱、價錢、狀態、說明)+圖片)
-    public  List<ProductInfo> getProduct(ProductInfo productInfo, List<ProductPic> pics) {
+    @Override  //ok後台 查看編輯商品(資訊(名稱、價錢、狀態、說明)+圖片)
+    public  List<Map<String, Object>> getProduct(ProductInfo productInfo, List<ProductPic> pics) {
         List<Product> allProduct = productRepository.findAll();
-        List<ProductInfo> pdinfoList = new ArrayList<>();
-        for(int i = 0; i < allProduct.size(); i++){
-            Product pd = allProduct.get(i);
-            ProductInfo pdInfo =new ProductInfo();
-            pdInfo.setPdName(pd.getPdName());
-            pdInfo.setPdPrice(pd.getPdPrice());
-            pdInfo.setPdStatus(pd.getPdStatus());
-            pdInfo.setPdDescription(pd.getPdDescription());
+        List<Map<String, Object>> pdinfoList = new ArrayList<>();
+        for (Product product : allProduct) {
+            Map<String, Object> productData = new HashMap<>();
+            productData.put("pdName", product.getPdName());
+            productData.put("pdPrice", product.getPdPrice());
+            productData.put("pdStatus", product.getPdStatus());
+            productData.put("pdDescription", product.getPdDescription());
 
-//            (卡在同時查看商品圖片)
-//            try {
-//            productRepository.findById(PdNo); // 獲取商品編號
-//            for (ProductPic pic : pics) {
-//                pic.setPdNo(product.getPdNo()); // 關聯商品編號
-//            }
-//            productPicDao.getAllProductPic(pics); // 執行批次修改圖片
+            List<ProductPic> relatedPics = productPicDao.getAllProductPic(product.getPdNo());
+            List<String> base64EncodedPics = new ArrayList<>();
 
-//            List<ProductPic> relatedPics = productPicDao.getAllProductPic(pd.getPdNo());
-//            pdInfo.setPdPic(relatedPics);
-            pdinfoList.add(pdInfo);
+            for (ProductPic pic : relatedPics) {
+                String base64EncodedPic = AllDogCatUtils.base64Encode(pic.getPdPic());
+                base64EncodedPics.add(base64EncodedPic);
+            }
+
+            productData.put("pdPics", base64EncodedPics);
+            pdinfoList.add(productData);
         }
         return pdinfoList;
-
-//        try {
-//            productRepository.save(product); // 先保存商品，獲取商品編號
-//            for (ProductPic pic : pics) {
-//                pic.setPdNo(allProduct.getPdNo()); // 關聯商品編號
-//            }
-//            productPicDao.batchupdateproductPicByPdNo(pics); // 執行批次修改圖片
-//            ResultResponse<String> rs = new ResultResponse<>();
-//            rs.setMessage("新增成功");
-//            return rs;
-//
-//        } catch (DataAccessException e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新失敗，請稍後重試", e);
-//        }
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PD_NO")
+    @Column(name = "PD_NO", unique = true)
     private Integer pdNo;
 
     @Column(name = "PD_NAME")
