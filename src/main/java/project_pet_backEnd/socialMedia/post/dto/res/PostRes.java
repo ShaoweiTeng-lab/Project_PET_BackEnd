@@ -16,4 +16,3 @@ public class PostRes {
     String updateTime;
     Integer postStatus;
 }
-

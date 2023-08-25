@@ -12,23 +12,12 @@ import project_pet_backEnd.socialMedia.post.vo.POST;
 
 import java.util.List;
 
-@Repository
+
 public interface PostDao extends
         PagingAndSortingRepository<POST, Integer>
         , JpaRepository<POST, Integer> {
 
     Page<POST> findAllByPostStatus(Pageable pageable, Integer postStatus);
-
-
-    //    POST create(POST post);
-//
-//    List<POST> getAllPosts();
-//
-//    POST getPostById(int postId);
-//
-//    POST update(int postId, UpPostRequest upPostRequest);
-//
-//    void delete(int postId);
 
 
 }
