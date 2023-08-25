@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FrontOrderResDTO {
+public class FindByOrdNoResDTO {
 
     private Integer ordNo;
     private String userName;

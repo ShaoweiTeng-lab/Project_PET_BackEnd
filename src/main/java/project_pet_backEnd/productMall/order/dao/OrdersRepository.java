@@ -1,14 +1,12 @@
 package project_pet_backEnd.productMall.order.dao;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import project_pet_backEnd.productMall.order.dto.response.AllOrdersDTO;
-import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
+import project_pet_backEnd.productMall.order.dto.response.FindByOrdNoResDTO;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
 import java.util.List;
@@ -19,7 +17,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
     List<Orders> findByUserIdAndOrdStatus(Integer userId, Integer ordStatus);
 
-    @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO(" +
+    @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.FindByOrdNoResDTO(" +
             "o.ordNo,u.userName, o.userId, o.ordStatus, o.ordPayStatus, " +
             "o.ordPick, o.ordCreate, o.ordFinish, o.ordFee, " +
             "o.totalAmount, o.orderAmount, o.recipientName, " +
@@ -30,10 +28,10 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
             "JOIN project_pet_backEnd.productMall.userPayment.vo.OrderList ol ON o.ordNo = ol.ordNo " +
             "JOIN project_pet_backEnd.productMall.productsmanage.vo.Product p ON ol.pdNo = p.pdNo " +
             "WHERE o.ordNo = :ordNo")
-    List<FrontOrderResDTO> findFrontOrderResDtoList(@Param("ordNo") Integer ordNo);
+    List<FindByOrdNoResDTO> findFrontOrderResDtoList(@Param("ordNo") Integer ordNo);
 
 
-    @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.AllOrdersDTO( " +
+    @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO( " +
             "o.ordNo, " +
             "u.userName, " +
             "o.ordCreate, " +
@@ -44,5 +42,5 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
             "o.ordPayStatus) " +
             "FROM Orders o " +
             "JOIN project_pet_backEnd.user.vo.User u ON o.userId = u.userId")
-    List<AllOrdersDTO> findAllOrdersList(Pageable pageable);
+    List<AllOrdersResDTO> findAllOrdersList(Pageable pageable);
 }

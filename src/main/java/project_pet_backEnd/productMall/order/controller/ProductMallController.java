@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersResTestDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -39,8 +39,8 @@ public class ProductMallController {
     //修改單一訂單By OrdId --練習
     @PutMapping("/updateOrdersByOrdNo/{ordNo}")
     public  ResponseEntity<ResultResponse<String>> updateByOrdNo(@PathVariable Integer ordNo,
-                                                 @RequestBody OrdersResDTO ordersResDTO){
-        ordersService.updateOrdersByOrdNo(ordNo, ordersResDTO);
+                                                 @RequestBody OrdersResTestDTO ordersResTestDTO){
+        ordersService.updateOrdersByOrdNo(ordNo, ordersResTestDTO);
         ResultResponse rs = new ResultResponse();
         rs.setMessage("修改訂單成功!");
         return ResponseEntity.status(HttpStatus.OK).body(rs);
@@ -64,7 +64,7 @@ public class ProductMallController {
 
     //練習:查詢By 訂單編號ORD_NO
     @GetMapping("/orders/select/{ordNo}")
-    public ResponseEntity<ResultResponse<OrdersResDTO>> selectByOrdNo(@PathVariable Integer ordNo){
+    public ResponseEntity<ResultResponse<OrdersResTestDTO>> selectByOrdNo(@PathVariable Integer ordNo){
         ResultResponse rs = new ResultResponse();
         rs.setMessage(ordersService.getByOrdNo(ordNo));
         return ResponseEntity.status(HttpStatus.OK).body(rs);

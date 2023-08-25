@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 
 @Data
-public class OrderDetailDTO {
+public class OrderDetailByCreateDTO {
     @NotBlank
     private Integer proNo;
     @Min(0)

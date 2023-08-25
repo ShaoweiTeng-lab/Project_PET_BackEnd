@@ -7,14 +7,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import project_pet_backEnd.productMall.order.dto.response.AllOrdersDTO;
-import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -41,7 +39,7 @@ public class ManagerOrderController {
     })
     @PreAuthorize("hasAnyAuthority('商品管理')")
     @GetMapping("/getAllOrders")
-    public ResponseEntity<ResultResponse<List<AllOrdersDTO>>> getAllOrders(
+    public ResponseEntity<ResultResponse<List<AllOrdersResDTO>>> getAllOrders(
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
             @RequestParam(name = "rows", required = false, defaultValue = "10") Integer rows){
         Pageable pageable = PageRequest.of(page, rows);

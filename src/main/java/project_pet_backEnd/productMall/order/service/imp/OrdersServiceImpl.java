@@ -9,7 +9,7 @@ import project_pet_backEnd.productMall.order.dao.OrdersDao;
 import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
-import project_pet_backEnd.productMall.order.dto.OrderDetailDTO;
+import project_pet_backEnd.productMall.order.dto.OrderDetailByCreateDTO;
 import project_pet_backEnd.productMall.order.dto.response.*;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
@@ -59,7 +59,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Transactional
     public void createOrders(CreateOrderDTO createOrderDTO) {
         final Orders orders = createOrderDTO.getOrders();
-        final List<OrderDetailDTO> orderDetails = createOrderDTO.getOrderDetailDTOS();
+        final List<OrderDetailByCreateDTO> orderDetails = createOrderDTO.getOrderDetailByCreateDTOS();
 
         if(orders.getOrderAmount() == orders.getTotalAmount()-orders.getOrdFee()-orders.getUserPoint()){
             ordersRepository.save(orders);
@@ -98,10 +98,10 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<OrderResDTO> getOrderDetailByOrdNo(Integer ordNo) {
-        List<FrontOrderResDTO> frontOrderResDTOS=ordersRepository.findFrontOrderResDtoList(ordNo);
+        List<FindByOrdNoResDTO> findByOrdNoResDTOS =ordersRepository.findFrontOrderResDtoList(ordNo);
         Map<Integer, OrderResDTO> orderSummaryMap = new HashMap<>();
 
-        for(FrontOrderResDTO originalOrder : frontOrderResDTOS){
+        for(FindByOrdNoResDTO originalOrder : findByOrdNoResDTOS){
             OrderResDTO orderRes = orderSummaryMap.getOrDefault(originalOrder.getOrdNo(), new OrderResDTO());
             orderRes.setOrdNo(originalOrder.getOrdNo());
             orderRes.setUserName(originalOrder.getUserName());
@@ -129,6 +129,7 @@ public class OrdersServiceImpl implements OrdersService {
         }
 
         List<OrderResDTO> orderSummaryList = new ArrayList<>(orderSummaryMap.values());
+//        System.out.println(orderSummaryMap.values());
         return orderSummaryList;
     }
 
@@ -146,9 +147,9 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public List<AllOrdersDTO> getAllOrders(Pageable pageable) {
-        List<AllOrdersDTO> allOrdersDTOS = ordersRepository.findAllOrdersList(pageable);
-        return allOrdersDTOS;
+    public List<AllOrdersResDTO> getAllOrders(Pageable pageable) {
+        List<AllOrdersResDTO> allOrdersResDTOS = ordersRepository.findAllOrdersList(pageable);
+        return allOrdersResDTOS;
     }
 
     @Override
@@ -165,7 +166,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public void updateOrdersByOrdNo(Integer ordNo, OrdersResDTO ordersResDTO) {
+    public void updateOrdersByOrdNo(Integer ordNo, OrdersResTestDTO ordersResTestDTO) {
         Orders orders = ordersRepository.findById(ordNo).orElse(null);
         if(orders == null){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此訂單,請重新輸入正確訂單編號");
@@ -173,22 +174,22 @@ public class OrdersServiceImpl implements OrdersService {
         if(ordNo < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }
-        orders.setUserId(ordersResDTO.getUserId());
-        orders.setOrdStatus(Integer.valueOf(ordersResDTO.getOrdStatus()));
-        orders.setOrdPayStatus(Integer.valueOf(ordersResDTO.getOrdPayStatus()));
-        orders.setOrdPick(Integer.valueOf(ordersResDTO.getOrdPick()));
-        orders.setOrdFee(ordersResDTO.getOrdFee());
-        orders.setTotalAmount(ordersResDTO.getTotalAmount());
-        orders.setOrderAmount(ordersResDTO.getOrderAmount());
-        orders.setRecipientName(ordersResDTO.getRecipientName());
-        orders.setRecipientPh(ordersResDTO.getRecipientPh());
-        orders.setRecipientAddress(ordersResDTO.getRecipientAddress());
-        orders.setUserPoint(ordersResDTO.getUserPoint());
+        orders.setUserId(ordersResTestDTO.getUserId());
+        orders.setOrdStatus(Integer.valueOf(ordersResTestDTO.getOrdStatus()));
+        orders.setOrdPayStatus(Integer.valueOf(ordersResTestDTO.getOrdPayStatus()));
+        orders.setOrdPick(Integer.valueOf(ordersResTestDTO.getOrdPick()));
+        orders.setOrdFee(ordersResTestDTO.getOrdFee());
+        orders.setTotalAmount(ordersResTestDTO.getTotalAmount());
+        orders.setOrderAmount(ordersResTestDTO.getOrderAmount());
+        orders.setRecipientName(ordersResTestDTO.getRecipientName());
+        orders.setRecipientPh(ordersResTestDTO.getRecipientPh());
+        orders.setRecipientAddress(ordersResTestDTO.getRecipientAddress());
+        orders.setUserPoint(ordersResTestDTO.getUserPoint());
         ordersRepository.save(orders);
     }
 
     @Override
-    public OrdersResDTO getByOrdNo(Integer ordNo) {
+    public OrdersResTestDTO getByOrdNo(Integer ordNo) {
         if(ordNo < 0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "請輸入正確的訂單編號");
         }else{

@@ -1,6 +1,6 @@
 package project_pet_backEnd.productMall.order.dao;
 
-import project_pet_backEnd.productMall.order.dto.response.OrdersResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersResTestDTO;
 
 public interface OrdersDao{
     /**
@@ -8,6 +8,6 @@ public interface OrdersDao{
      * @return
      * @測試用:用訂單編號查詢
      */
-    public abstract OrdersResDTO getByOrdNo(Integer ordNo);
+    public abstract OrdersResTestDTO getByOrdNo(Integer ordNo);
 
 }

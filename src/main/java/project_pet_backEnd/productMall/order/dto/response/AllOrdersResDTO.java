@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class AllOrdersDTO {
+public class AllOrdersResDTO {
     private Integer ordNO;
     private String userName;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
