@@ -64,7 +64,7 @@ public class ProductsManageController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    @PutMapping("/updateProduct")
+    @PutMapping("/updateProductStatus")
     public ResponseEntity<ResultResponse<String>> updateProductStatus(@RequestBody List<AdjustProductListResponse> adjustProductListResponse) {
         ResultResponse<String> result = productsManageService.updateProductStatus(adjustProductListResponse);
         return ResponseEntity.ok(result);
@@ -112,7 +112,8 @@ public class ProductsManageController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/createProduct")
-    public ResponseEntity<ResultResponse<String>> insertProduct(@RequestBody @Valid ProductInfo productInfo, @RequestParam("pics") List<MultipartFile> picFiles){
+    public ResponseEntity<ResultResponse<String>> insertProduct(@RequestBody @Valid ProductInfo productInfo,
+                                                                @RequestParam("pics") List<MultipartFile> picFiles){
         ResultResponse rs =new ResultResponse();
         List<ProductPic> pics = new ArrayList<>();
 

@@ -1,15 +1,16 @@
-package project_pet_backEnd.productMall.productsmanage.vo;
+package project_pet_backEnd.productMall.productcollection.vo;
 
 import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
 
+
 @Table(name = "PRODUCT_COLLECT")
-//@Entity (確認JPA)
+@Entity
 @Data
 public class ProductCollect {
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PD_NO")
     private Integer pdNo;
 
