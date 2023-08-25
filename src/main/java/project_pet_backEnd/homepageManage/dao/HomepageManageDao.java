@@ -29,6 +29,7 @@ public interface HomepageManageDao {
     //刪除最新消息
     void deleteNewsByNewsNo(Integer newsNo);
     List<News> getAllNews();
+    List<News> getOneNews(Integer newsNo);
 
 
     //新增最新消息圖片

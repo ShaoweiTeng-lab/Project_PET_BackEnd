@@ -151,6 +151,27 @@ public class HomepageManageImp implements HomepageManageDao {
         return newsList;
     }
 
+    //查詢單一最新消息
+    @Override
+    public List<News> getOneNews(Integer newsNo) {
+        String sql = "SELECT * FROM NEWS where NEWS_NO = :newsNo";
+        Map<String, Object> map = new HashMap<>();
+
+        List<News> news = namedParameterJdbcTemplate.query(sql, map, new RowMapper<News>() {
+            @Override
+            public News mapRow(ResultSet rs, int rowNum) throws SQLException {
+                News news=new News();
+                news.setNewsTitle(rs.getString("NEWS_TITLE"));
+                news.setNewsCont(rs.getString("NEWS_CONT"));
+                news.setNewsStatus(rs.getInt("NEWS_STATUS"));
+                news.setUpdateTime(rs.getDate("UPDATE_TIME"));
+                return news;
+
+            }
+        }) ;
+        return news;
+    }
+
     //=========================================================================
 
     //新增最新消息圖片
@@ -202,7 +223,6 @@ public class HomepageManageImp implements HomepageManageDao {
             @Override
             public NewsPic mapRow(ResultSet rs, int rowNum) throws SQLException {
                 NewsPic newsPic=new NewsPic();
-                newsPic.setNewsNo(rs.getInt("NEWS_NO"));
                 newsPic.setPic(rs.getBytes("PIC"));
                 return newsPic;
 

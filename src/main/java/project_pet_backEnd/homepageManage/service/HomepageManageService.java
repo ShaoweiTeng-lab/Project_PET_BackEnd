@@ -36,4 +36,6 @@ public interface HomepageManageService {
 
 
         ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest);
+
+
 }

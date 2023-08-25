@@ -6,6 +6,8 @@ import project_pet_backEnd.homepage.vo.News;
 import project_pet_backEnd.homepage.vo.NewsPic;
 import project_pet_backEnd.homepage.vo.PicRot;
 import project_pet_backEnd.homepageManage.dao.HomepageManageDao;
+import project_pet_backEnd.homepageManage.dao.NewsPicRepository;
+import project_pet_backEnd.homepageManage.dao.NewsRepository;
 import project_pet_backEnd.homepageManage.dto.*;
 import project_pet_backEnd.homepageManage.service.HomepageManageService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -20,6 +22,7 @@ public class HomepageManageServiceImp implements HomepageManageService {
 
     @Autowired
     private NewsPicRepository newsPicRepository;
+
 
     @Override
     public void addRotePic(AddRotePicRequest addRotePicRequest) {
@@ -92,18 +95,21 @@ public class HomepageManageServiceImp implements HomepageManageService {
     public ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest) {
         News news = new News();
         news.setNewsNo(addNewsPicWithNewsRequest.getNewsNo());
-        news.setPic(addNewsPicWithNewsRequest.getPic());
 
+        // 儲存 News 對象到資料庫
         newsRepository.save(news);
 
+        // 創建關聯的 NewsPic 對象並設置關聯到 News 對象
         NewsPic newsPic = new NewsPic();
-        //設置關聯的News對象
-        newsPic.setNewsNo(newsNo);
+        newsPic.setNewsNo(news.getNewsNo());
 
+        // 儲存 NewsPic 對象到資料庫
         newsPicRepository.save(newsPic);
 
-        // 返回结果
-        return new ResultResponse();
+        // 返回結果
+        ResultResponse rs= new ResultResponse();
+        rs.setMessage("新增成功");
+        return rs;
     }
 
 
