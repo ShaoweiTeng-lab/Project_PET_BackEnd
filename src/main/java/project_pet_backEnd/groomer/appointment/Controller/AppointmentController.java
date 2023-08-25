@@ -31,7 +31,7 @@ public class AppointmentController {
     GroomerAppointmentService groomerAppointmentService;
 
     /*
-     * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名V
+     * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名
      */
     @ApiOperation("User預約頁面查詢美容師")
     @ApiImplicitParams({
@@ -46,7 +46,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表V
+     * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表
      */
     @ApiOperation("User預約頁面查詢美容師班表")
     @ApiImplicitParams({
@@ -61,7 +61,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 預約美容師(新增預約單)V
+     * 前台 for User 預約美容師(新增預約單)
      */
     @ApiOperation("User預約美容師")
     @ApiImplicitParams({
