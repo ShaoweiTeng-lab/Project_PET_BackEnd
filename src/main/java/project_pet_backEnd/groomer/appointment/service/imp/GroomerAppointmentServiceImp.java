@@ -279,6 +279,13 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             existAppointment.setPgaNotes(appointmentModifyReq.getPgaNotes());
         }
         if(appointmentModifyReq.getPgaPhone() != null && !appointmentModifyReq.getPgaPhone().isEmpty()){
+            String phoneRegex = "^09[0-9]{8}$";
+            Pattern pattern = Pattern.compile(phoneRegex);
+            Matcher matcher = pattern.matcher(appointmentModifyReq.getPgaPhone());
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您的手機號碼格式有誤!");
+            }
+
             existAppointment.setPgaPhone(appointmentModifyReq.getPgaPhone());
         }
 

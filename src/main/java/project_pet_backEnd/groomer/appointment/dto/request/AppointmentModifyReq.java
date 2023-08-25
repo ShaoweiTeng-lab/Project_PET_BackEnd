@@ -18,7 +18,7 @@ public class AppointmentModifyReq {
     private String sourcePgaTime;//xx:xx~xx:xx  原先預約時段
     private String pgaNewTime;//xx:xx~xx:xx   修改後的預約時段
 
-    private String pgaOption; // 預約選項case 0 -> "狗狗洗澡";
+    private String pgaOption; // 預約選項 -> "狗狗洗澡";
     // "狗狗半手剪 (洗澡+剃毛)";"狗狗全手剪(洗澡+全身手剪造型)";
     // "貓咪洗澡";"貓咪大美容";
     private String pgaNotes; // 預約文字
