@@ -25,7 +25,7 @@ public class NotifyAspect {
              userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
     //To Do: 商城 新增商品時
-    @After("execution(* project_pet_backEnd.user.controller.*.*(..))")
+    @After("execution(* project_pet_backEnd.productMall.productsmanage.service.*.insertProduct(..))")
     public  void  productUpdateNotify() throws Exception {
         NotifyType notifyType =NotifyType.Store;
         NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");

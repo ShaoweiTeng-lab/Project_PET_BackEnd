@@ -8,14 +8,13 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Data //生成符合 Java Bean getter setter 無參建構子
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "orders")
+@Table(name = "`Orders`")
 public class Orders {
 
     @Id

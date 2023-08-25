@@ -13,7 +13,9 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.webSocketHandler.userNotify.dto.SocketMsg;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -29,7 +31,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      */
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
+    //格式 userId_1-xxxxxxxxx
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String connector = (String) session.getAttributes().get("connect");
@@ -38,7 +40,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         sessionMap.put(connector + "-" + session.getId(), session);
     }
 
-    //推播消息
+    //全部人推播消息
     public void publicNotifyMsg(NotifyMsg notifyMsg) throws Exception {
         String message = objectMapper.writeValueAsString(notifyMsg);
         //todo 先從redis 拿出有訂閱的userId 再檢查當前上線的session ，若無 則放進history(儲存格式 userNotify:UserId)
@@ -52,13 +54,37 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         }
 
         for (String key : sessionMap.keySet()) {
-            String userId = key.split("_")[0];
-            if (!notifyKeys.contains(userId))
-                redisTemplate.opsForList().leftPush("userNotify:" + userId, jsNotifyMsg);
+            String connector = key.split("-")[0]; //拿到userId_num
+            if (!notifyKeys.contains(connector))
+                redisTemplate.opsForList().leftPush("userNotify:" + connector, jsNotifyMsg);
             TextMessage textMessage = new TextMessage(message);
             sessionMap.get(key).sendMessage(textMessage);
         }
 
+    }
+    //個人推播消息
+    public  void  publishPersonalNotifyMsg(Integer userId,NotifyMsg notifyMsg){
+
+        String jsNotifyMsg = null;
+        try {
+            jsNotifyMsg = objectMapper.writeValueAsString(notifyMsg);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        TextMessage textMessage = new TextMessage(jsNotifyMsg);
+        Set<String> notifyKeys = getKeys("userNotify:userId_*");
+        if (!notifyKeys.contains("userNotify:userId_"+userId))
+            redisTemplate.opsForList().leftPush("userNotify:userId_" + userId, jsNotifyMsg);
+
+        for (String key : sessionMap.keySet()) {
+            if( key.split("-")[0].contains("userId_"+userId) &&sessionMap.get(key).isOpen()) {
+                try {
+                    sessionMap.get(key).sendMessage(textMessage);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     /**
@@ -69,10 +95,12 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         // 當連線後先去 redis 拿對應的 history
         String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
         Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
+        System.out.println(lsSize);
         for(long i =0; i<lsSize;i++){
             if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
                 continue;
             String msg =redisTemplate.opsForList().leftPop("userNotify:" + userId);
+            System.out.println(userId);
             session.sendMessage(new TextMessage(msg));
         }
     }
