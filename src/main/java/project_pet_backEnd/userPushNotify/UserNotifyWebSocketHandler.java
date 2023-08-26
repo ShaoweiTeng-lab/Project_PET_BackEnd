@@ -11,11 +11,9 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import project_pet_backEnd.utils.AllDogCatUtils;
-import project_pet_backEnd.webSocketHandler.userNotify.dto.SocketMsg;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component

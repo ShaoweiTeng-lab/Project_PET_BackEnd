@@ -12,7 +12,7 @@ public interface UserService {
     UserProfileResponse getUserProfile(Integer userId);
     ResultResponse adjustUserProfile(Integer userId, AdjustUserProfileRequest adjustUserProfileRequest);
 
-
+    void adjustPassword(Integer userId,String password);
     ResultResponse forgetPassword(String userEmail);
 
     ResultResponse forgetRenewPassword(String code, String newPassword);

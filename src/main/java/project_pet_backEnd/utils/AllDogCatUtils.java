@@ -124,6 +124,8 @@ public class AllDogCatUtils {
      * 將上傳的檔案轉成 byte[]
      * */
     public static byte[] convertMultipartFileToByteArray(MultipartFile file) {
+        if(file==null)
+            return  null;
         try {
             return file.getBytes();
         } catch (IOException e) {
