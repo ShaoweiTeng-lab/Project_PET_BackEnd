@@ -11,15 +11,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
-import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
-import project_pet_backEnd.productMall.order.dto.response.OrderDetailResDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(tags="前台會員訂單相關功能")
@@ -27,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserOrderController {
+
 
     @Autowired
     OrdersService ordersService;
@@ -59,7 +58,8 @@ public class UserOrderController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
     @GetMapping("/order/{ordNo}")
-    public ResponseEntity<ResultResponse<List<FrontOrderResDTO>>> getOrderDetailByOrdNo(@PathVariable Integer ordNo){
+    public ResponseEntity<ResultResponse<List<OrderResDTO>>> getOrderDetailByOrdNo(
+            @PathVariable @Min(value = 1, message = "ordNo must be greater than or equal to 1")Integer ordNo){
         ResultResponse rs = new ResultResponse();
         rs.setMessage(ordersService.getOrderDetailByOrdNo(ordNo));
         return ResponseEntity.status(HttpStatus.OK).body(rs);
