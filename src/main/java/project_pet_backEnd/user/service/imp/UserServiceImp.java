@@ -27,9 +27,6 @@ public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
     @Autowired
@@ -52,7 +49,18 @@ public class UserServiceImp implements UserService {
         String encodePwd=bCryptPasswordEncoder.encode(userSignUpRequest.getUserPassword());
         userSignUpRequest.setUserPassword(encodePwd);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Local);
-        userDao.localSignUp(userSignUpRequest);
+        User user =new User();
+        user.setUserName(userSignUpRequest.getUserName());
+        user.setUserNickName(userSignUpRequest.getUserNickName());
+        user.setUserGender(userSignUpRequest.getUserGender());
+        user.setUserEmail(userSignUpRequest.getUserEmail());
+        user.setUserPassword(userSignUpRequest.getUserPassword());
+        user.setUserPhone(userSignUpRequest.getUserPhone());
+        user.setUserPic(userSignUpRequest.getUserPic());
+        user.setUserAddress(userSignUpRequest.getUserAddress());
+        user.setUserBirthday(userSignUpRequest.getUserBirthday());
+        user.setIdentityProvider(userSignUpRequest.getIdentityProvider());
+        userRepository.save(user);
     }
 
     public ResultResponse localSignIn(UserLoginRequest userLoginRequest){
