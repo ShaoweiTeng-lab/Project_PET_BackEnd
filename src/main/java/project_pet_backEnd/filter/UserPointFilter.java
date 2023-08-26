@@ -47,11 +47,13 @@ public class UserPointFilter extends OncePerRequestFilter {
             //增加點數
             userAddPoint(userId);
             filterChain.doFilter(request, response);
+            return;
         }
         long oneDayInMillis = 24 * 60 * 60 * 1000; // 一天的毫秒数
         long loginTimeStamp = AllDogCatUtils.parseStringToTimeStamp(loginTimeStampStr);
         if (Math.abs(currentTimestamp - loginTimeStamp) >= oneDayInMillis) {
             //增加點數
+            redisTemplate.opsForValue().set(key, dateString);
             userAddPoint(userId);
         }
         filterChain.doFilter(request, response);
