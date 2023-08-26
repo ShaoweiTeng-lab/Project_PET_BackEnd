@@ -12,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -54,6 +56,7 @@ public class ManagerOrderController {
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token",
                     required = true, dataType = "string", paramType = "header")
     })
+    @PreAuthorize("hasAnyAuthority('商品管理')")
     @GetMapping("/getOrders/{ordNo}")
     public ResponseEntity<ResultResponse<List<OrderResDTO>>> manGetOrderDetailByOrdNo(
             @PathVariable @Min(value = 1, message = "ordNo must be greater than or equal to 1")Integer ordNo){
@@ -62,4 +65,32 @@ public class ManagerOrderController {
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
+    @ApiOperation(value = "ordNo", notes = "後台管理員刪除已取消的訂單")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token",
+                    required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('商品管理')")
+    @DeleteMapping("/deleteOrders/{ordNo}")
+    public ResponseEntity<ResultResponse<String>> deleteByOrdNo(@PathVariable @Min(0) Integer ordNo){
+        ResultResponse rs = new ResultResponse();
+        ordersService.deleteByOrdNo(ordNo);
+        rs.setMessage("刪除成功");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+
+
+    @ApiOperation(value = "ordNo", notes = "後台管理員修改訂單資訊")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token",
+                    required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('商品管理')")
+    @PatchMapping("/patchOrders")
+    public ResponseEntity<ResultResponse<String>> manUpdateOrderStatus(@RequestBody @Valid ChangeOrderStatusDTO changeOrderStatusDTO){
+        ResultResponse rs = new ResultResponse<>();
+        ordersService.updateOrderStatus(changeOrderStatusDTO.getOrdNo(), changeOrderStatusDTO.getOrdStatus());
+        rs.setMessage("修改成功");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
 }

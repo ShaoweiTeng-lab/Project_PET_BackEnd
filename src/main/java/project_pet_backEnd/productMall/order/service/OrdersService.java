@@ -29,7 +29,8 @@ public interface OrdersService {
     //後臺管理員查詢該筆訂單詳情
     //與前台 "查詢該筆訂單詳情" 共用同個
 
-
+    //後臺管理員刪除已取消訂單
+    public abstract void deleteByOrdNo(Integer ordNo);
 
     //刪除訂單商業邏輯--byOrdNo
     public abstract void deleteOrdersByOrdNo(Integer ordNo);

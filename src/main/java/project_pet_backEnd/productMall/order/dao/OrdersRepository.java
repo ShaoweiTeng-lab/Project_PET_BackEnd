@@ -17,6 +17,8 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
 
     List<Orders> findByUserIdAndOrdStatus(Integer userId, Integer ordStatus);
 
+    Orders findByOrdNo(Integer ordNo);
+
     @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.FindByOrdNoResDTO(" +
             "o.ordNo,u.userName, o.userId, o.ordStatus, o.ordPayStatus, " +
             "o.ordPick, o.ordCreate, o.ordFinish, o.ordFee, " +

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.productMall.order.dao.OrdersDao;
+import project_pet_backEnd.productMall.order.dto.DeleteOrderDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrdersResTestDTO;
 
 
@@ -20,7 +21,45 @@ public class OrdersDaoImpl implements OrdersDao {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    private final String sqlSelectStatusByOrdNo = "SELECT ORD_STATUS FROM ORDERS WHERE ORD_NO = :ordNo";
+    private final String sqlDeleteOrderDetailByOrdNo = "Delete From ORDERLIST WHERE ORD_NO = :ordNo";
+    private final String sqlDeleteOrderByOrdNo = "Delete From ORDERS WHERE ORD_NO = :ordNo";
     private final String sqlSelectByOrdNo = "SELECT * FROM ORDERS WHERE ORD_NO = :ordNo";
+
+    @Override
+    public DeleteOrderDTO findOrdStatus(Integer ordNo) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ordNo", ordNo);
+        List<DeleteOrderDTO> deleteOrderDTO = namedParameterJdbcTemplate.query(sqlSelectStatusByOrdNo, map, new RowMapper<DeleteOrderDTO>() {
+            @Override
+            public DeleteOrderDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+                DeleteOrderDTO deleteOrderDTO1 = new DeleteOrderDTO();
+                deleteOrderDTO1.setOrdStatus(rs.getInt("ORD_STATUS"));
+                return deleteOrderDTO1;
+            }
+        });
+
+        if(deleteOrderDTO.size() > 0){
+            return deleteOrderDTO.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteOrderDetail(Integer ordNo) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ordNo", ordNo);
+        namedParameterJdbcTemplate.update(sqlDeleteOrderDetailByOrdNo, map);
+    }
+
+    @Override
+    public void deleteOrder(Integer ordNo) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ordNo", ordNo);
+        namedParameterJdbcTemplate.update(sqlDeleteOrderByOrdNo, map);
+    }
+
     @Override
     public OrdersResTestDTO getByOrdNo(Integer ordNo) {
         Map<String, Object> map = new HashMap<>();

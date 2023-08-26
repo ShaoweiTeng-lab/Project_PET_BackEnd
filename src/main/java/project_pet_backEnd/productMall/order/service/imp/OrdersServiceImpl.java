@@ -9,6 +9,7 @@ import project_pet_backEnd.productMall.order.dao.OrdersDao;
 import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
+import project_pet_backEnd.productMall.order.dto.DeleteOrderDTO;
 import project_pet_backEnd.productMall.order.dto.OrderDetailByCreateDTO;
 import project_pet_backEnd.productMall.order.dto.response.*;
 import project_pet_backEnd.productMall.order.service.OrdersService;
@@ -29,27 +30,6 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     OrdersDetailRepository ordersDetailRepository;
 
-//    @Override
-//    public void insertOrders(OrdersRes ordersRes) {
-//        Orders orders = new Orders();
-//        if(ordersRes.getUserId() == null || ordersRes.getUserId() < 0){
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此使用者");
-//        }
-//        orders.setUserId(ordersRes.getUserId());
-//        orders.setOrdStatus(ordersRes.getOrdStatus());
-//        orders.setOrdPayStatus(ordersRes.getOrdPayStatus());
-//        orders.setOrdPick(ordersRes.getOrdPick());
-//        orders.setOrdCreate(ordersRes.getOrdCreate());
-//        orders.setOrdFinish(ordersRes.getOrdFinish());
-//        orders.setOrdFee(ordersRes.getOrdFee());
-//        orders.setTotalAmount(ordersRes.getTotalAmount());
-//        orders.setOrderAmount(ordersRes.getOrderAmount());
-//        orders.setRecipientName(ordersRes.getRecipientName());
-//        orders.setRecipientPh(ordersRes.getRecipientPh());
-//        orders.setRecipientAddress(ordersRes.getRecipientAddress());
-//        orders.setUserPoint(ordersRes.getUserPoint());
-//        ordersRepository.save(orders);
-//    }
 
     /**
      * 前台會員新增訂單
@@ -133,6 +113,7 @@ public class OrdersServiceImpl implements OrdersService {
         return orderSummaryList;
     }
 
+    //修改訂單
     @Override
     public String updateOrderStatus(Integer ordNo, Integer ordStatus) {
         Optional<Orders> ordersOptional = ordersRepository.findById(ordNo);
@@ -151,6 +132,49 @@ public class OrdersServiceImpl implements OrdersService {
         List<AllOrdersResDTO> allOrdersResDTOS = ordersRepository.findAllOrdersList(pageable);
         return allOrdersResDTOS;
     }
+
+    @Override
+    @Transactional
+    public void deleteByOrdNo(Integer ordNo) {
+
+        if(ordersRepository.findByOrdNo(ordNo) == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "操作失敗,無此訂單");
+        }
+
+        DeleteOrderDTO deleteOrderDTO = ordersDao.findOrdStatus(ordNo);
+        final Integer ordStatus = deleteOrderDTO.getOrdStatus();
+        if(ordStatus == 6){
+            ordersDao.deleteOrderDetail(ordNo);
+            ordersDao.deleteOrder(ordNo);
+        }else{
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN ,"無法刪除該訂單狀態之訂單");
+        }
+    }
+
+
+
+    //    @Override
+//    public void insertOrders(OrdersRes ordersRes) {
+//        Orders orders = new Orders();
+//        if(ordersRes.getUserId() == null || ordersRes.getUserId() < 0){
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "無此使用者");
+//        }
+//        orders.setUserId(ordersRes.getUserId());
+//        orders.setOrdStatus(ordersRes.getOrdStatus());
+//        orders.setOrdPayStatus(ordersRes.getOrdPayStatus());
+//        orders.setOrdPick(ordersRes.getOrdPick());
+//        orders.setOrdCreate(ordersRes.getOrdCreate());
+//        orders.setOrdFinish(ordersRes.getOrdFinish());
+//        orders.setOrdFee(ordersRes.getOrdFee());
+//        orders.setTotalAmount(ordersRes.getTotalAmount());
+//        orders.setOrderAmount(ordersRes.getOrderAmount());
+//        orders.setRecipientName(ordersRes.getRecipientName());
+//        orders.setRecipientPh(ordersRes.getRecipientPh());
+//        orders.setRecipientAddress(ordersRes.getRecipientAddress());
+//        orders.setUserPoint(ordersRes.getUserPoint());
+//        ordersRepository.save(orders);
+//    }
+
 
     @Override
     public void deleteOrdersByOrdNo(Integer ordNo) {
@@ -214,6 +238,5 @@ public class OrdersServiceImpl implements OrdersService {
         list = ordersRepository.findAll();
         return list;
     }
-
 
 }
