@@ -34,7 +34,8 @@ public class NotifyAspect {
     @After("execution(* project_pet_backEnd.user.service.*.localSignIn(..))")
     public  void  test() throws Exception {
         NotifyType notifyType =NotifyType.Store;
-        NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
+        PictureInfo pictureInfo= pictureInfoRepository.findFirstByOrderByPiDateDesc();
+        NotifyMsg notifyMsg =new NotifyMsg(notifyType, AllDogCatUtils.base64Encode(pictureInfo.getPiPicture()),"商城有新的商品，趕快來看看喔~");
         System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
 
