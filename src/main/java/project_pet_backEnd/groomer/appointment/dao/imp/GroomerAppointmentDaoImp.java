@@ -248,7 +248,7 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
      */
     @Override
     public List<AppointmentListForUser> getAppointmentForUserByUserId(Integer userId, UserAppoQueryParameter userAppoQueryParameter) {
-        String sql = "SELECT PGA_NO, PGA_DATE, PGA_TIME, PGA_STATE, PGA_OPTION, PGA_NOTES, PGA_PHONE, USER_NAME, PG_NAME, PG_GENDER, PG_PIC " +
+        String sql = "SELECT pga.PG_ID, PGA_NO, PGA_DATE, PGA_TIME, PGA_STATE, PGA_OPTION, PGA_NOTES, PGA_PHONE, `user`.USER_NAME, PG_NAME, PG_GENDER, PG_PIC " +
                 "FROM all_dog_cat.pet_groomer_appointment pga " +
                 "JOIN `user` ON pga.USER_ID = `user`.USER_ID " +
                 "JOIN pet_groomer ON pga.PG_ID = pet_groomer.PG_ID " +
@@ -272,6 +272,7 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
             @Override
             public AppointmentListForUser mapRow(ResultSet rs, int rowNum) throws SQLException {
                 AppointmentListForUser appList = new  AppointmentListForUser();
+                appList.setPgId(rs.getInt("PG_ID"));
                 appList.setPgaNo(rs.getInt("PGA_NO"));
                 appList.setPgaDate(rs.getDate("PGA_DATE"));
                 appList.setPgaTime(rs.getString("PGA_TIME"));

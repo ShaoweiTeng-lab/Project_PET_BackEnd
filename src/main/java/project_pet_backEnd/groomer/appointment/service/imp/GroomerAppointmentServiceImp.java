@@ -154,7 +154,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
                 pgsStateChars[i] = '2';
             } else if (pgaTimeChars[i] == '1' && (pgsStateChars[i] == '1' || pgsStateChars[i] == '2')) {
                 // 預約時段為1，但班表狀態已經是1或2，拋出預約失敗異常
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "預約失敗，該時段不可預約!");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "預約失敗，該時段可能已被預約或不可預約!");
             }
         }
 
@@ -206,14 +206,15 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
         List<AppoForUserListByUserIdRes> resList = new ArrayList<>();
         for(AppointmentListForUser daoData:appointmentForUserByUserId){
             AppoForUserListByUserIdRes appoForUserListByUserIdRes = new AppoForUserListByUserIdRes();
+            appoForUserListByUserIdRes.setPgId(daoData.getPgId());
             appoForUserListByUserIdRes.setPgaNo(daoData.getPgaNo());
             appoForUserListByUserIdRes.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));
             appoForUserListByUserIdRes.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
 
             switch (daoData.getPgaState()) {
-                case 0 -> appoForUserListByUserIdRes.setPgaState("訂單未完成");
-                case 1 -> appoForUserListByUserIdRes.setPgaState("訂單已完成");
-                case 2 -> appoForUserListByUserIdRes.setPgaState("訂單已取消");
+                case 0 -> appoForUserListByUserIdRes.setPgaState("未完成");
+                case 1 -> appoForUserListByUserIdRes.setPgaState("已完成");
+                case 2 -> appoForUserListByUserIdRes.setPgaState("已取消");
             }
             appoForUserListByUserIdRes.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
             appoForUserListByUserIdRes.setPgaNotes(daoData.getPgaNotes());
@@ -278,6 +279,13 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             existAppointment.setPgaNotes(appointmentModifyReq.getPgaNotes());
         }
         if(appointmentModifyReq.getPgaPhone() != null && !appointmentModifyReq.getPgaPhone().isEmpty()){
+            String phoneRegex = "^09[0-9]{8}$";
+            Pattern pattern = Pattern.compile(phoneRegex);
+            Matcher matcher = pattern.matcher(appointmentModifyReq.getPgaPhone());
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "您的手機號碼格式有誤!");
+            }
+
             existAppointment.setPgaPhone(appointmentModifyReq.getPgaPhone());
         }
 
