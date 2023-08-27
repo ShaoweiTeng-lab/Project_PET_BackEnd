@@ -48,7 +48,7 @@ public class ManagerJWTFilter extends OncePerRequestFilter {
             return;
         }
         managerId=claims.getSubject();
-        String managerLoginJson=redisTemplate.opsForValue().get("Manager_Login_"+managerId);
+        String managerLoginJson=redisTemplate.opsForValue().get("Manager:Login:"+managerId);
         if(managerLoginJson==null){
             filterChain.doFilter(request,response);
             return;
