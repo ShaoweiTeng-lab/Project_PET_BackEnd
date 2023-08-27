@@ -1,6 +1,7 @@
 package project_pet_backEnd.user.controller;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+@Slf4j
 @Api(tags = "前台會員")
 @RestController
 @Validated
@@ -116,7 +118,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/password")
-    public  ResultResponse<String> adjustPassword(@RequestAttribute(name = "userId") Integer userId,
+    public  ResultResponse<String> adjustPassword(@ApiParam(hidden = true) @RequestAttribute(name = "userId") Integer userId,
                                                   @RequestParam @NotBlank(message = "密碼不可為空")  String userPassword){
 
         userService.adjustPassword(userId,userPassword);
