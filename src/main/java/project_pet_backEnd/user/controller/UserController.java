@@ -118,7 +118,7 @@ public class UserController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/password")
-    public  ResultResponse<String> adjustPassword(@RequestAttribute(name = "userId") Integer userId,
+    public  ResultResponse<String> adjustPassword(@ApiParam(hidden = true) @RequestAttribute(name = "userId") Integer userId,
                                                   @RequestParam @NotBlank(message = "密碼不可為空")  String userPassword){
 
         userService.adjustPassword(userId,userPassword);
