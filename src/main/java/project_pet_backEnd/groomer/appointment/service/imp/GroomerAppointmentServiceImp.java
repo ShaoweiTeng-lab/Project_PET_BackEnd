@@ -431,6 +431,7 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
 
         for(PGAppointmentRes daoData:searchlist){
             AppoForMan appoForMan = new AppoForMan();
+            appoForMan.setUserId(daoData.getUserId());
             appoForMan.setPgaNo(daoData.getPgaNo());
             appoForMan.setPgId(daoData.getPgId());
             appoForMan.setPgaDate(AllDogCatUtils.timestampToSqlDateFormat(daoData.getPgaDate()));

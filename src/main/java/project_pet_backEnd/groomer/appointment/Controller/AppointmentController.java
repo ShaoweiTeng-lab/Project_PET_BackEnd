@@ -134,14 +134,18 @@ public class AppointmentController {
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @GetMapping("/manager/allAppointmentSearch")
     public ResultResponse<Page<List<AppoForMan>>> AllAppointmentSearchForMan(
-            @RequestParam(value = "search",required = false) String search,
+            @RequestParam(value = "search",required = false, defaultValue = "") String search,
             @RequestParam(value = "orderBy",required = false, defaultValue = "PGA_NO") AppointmentOrderBy orderBy,
             @RequestParam(value = "sort",required = false,defaultValue = "desc") Sort sort,
             @RequestParam(value = "limit",defaultValue = "10")@Max(50) @Min(0) Integer limit,
             @RequestParam(value = "offset",defaultValue = "0")@Min(0)Integer offset
     ){
         GroomerAppointmentQueryParameter groomerAppointmentQueryParameter = new GroomerAppointmentQueryParameter();
-        groomerAppointmentQueryParameter.setSearch(search);
+        if(search.isBlank()){
+            groomerAppointmentQueryParameter.setSearch(null);
+        }else {
+            groomerAppointmentQueryParameter.setSearch(search);
+        }
         groomerAppointmentQueryParameter.setOrder(orderBy);
         groomerAppointmentQueryParameter.setSort(sort);
         groomerAppointmentQueryParameter.setLimit(limit);

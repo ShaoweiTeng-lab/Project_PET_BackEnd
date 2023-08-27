@@ -113,7 +113,7 @@ public class GroomerAppointmentDaoImp implements GroomerAppointmentDao {
 
         if (groomerAppointmentQueryParameter.getSearch() != null) {
             sql += "AND (u.USER_NAME LIKE :search OR a.USER_ID LIKE :search OR g.PG_ID LIKE :search OR g.PG_NAME LIKE :search " +
-                    "OR a.PGA_NO LIKE :search OR a.PGA_DATE LIKE :search OR a.PGA_STATE LIKE :search) ";
+                    "OR a.PGA_NO LIKE :search OR a.PGA_DATE LIKE :search) ";
             params.addValue("search", "%" + groomerAppointmentQueryParameter.getSearch() + "%");
         }
 
