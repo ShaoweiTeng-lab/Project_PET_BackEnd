@@ -16,7 +16,7 @@
 
 ## 使用版本:
 ### * Spring boot 2.7.13
-### * Spring Security 5.0
+### * Springboot starter-security 2.7.13
 ![](header.png)
 
 
