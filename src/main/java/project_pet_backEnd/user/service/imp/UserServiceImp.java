@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.smtp.EmailService;
 import project_pet_backEnd.smtp.dto.EmailResponse;
-import project_pet_backEnd.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
