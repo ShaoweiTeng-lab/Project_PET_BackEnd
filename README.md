@@ -2,6 +2,8 @@
 [![Build Status][travis-image]][travis-url]
 [![Downloads Stats][npm-downloads]][npm-url]
 
+## 專題說明:
+
 ## 實作項目:
 
 ### * 商成:商品 查詢/新增/修改/功能 /第三方金流付款
