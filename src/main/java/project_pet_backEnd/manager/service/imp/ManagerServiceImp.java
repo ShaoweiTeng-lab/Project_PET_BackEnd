@@ -73,7 +73,6 @@ public class ManagerServiceImp  implements ManagerService {
         if(managerDetail.getManager().getManagerState()==0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"您已被停權");
         String managerId =String.valueOf( managerDetail.getManager().getManagerId());
-        ObjectMapper objectMapper =new ObjectMapper();
         String managerDetailJson=null;
         try {
             managerDetailJson=objectMapper.writeValueAsString(managerDetail);
@@ -142,7 +141,7 @@ public class ManagerServiceImp  implements ManagerService {
         Manager manager =managerRepository.findByManagerAccount(adjustManagerRequest.getOrgManagerAccount());
         if(manager==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-        if(adjustManagerRequest.getManagerPassword()!=null)
+        if(adjustManagerRequest.getManagerPassword()!=null && !adjustManagerRequest.getManagerPassword().trim().equals(""))
             manager.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
         managerRepository.save(manager);
         ResultResponse rs =new ResultResponse();
