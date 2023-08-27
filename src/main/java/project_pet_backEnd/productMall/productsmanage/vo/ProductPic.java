@@ -22,6 +22,9 @@ public class ProductPic {
         @Lob
         private byte[] pdPic; //商品照片 LONGBLOB
 
+        @Column(name = "PD_ORDERLIST")
+        private Integer pdOrderList;
+
         @ManyToOne
         @JoinColumn(name = "PD_NO")
         private Product product;
