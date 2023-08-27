@@ -79,7 +79,7 @@ public class ManagerServiceImp  implements ManagerService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        redisTemplate.opsForValue().set("Manager_Login_"+managerDetail.getManager().getManagerId(),managerDetailJson);
+        redisTemplate.opsForValue().set("Manager:Login:"+managerDetail.getManager().getManagerId(),managerDetailJson);
         String jwt= managerJwtUtil.createJwt(managerId);
         ResultResponse responseResult=new ResultResponse();
         responseResult.setMessage(jwt);
