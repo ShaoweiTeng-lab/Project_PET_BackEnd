@@ -44,7 +44,6 @@ public class GoogleAuthServiceImp implements OAuthService {
             //若有此使用者
             String token=generateLoginToken(user.getUserId().toString());
             rs.setMessage(token);
-            System.out.println(token);
             return  rs;
         }
         UserSignUpRequest userSignUpRequest =new UserSignUpRequest();
@@ -55,10 +54,7 @@ public class GoogleAuthServiceImp implements OAuthService {
         userSignUpRequest.setUserPic(userPic);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Google);
         userSignUpRequest.setUserGender(2);
-
-
         Integer userId=googleSignUp(userSignUpRequest);
-        System.out.println(userId);
         String token=generateLoginToken(userId.toString());
         rs.setMessage(token);
         return  rs;
