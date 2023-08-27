@@ -16,7 +16,7 @@ import javax.validation.ConstraintViolationException;
 import static project_pet_backEnd.ecpay.payment.integration.AllInOne.log;
 
 /**
- * 全域 異常處理 防止部分驗證回傳 500
+ * 全域 異常處理
  */
 @Slf4j
 @ControllerAdvice
@@ -67,9 +67,9 @@ public class GlobalExceptionHandler  {
     @ExceptionHandler(JsonProcessingException.class)
     public ResponseEntity<?> handleRequestValidError(JsonProcessingException  ex) throws JsonProcessingException {
         ResultResponse rs = new ResultResponse();
-        String msg = "前端參數異常";
+        String msg = "json 序列化異常";
         rs.setMessage(msg);
-        log.warn(ex.getMessage());
+        log.error(ex.getMessage());
         rs.setCode(500);//改成將異常code丟入訊息中
         return new ResponseEntity<>(rs, HttpStatus.OK);
     }
