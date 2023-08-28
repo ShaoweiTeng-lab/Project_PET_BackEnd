@@ -31,4 +31,11 @@ public class ShopCartServiceImpl implements ShopCartService {
         }
     }
 
+    @Override
+    public void deleteProduct(Integer shoppingCart_userId, Integer pdNO) {
+        if(shoppingCart_userId != null){
+            shopCartRepository.deleteProduct(shoppingCart_userId, pdNO);
+        }
+    }
+
 }

@@ -65,4 +65,17 @@ public class ShopCartController {
         rs.setMessage("購物車清除成功!");
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
+
+    @ApiOperation(value = "userId", notes = "在購物車欄位刪除該商品")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @DeleteMapping("/deleteProduct/{pdNo}")
+    public ResponseEntity<ResultResponse<String>> deleteShopCart(@RequestAttribute(name = "userId") Integer shoppingCart_userI, @PathVariable Integer pdNo){
+
+        ResultResponse rs = new ResultResponse();
+        shopCartService.deleteProduct(shoppingCart_userI, pdNo);
+        rs.setMessage("商品刪除成功!");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
 }

@@ -112,4 +112,14 @@ public class ShopCartRepository {
         }
     }
 
+    public void deleteProduct(Integer shoppingCart_userId, Integer pdNo){
+        String redisKey = getCartKey(shoppingCart_userId);
+        String field = String.valueOf(pdNo);
+        Integer Quantity = Integer.parseInt(hashOperations.get(redisKey, field));
+        if (Quantity != null && Quantity >= 0) {
+            hashOperations.delete(redisKey, field);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "購物車無此商品");
+        }
+    }
 }

@@ -12,4 +12,6 @@ public interface ShopCartService {
 
     public abstract void deleteCart(Integer shoppingCart_userId);
 
+    public abstract void deleteProduct(Integer shoppingCart_userId, Integer pdNO);
+
 }
