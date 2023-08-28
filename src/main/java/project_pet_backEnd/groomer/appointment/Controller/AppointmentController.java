@@ -31,7 +31,7 @@ public class AppointmentController {
     GroomerAppointmentService groomerAppointmentService;
 
     /*
-     * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名
+     * 前台 for User 進入頁面提供選擇美容師List 並且藉由userId拿到 userPh & user姓名V
      */
     @ApiOperation("User預約頁面查詢美容師")
     @ApiImplicitParams({
@@ -46,7 +46,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表
+     * 前台 for User 選擇美容師後列出該美容師含當日至一個月內的班表V
      */
     @ApiOperation("User預約頁面查詢美容師班表")
     @ApiImplicitParams({
@@ -61,7 +61,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 預約美容師(新增預約單)
+     * 前台 for User 預約美容師(新增預約單)V
      */
     @ApiOperation("User預約美容師")
     @ApiImplicitParams({
@@ -78,7 +78,7 @@ public class AppointmentController {
     }
 
     /*
-     * 前台 for User 查詢美容師預約
+     * 前台 for User 查詢美容師預約V
      */
     @ApiOperation("User查詢已預約單")
     @ApiImplicitParams({
@@ -104,7 +104,7 @@ public class AppointmentController {
         return resultResponse;
     }
     /*
-     * 前台 for User 修改預約單
+     * 前台 for User 修改預約單V
      */
     @ApiOperation("User修改預約單")
     @ApiImplicitParams({
@@ -114,7 +114,7 @@ public class AppointmentController {
     public ResultResponse<String>modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
         return groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
     }
-    //完成或取消訂單 for User
+    //完成或取消訂單 for UserV
     @ApiOperation("User修改預約單狀態")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
@@ -126,7 +126,7 @@ public class AppointmentController {
 
     //----------------------------美容師後台管理(預約管理)------------------------------------------------------
 
-    //查詢預約 for Man
+    //查詢預約 for Man V
     @ApiOperation("Man預約單查詢")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
@@ -154,6 +154,22 @@ public class AppointmentController {
 
         ResultResponse<Page<List<AppoForMan>>> resultResponse =new ResultResponse<>();
         resultResponse.setMessage(allAppointmentWithSearch);
+        return resultResponse;
+    }
+    /*
+     * 前台 for Man 選擇美容師後列出該美容師含當日至一個月內的班表V
+     */
+    @ApiOperation("Man修改預約頁面查詢PG班表")
+    @PreAuthorize("hasAnyAuthority('美容師管理')")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @GetMapping("/manager/pgScheduleForA")
+    public ResultResponse<List<PetGroomerScheduleForAppointment>> chosePgGetScheduleByPgIdForMan(@RequestParam Integer pgId){
+        List<PetGroomerScheduleForAppointment> groomerScheduleByPgId = groomerAppointmentService.getGroomerScheduleByPgId(pgId);
+
+        ResultResponse<List<PetGroomerScheduleForAppointment>> resultResponse =new ResultResponse<>();
+        resultResponse.setMessage(groomerScheduleByPgId);
         return resultResponse;
     }
 
