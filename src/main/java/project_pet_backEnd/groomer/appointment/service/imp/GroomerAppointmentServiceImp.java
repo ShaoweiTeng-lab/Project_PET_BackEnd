@@ -438,9 +438,9 @@ public class GroomerAppointmentServiceImp implements GroomerAppointmentService {
             appoForMan.setPgaTime(AppointmentUtils.convertTimeFrompgaTimeString(daoData.getPgaTime()));//轉為時間x:00 ~ x:00
 
         switch (daoData.getPgaState()) {
-            case 0 -> appoForMan.setPgaState("訂單未完成");
-            case 1 -> appoForMan.setPgaState("訂單已完成");
-            case 2 -> appoForMan.setPgaState("訂單已取消");
+            case 0 -> appoForMan.setPgaState("未完成");
+            case 1 -> appoForMan.setPgaState("已完成");
+            case 2 -> appoForMan.setPgaState("已取消");
         }
             appoForMan.setPgaOption(AppointmentUtils.convertServiceOption(daoData.getPgaOption()));//預約選項轉換字串
             appoForMan.setPgaNotes(daoData.getPgaNotes());
