@@ -15,11 +15,11 @@ public class AppoForMan {
     // 預約選項(0:狗狗洗澡 / 1:狗狗半手剪 (洗澡+剃毛) /
     // 2:狗狗全手剪(洗澡+全身手剪造型))
     // 3:貓咪洗澡 /4:貓咪大美容
-
-    private String pgaNotes; // 預約文字
+    private Integer userId;
+    private String pgaNotes; // (備註)預約文字
     private String pgaPhone; // 預約電話 (Not Null)
 
-    private String UserName;//會員姓名 form user-table
+    private String userName;//預約姓名 form user-table
 
     private String pgName;//美容師姓名 form PET_GROOMER-table
 }
