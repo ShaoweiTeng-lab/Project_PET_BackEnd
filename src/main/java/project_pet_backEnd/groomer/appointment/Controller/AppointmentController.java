@@ -182,7 +182,7 @@ public class AppointmentController {
     public ResultResponse<String> modifyAppointmentForMan(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
         return groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
     }
-    //取消預約單or完成訂單。for Man
+    //取消預約單or完成訂單。for Man v
     @ApiOperation("Man修改預約單狀態")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
@@ -194,7 +194,7 @@ public class AppointmentController {
 
     //----------------------------美容師個人管理------------------------------------------------------
 
-    //查詢預約 for PG
+    //查詢預約 for PG V
     @ApiOperation("Pg查詢預約單")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
@@ -208,8 +208,13 @@ public class AppointmentController {
             @RequestParam(value = "limit",defaultValue = "10")@Max(50) @Min(0) Integer limit,
             @RequestParam(value = "offset",defaultValue = "0")@Min(0)Integer offset
     ){
+
         GroomerAppointmentQueryParameter groomerAppointmentQueryParameter = new GroomerAppointmentQueryParameter();
-        groomerAppointmentQueryParameter.setSearch(search);
+        if(search.isBlank()){
+            groomerAppointmentQueryParameter.setSearch(null);
+        }else {
+            groomerAppointmentQueryParameter.setSearch(search);
+        }
         groomerAppointmentQueryParameter.setOrder(orderBy);
         groomerAppointmentQueryParameter.setSort(sort);
         groomerAppointmentQueryParameter.setLimit(limit);
