@@ -10,7 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import project_pet_backEnd.groomer.appointment.dto.response.PGAppointmentRes;
+
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
 import project_pet_backEnd.productMall.productsmanage.dto.AdjustProductListResponse;
@@ -31,19 +31,19 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Override  //ok商品列表列出全部商品
-    public List<ProductListResponse> getAllProduct(Integer pdNo) {
-        String sql ="SELECT PD_NO, PD_NAME, PD_PRICE, PD_STATUS "+
-                    "FROM PRODUCT " +
-                    "WHERE PD_NO =:pdNo" +
-                    "ORDER BY PD_NO"; // Default sorting by PD_NO
-
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pdNo", pdNo);
-
-        List<ProductListResponse> productList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ProductListResponse.class));
-        return productList;
-    }
+//    @Override  //ok商品列表列出全部商品
+//    public List<ProductListResponse> getAllProduct(Integer pdNo) {
+//        String sql ="SELECT PD_NO, PD_NAME, PD_PRICE, PD_STATUS "+
+//                    "FROM PRODUCT " +
+//                    "WHERE PD_NO =:pdNo" +
+//                    "ORDER BY PD_NO"; // Default sorting by PD_NO
+//
+//        MapSqlParameterSource params = new MapSqlParameterSource();
+//        params.addValue("pdNo", pdNo);
+//
+//        List<ProductListResponse> productList = namedParameterJdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(ProductListResponse.class));
+//        return productList;
+//    }
 
     @Override //ok關鍵字搜尋、分頁搜尋
     public List<ProductListResponse> getAllProductWithSearch(ProductListQueryParameter productListQueryParameter) {
@@ -58,11 +58,11 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
             params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
         }
 
-//        if判斷書入價格區間between
-        if (productListQueryParameter.getSearch() != null) {
-            sql += "AND (PD_NO LIKE :search OR PD_NAME LIKE :search OR PD_PRICE LIKE :search OR PD_STATUS LIKE :search ";
-            params.addValue("search", "%" + productListQueryParameter.getSearch() + "%");
-        }
+        if (productListQueryParameter.getMinPrice() != null && productListQueryParameter.getMaxPrice() != null) {
+        sql += "AND PD_PRICE BETWEEN :minPrice AND :maxPrice ";
+        params.addValue("minPrice", productListQueryParameter.getMinPrice());
+        params.addValue("maxPrice", productListQueryParameter.getMaxPrice());
+    }
 
         // Sort  再加回case
         if (productListQueryParameter.getOrder() != null) {
@@ -128,14 +128,14 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
 
     @Override   //ok(可改用JPA就不用寫)新增商品資訊
     public void insertProductInfo(ProductInfo productInfo) {
-        String sql = "INSERT INTO PET_GROOMER_APPOINTMENT (PD_NAME, PD_PRICE, PD_FORMAT, PD_STATUS, PD_DESCRIPTION) " +
-                "VALUES (:pdName, :pdPrice, :pdFormat, :pdStatus, :pdDescription)";
+        String sql = "INSERT INTO PET_GROOMER_APPOINTMENT (PD_NAME, PD_PRICE, PD_STATUS, PD_DESCRIPTION) " +
+                "VALUES (:pdName, :pdPrice, :pdStatus, :pdDescription)";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pdName", productInfo.getPdName());
         params.addValue("pdPrice", productInfo.getPdPrice());
-        params.addValue("pdFormat", productInfo.getPdFormat());
         params.addValue("pdStatus", productInfo.getPdStatus());
         params.addValue("pdDescription", productInfo.getPdDescription());
+        params.addValue("PdOrderlist", productInfo.getPdOrderlist());
 
         namedParameterJdbcTemplate.update(sql, params);
 
@@ -182,13 +182,14 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
                 "SET PD_STATUS = :pdStatus " +
                 "WHERE PD_NO = :pdNo";
 
-        for (AdjustProductListResponse adjust: adjustProductListResponse) {
-            MapSqlParameterSource params = new MapSqlParameterSource();
-            params.addValue("pdStatus", adjust.getPdStatus());
-            params.addValue("pdNo", adjust.getPdNo());
-
-            namedParameterJdbcTemplate.update(sql, params);
+        Map<String, Object> [] maps =new HashMap[adjustProductListResponse.size()];
+        for(int i = 0; i < adjustProductListResponse.size(); i++){
+            AdjustProductListResponse adjustProductList = adjustProductListResponse.get(i);
+            maps[i] = new HashMap<>();
+            maps[i].put("pdStatus",adjustProductList.getPdStatus());
+            maps[i].put("pdNo",adjustProductList.getPdNo());
         }
+         namedParameterJdbcTemplate.batchUpdate(sql, maps);
     }
 
     @Override   //ok批次修改商品圖片們
