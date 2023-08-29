@@ -16,10 +16,7 @@ import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.sql.Date;
 @Slf4j
 @Api(tags = "前台會員")
@@ -93,7 +90,9 @@ public class UserController {
             @RequestParam(required = false) @NotBlank(message = "匿稱不可為空")  String userNickName,
             @RequestParam(required = false) @Max(1) @Min(0) Integer userGender,
             @RequestParam(required = false) @NotBlank(message = "地址不可為空")  String userAddress,
-            @RequestParam(required = false) @NotBlank(message = "電話不可為空")  String userPhone,
+            @RequestParam(required = false)
+            @Size(max = 10, message = "電話長度不可大於10")
+            @NotBlank(message = "電話不可為空")  String userPhone,
             @RequestParam(required = false) Date userBirthday,
             @RequestParam(required = false) MultipartFile userPic
             ){
