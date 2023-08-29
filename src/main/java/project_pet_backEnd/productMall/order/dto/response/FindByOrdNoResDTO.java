@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FrontOrderResDTO {
+public class FindByOrdNoResDTO {
 
     private Integer ordNo;
+    private String userName;
     private Integer userId;
     private Integer ordStatus;
     private Integer ordPayStatus;
@@ -37,23 +38,4 @@ public class FrontOrderResDTO {
     private Integer price;
     private String pdName;
 
-//    public FrontOrderResDTO(Integer ordNo, Integer userId, Integer ordStatus, Integer ordPayStatus, Integer ordPick, LocalDateTime ordCreate, LocalDateTime ordFinish, Integer ordFee, Integer totalAmount, Integer orderAmount, String recipientName, String recipientAddress, String recipientPh, Integer userPoint, Integer qty, Integer price, String pdName) {
-//        this.ordNo = ordNo;
-//        this.userId = userId;
-//        this.ordStatus = ordStatus;
-//        this.ordPayStatus = ordPayStatus;
-//        this.ordPick = ordPick;
-//        this.ordCreate = ordCreate;
-//        this.ordFinish = ordFinish;
-//        this.ordFee = ordFee;
-//        this.totalAmount = totalAmount;
-//        this.orderAmount = orderAmount;
-//        this.recipientName = recipientName;
-//        this.recipientAddress = recipientAddress;
-//        this.recipientPh = recipientPh;
-//        this.userPoint = userPoint;
-//        this.qty = qty;
-//        this.price = price;
-//        this.pdName = pdName;
-//    }
 }

@@ -1,6 +1,7 @@
 package project_pet_backEnd.manager.controller;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -16,7 +17,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-
+@Slf4j
 @Api(tags = "管理員管理")
 @RequestMapping("/manager")
 @RestController

@@ -4,9 +4,7 @@ import lombok.Data;
 
 @Data
 public class OrderDetailResDTO {
-    private Integer ordNo;
-    private Integer pdNo;
+    private String pdName;
     private Integer qty;
     private Integer price;
-    private String proName;
 }
