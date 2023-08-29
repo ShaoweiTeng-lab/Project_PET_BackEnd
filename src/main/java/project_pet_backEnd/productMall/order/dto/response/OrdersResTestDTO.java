@@ -5,7 +5,7 @@ import lombok.Data;
 import java.sql.Date;
 
 @Data
-public class OrdersResDTO {
+public class OrdersResTestDTO {
     private Integer ordNo;
     private Integer userId;
     private Byte ordStatus;

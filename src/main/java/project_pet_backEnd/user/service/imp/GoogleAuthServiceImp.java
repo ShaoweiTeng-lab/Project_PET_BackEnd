@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import project_pet_backEnd.user.dao.UserDao;
+import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.user.dto.UserSignUpRequest;
 import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
@@ -22,8 +22,10 @@ import project_pet_backEnd.utils.UserJwtUtil;
 
 @Service
 public class GoogleAuthServiceImp implements OAuthService {
+
+
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
     @Value("${google.client-id}")
     private String clientId;
     @Value("${google.client-secret}")
@@ -36,14 +38,12 @@ public class GoogleAuthServiceImp implements OAuthService {
         OAuthResponse OAuthResponse =getGoogleToken(oauthRequest);
 
         UserInfoResponse userInfoResponse=getUserInfo(OAuthResponse.getAccess_token());
-
-        User user=userDao.getUserByEmail(userInfoResponse.getEmail());
+        User user= userRepository.findByUserEmail(userInfoResponse.getEmail());
         ResultResponse rs =new ResultResponse();
         if(user!=null){
             //若有此使用者
             String token=generateLoginToken(user.getUserId().toString());
             rs.setMessage(token);
-            System.out.println(token);
             return  rs;
         }
         UserSignUpRequest userSignUpRequest =new UserSignUpRequest();
@@ -54,9 +54,8 @@ public class GoogleAuthServiceImp implements OAuthService {
         userSignUpRequest.setUserPic(userPic);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Google);
         userSignUpRequest.setUserGender(2);
-        Integer userId=userDao.localSignUp(userSignUpRequest);
+        Integer userId=googleSignUp(userSignUpRequest);
         String token=generateLoginToken(userId.toString());
-        System.out.println(token);
         rs.setMessage(token);
         return  rs;
     }
@@ -110,5 +109,22 @@ public class GoogleAuthServiceImp implements OAuthService {
 
     private String generateLoginToken(String sub){
         return userJwtUtil.createJwt(sub);
+    }
+
+
+    private  Integer googleSignUp(UserSignUpRequest userSignUpRequest){
+        User user =new User();
+        user.setUserName(userSignUpRequest.getUserName());
+        user.setUserNickName(userSignUpRequest.getUserNickName());
+        user.setUserGender(userSignUpRequest.getUserGender());
+        user.setUserEmail(userSignUpRequest.getUserEmail());
+        user.setUserPassword(userSignUpRequest.getUserPassword());
+        user.setUserPhone(userSignUpRequest.getUserPhone());
+        user.setUserPic(userSignUpRequest.getUserPic());
+        user.setUserAddress(userSignUpRequest.getUserAddress());
+        user.setUserBirthday(userSignUpRequest.getUserBirthday());
+        user.setIdentityProvider(userSignUpRequest.getIdentityProvider());
+        userRepository.save(user);
+        return  user.getUserId();
     }
 }

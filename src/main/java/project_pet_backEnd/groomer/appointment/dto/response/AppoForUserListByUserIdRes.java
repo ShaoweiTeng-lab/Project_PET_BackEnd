@@ -5,6 +5,7 @@ import lombok.Data;
 import java.sql.Date;
 @Data
 public class AppoForUserListByUserIdRes {
+    private Integer pgId;
     private Integer pgaNo; // 預約單編號 (Primary Key, AUTO_INCREMENT)
     private String pgaDate; // yyyy-dd-mm 預約日期
     private String pgaTime; // 轉為時間x:00 ~ x:00 預約時段 (0:無預約 / 1:預約時段, 預設: 0)
