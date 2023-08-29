@@ -20,6 +20,8 @@ import project_pet_backEnd.socialMedia.post.dto.res.PostRes;
 import project_pet_backEnd.socialMedia.post.dto.res.VideoRes;
 import project_pet_backEnd.socialMedia.post.vo.MediaData;
 import project_pet_backEnd.socialMedia.post.vo.POST;
+import project_pet_backEnd.socialMedia.postCollection.dao.PostCollectionDao;
+import project_pet_backEnd.socialMedia.postCollection.vo.PostCol;
 import project_pet_backEnd.socialMedia.util.DateUtils;
 import project_pet_backEnd.socialMedia.util.ImageUtils;
 import project_pet_backEnd.socialMedia.util.PageRes;
@@ -42,6 +44,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostTagDao postTagDao;
+
+    @Autowired
+    private PostCollectionDao postCollectionDao;
 
     // ==================== user發布貼文 ====================//
     @Override
@@ -228,6 +233,12 @@ public class PostServiceImpl implements PostService {
         POST post = postDao.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此貼文"));
         if (post.getUserId() != userId) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "你沒有權限刪除此貼文");
         ResultResponse<String> resultResponse = new ResultResponse<>();
+        //先移除關聯關係 1.貼文收藏
+        List<PostCol> postCols = postCollectionDao.findAllByPostId(postId);
+        for (PostCol postCol : postCols) {
+            postCol.setPostId(null);
+        }
+
         try {
             postDao.deleteById(postId);
         } catch (Exception e) {
@@ -371,4 +382,6 @@ public class PostServiceImpl implements PostService {
         return response;
     }
 }
+
+
 

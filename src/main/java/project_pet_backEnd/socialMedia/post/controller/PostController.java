@@ -64,11 +64,10 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> delete(@PathVariable("postId") int postId, @RequestParam("userId") Integer userId) {
-        // 關聯問題 目前無法刪除
+    public ResponseEntity<ResultResponse<String>> delete(@PathVariable("postId") int postId, @RequestParam("userId") Integer userId) {
         System.out.println(postId);
-        postService.delete(userId, postId);
-        return ResponseEntity.status(HttpStatus.OK).body("刪除成功");
+        ResultResponse<String> response = postService.delete(userId, postId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }
 
