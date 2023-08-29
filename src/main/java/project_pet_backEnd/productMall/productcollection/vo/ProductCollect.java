@@ -10,8 +10,10 @@ import java.sql.Date;
 @Entity
 @Data
 public class ProductCollect {
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PD_NO")
+    @Id
     private Integer pdNo;
 
 

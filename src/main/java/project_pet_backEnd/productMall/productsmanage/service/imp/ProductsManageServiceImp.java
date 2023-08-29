@@ -6,15 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioCollectRes;
-import project_pet_backEnd.groomer.petgroomercollection.vo.PortfolioCollect;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
-import project_pet_backEnd.productMall.productsmanage.dto.AdjustProductListResponse;
-import project_pet_backEnd.productMall.productsmanage.dto.ProductInfo;
-import project_pet_backEnd.productMall.productsmanage.dto.ProductListQueryParameter;
-import project_pet_backEnd.productMall.productsmanage.dto.ProductListResponse;
+import project_pet_backEnd.productMall.productsmanage.dto.*;
 import project_pet_backEnd.productMall.productsmanage.service.ProductsManageService;
 import project_pet_backEnd.productMall.productsmanage.vo.Product;
 import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
@@ -120,15 +115,15 @@ public class ProductsManageServiceImp implements ProductsManageService {
     @Override
     @Transactional  //ok後台 修改編輯商品(資訊+圖片)
     // 更新成功 | *!=null
-    public ResultResponse updateProduct(ProductInfo productInfo, List<ProductPic> pics) {
+    public ResultResponse updateProduct(ProductPicData productPicData, List<ProductPic> pics) {
         Product product = new Product();
-        if (!productInfo.getPdName().isBlank())
-            product.setPdName(productInfo.getPdName());
-        if (productInfo.getPdPrice() != null)
-            product.setPdPrice(productInfo.getPdPrice());
+        if (!productPicData.getPdName().isBlank())
+            product.setPdName(productPicData.getPdName());
+        if (productPicData.getPdPrice() != null)
+            product.setPdPrice(productPicData.getPdPrice());
 
-        product.setPdStatus(productInfo.getPdStatus());
-        product.setPdDescription(productInfo.getPdDescription());
+        product.setPdStatus(productPicData.getPdStatus());
+        product.setPdDescription(productPicData.getPdDescription());
 
         try {
             productRepository.save(product); // 先保存商品，獲取商品編號

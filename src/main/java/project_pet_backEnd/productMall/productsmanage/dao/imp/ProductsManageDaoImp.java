@@ -135,6 +135,7 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
         params.addValue("pdPrice", productInfo.getPdPrice());
         params.addValue("pdStatus", productInfo.getPdStatus());
         params.addValue("pdDescription", productInfo.getPdDescription());
+        params.addValue("PdOrderlist", productInfo.getPdOrderlist());
 
         namedParameterJdbcTemplate.update(sql, params);
 

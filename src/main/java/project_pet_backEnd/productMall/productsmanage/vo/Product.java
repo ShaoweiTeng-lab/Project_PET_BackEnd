@@ -3,7 +3,7 @@ package project_pet_backEnd.productMall.productsmanage.vo;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -25,7 +25,7 @@ public class Product {
     private String pdDescription;
 
     @Column(name = "PD_UPDATE" , columnDefinition = "TIMESTAMP  DEFAULT CURRENT_TIMESTAMP")
-    private Date pdUpdate; //sql.date
+    private Timestamp pdUpdate; //sql.Timestamp
 
     @Column(name = "PD_STATUS")
     private Integer pdStatus;
@@ -33,9 +33,13 @@ public class Product {
     @Column(name = "PD_TOTALREVIEW")
     private Integer pdTotalreview;
 
-    @Column(name = "PD_SCORE")
     private Integer pdScore;
 
     @OneToMany(mappedBy = "product")
     private List<ProductPic> pics;
+
+    @PrePersist
+    protected void onCreate() {
+        pdUpdate = new Timestamp(System.currentTimeMillis());
+    }
 }
