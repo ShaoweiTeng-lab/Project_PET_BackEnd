@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
 import project_pet_backEnd.socialMedia.activityUser.dto.JoinReq;
@@ -18,6 +19,9 @@ import java.util.Map;
 public class ActivityDaoImpl {
     @Autowired
     private NamedParameterJdbcTemplate template;
+
+    @Autowired
+    private RoomDao roomDao;
 
     //查詢熱門活動
     public List<ActivityRes> getHotActivities() {
@@ -67,10 +71,10 @@ public class ActivityDaoImpl {
                     return activity;
                 });
 
-        //比對時間-決定使用者是否可以取消活動(假設距離活動大於3)
-        Date querydate = queryData.getActivityTime();
-        Date nowdate = new Date(System.currentTimeMillis());
-        if (querydate.getDay() - nowdate.getDay() < 3) {
+        //比對時間-決定使用者是否可以取消活動(假設距離活動小於三天就不能取消)
+        int queryDate = (int) (queryData.getActivityTime().getTime() / (1000 * 60 * 60 * 24));
+        int nowDate = (int) (System.currentTimeMillis() / (1000 * 60 * 60 * 24));
+        if ((queryDate - nowDate) < 3) {
             return "你已經超過可以退出活動的時間";
         } else {
 
@@ -90,6 +94,11 @@ public class ActivityDaoImpl {
             countMap.put("leaveCount", joinReq.getCount());
             countMap.put("activityId", activityId);
             template.update(activityCountUpdate, countMap);
+
+
+            //redis操作 1.使用者資訊從活動聊天室移除 2.使用者活動列表中移除一筆活動清單
+            roomDao.removeRoomUserList(activityId, userId);
+            roomDao.removeRoomKeyToUser(userId, activityId);
 
             return "已經成功退出活動!";
 

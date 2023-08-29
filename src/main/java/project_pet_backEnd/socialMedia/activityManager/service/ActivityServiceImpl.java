@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
 import project_pet_backEnd.socialMedia.activityManager.dao.ActivityDao;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityReq;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
@@ -16,6 +17,7 @@ import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
 import project_pet_backEnd.socialMedia.activityUser.dto.JoinListRes;
 import project_pet_backEnd.socialMedia.activityUser.vo.JoinActivity;
 import project_pet_backEnd.socialMedia.util.DateUtils;
+import project_pet_backEnd.socialMedia.util.ImageUtils;
 import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
@@ -30,8 +32,12 @@ public class ActivityServiceImpl implements ActivityService {
     @Autowired
     private ActivityDao activityDao;
 
+    @Autowired
+    private RoomDao roomDao;
+
+
     /**
-     * 建立活動
+     * 建立活動(同時要建立活動聊天室)
      */
     @Override
     public ResultResponse<ActivityRes> create(ActivityReq activityReq) {
@@ -51,28 +57,26 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setStartTime(DateUtils.dateStrToSql(activityReq.getStartTime()));
         activity.setEndTime(DateUtils.dateStrToSql(activityReq.getEndTime()));
         activity.setActivityTime(DateUtils.dateTimeStrToSql(activityReq.getActivityTime()));
+        activity.setActivityPicture(ImageUtils.base64Decode(activityReq.getActivityPicture()));
         activity.setEnrollLimit(activityReq.getEnrollLimit());
-        Activity createResult = activityDao.save(activity);
+        Activity createResult;
+
         //判斷是否建立成功
-        if (createResult == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "活動建立失敗");
+        try {
+            createResult = activityDao.save(activity);
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "活動建立失敗");
         }
 
-        ActivityRes activityRes = new ActivityRes();
-        activityRes.setActivityId(createResult.getActivityId());
-        activityRes.setTitle(createResult.getActivityTitle());
-        activityRes.setContent(createResult.getActivityContent());
-        activityRes.setActivityPicture(createResult.getActivityPicture());
-        activityRes.setPeopleCount(createResult.getEnrollTotal());
-        activityRes.setEnrollLimit(createResult.getEnrollLimit());
-        activityRes.setStatus(createResult.getStatus());
-        //time
-        activityRes.setActivityTime(DateUtils.dateTimeSqlToStr(createResult.getActivityTime()));
-        activityRes.setStartTime(DateUtils.dateSqlToStr(createResult.getStartTime()));
-        activityRes.setEndTime(DateUtils.dateSqlToStr(createResult.getEndTime()));
+        //這邊預先在redis中建立活動聊天室
+        try {
+            roomDao.createGroupRoom(createResult.getActivityId(), createResult.getActivityTitle());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "活動聊天室建立失敗");
+        }
 
-        ResultResponse<ActivityRes> response = new ResultResponse<>();
-        response.setMessage(activityRes);
+        ResultResponse<ActivityRes> response = convertToAcRes(createResult);
         return response;
     }
 
@@ -83,33 +87,24 @@ public class ActivityServiceImpl implements ActivityService {
     public ResultResponse<ActivityRes> update(int activityId, ActivityReq activityReq) {
         Optional<Activity> activityOptional = activityDao.findById(activityId);
         if (!activityOptional.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "查無此活動");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此活動");
         }
         Activity activity = activityOptional.get();
         activity.setActivityTitle(activityReq.getTitle());
         activity.setActivityContent(activityReq.getContent());
         activity.setEnrollLimit(activityReq.getEnrollLimit());
+        activity.setActivityPicture(ImageUtils.base64Decode(activityReq.getActivityPicture()));
         activity.setActivityTime(DateUtils.dateTimeStrToSql(activityReq.getActivityTime()));
         activity.setStartTime(DateUtils.dateStrToSql(activityReq.getStartTime()));
         activity.setEndTime(DateUtils.dateStrToSql(activityReq.getEndTime()));
-        Activity updateResult = activityDao.save(activity);
+        Activity updateResult;
 
-        //res setting
-        ActivityRes activityRes = new ActivityRes();
-        activityRes.setActivityId(updateResult.getActivityId());
-        activityRes.setTitle(updateResult.getActivityTitle());
-        activityRes.setContent(updateResult.getActivityContent());
-        activityRes.setActivityPicture(updateResult.getActivityPicture());
-        activityRes.setPeopleCount(updateResult.getEnrollTotal());
-        activityRes.setEnrollLimit(updateResult.getEnrollLimit());
-        activityRes.setStatus(updateResult.getStatus());
-        //time
-        activityRes.setActivityTime(DateUtils.dateTimeSqlToStr(updateResult.getActivityTime()));
-        activityRes.setStartTime(DateUtils.dateSqlToStr(updateResult.getStartTime()));
-        activityRes.setEndTime(DateUtils.dateSqlToStr(updateResult.getEndTime()));
-
-        ResultResponse<ActivityRes> response = new ResultResponse<>();
-        response.setMessage(activityRes);
+        try {
+            updateResult = activityDao.save(activity);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新失敗");
+        }
+        ResultResponse<ActivityRes> response = convertToAcRes(updateResult);
         return response;
     }
 
@@ -119,27 +114,28 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public ResultResponse<String> cancel(int activityId) {
+        ResultResponse<String> response = new ResultResponse<>();
         Optional<Activity> activityOptional = activityDao.findById(activityId);
         if (!activityOptional.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "查無此活動");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此活動");
         }
+
         Activity activity = activityOptional.get();
         /**
          * 0: 執行中
          * 1: 已取消
          */
         activity.setStatus(1);
-        Activity updateResult = activityDao.save(activity);
-        ResultResponse<String> response = new ResultResponse<>();
-        //查看更新狀態結果
-        Integer status = updateResult.getStatus();
-        if (status != 1) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "活動取消失敗");
+
+        try {
+            activityDao.save(activity);
+            //刪除聊天室
+            roomDao.removeGroupRoom(activityId);
+            response.setMessage("活動取消成功");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "活動取消失敗");
         }
 
-        //這邊將所有參加活動人員email進行通知 write code...
-
-        response.setMessage("活動取消成功");
         return response;
     }
 
@@ -151,25 +147,10 @@ public class ActivityServiceImpl implements ActivityService {
     public ResultResponse<ActivityRes> findActivityById(Integer activityId) {
         Optional<Activity> activityOptional = activityDao.findById(activityId);
         if (!activityOptional.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "查無此活動");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "查無此活動");
         }
         Activity activity = activityOptional.get();
-        ResultResponse<ActivityRes> response = new ResultResponse<>();
-
-        //res setting
-        ActivityRes activityRes = new ActivityRes();
-        activityRes.setActivityId(activity.getActivityId());
-        activityRes.setTitle(activity.getActivityTitle());
-        activityRes.setContent(activity.getActivityContent());
-        activityRes.setActivityPicture(activity.getActivityPicture());
-        activityRes.setPeopleCount(activity.getEnrollTotal());
-        activityRes.setEnrollLimit(activity.getEnrollLimit());
-        activityRes.setStatus(activity.getStatus());
-        //time
-        activityRes.setActivityTime(DateUtils.dateTimeSqlToStr(activity.getActivityTime()));
-        activityRes.setStartTime(DateUtils.dateSqlToStr(activity.getStartTime()));
-        activityRes.setEndTime(DateUtils.dateSqlToStr(activity.getEndTime()));
-        response.setMessage(activityRes);
+        ResultResponse<ActivityRes> response = convertToAcRes(activity);
         return response;
     }
 
@@ -180,37 +161,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public ResultResponse<PageRes<ActivityRes>> getAllActivities(int pageSize, int offset) {
         Page<Activity> activityPage = activityDao.findAll(PageRequest.of(pageSize, offset, Sort.Direction.DESC, "activityId"));
-        List<ActivityRes> activityResultList = new ArrayList<>();
-        List<Activity> activities = new ArrayList<>();
-        if (activityPage != null && activityPage.hasContent()) {
-            activities = activityPage.getContent();
-        }
-
-        for (Activity activity : activities) {
-            ActivityRes activityRes = new ActivityRes();
-            activityRes.setActivityId(activity.getActivityId());
-            activityRes.setTitle(activity.getActivityTitle());
-            activityRes.setContent(activity.getActivityContent());
-            activityRes.setActivityPicture(activity.getActivityPicture());
-            activityRes.setPeopleCount(activity.getEnrollTotal());
-            activityRes.setEnrollLimit(activity.getEnrollLimit());
-            activityRes.setStatus(activity.getStatus());
-            //time
-            activityRes.setActivityTime(DateUtils.dateTimeSqlToStr(activity.getActivityTime()));
-            activityRes.setStartTime(DateUtils.dateSqlToStr(activity.getStartTime()));
-            activityRes.setEndTime(DateUtils.dateSqlToStr(activity.getEndTime()));
-            activityResultList.add(activityRes);
-        }
-
-        PageRes pageRes = new PageRes();
-        pageRes.setResList(activityResultList);
-        pageRes.setCurrentPageNumber(activityPage.getNumber());
-        pageRes.setPageSize(activityPage.getSize());
-        pageRes.setTotalPage(activityPage.getTotalPages());
-        pageRes.setCurrentPageDataSize(activityPage.getNumberOfElements());
-
-        ResultResponse<PageRes<ActivityRes>> response = new ResultResponse<>();
-        response.setMessage(pageRes);
+        ResultResponse<PageRes<ActivityRes>> response = convertToAcPage(activityPage);
         return response;
     }
 
@@ -223,7 +174,7 @@ public class ActivityServiceImpl implements ActivityService {
         activityRes.setActivityId(activity.getActivityId());
         activityRes.setTitle(activity.getActivityTitle());
         activityRes.setContent(activity.getActivityContent());
-        activityRes.setActivityPicture(activity.getActivityPicture());
+        activityRes.setActivityPicture(ImageUtils.base64Encode(activity.getActivityPicture()));
         activityRes.setPeopleCount(activity.getEnrollTotal());
         activityRes.setEnrollLimit(activity.getEnrollLimit());
         activityRes.setStatus(activity.getStatus());
@@ -251,7 +202,7 @@ public class ActivityServiceImpl implements ActivityService {
             activityRes.setActivityId(activity.getActivityId());
             activityRes.setTitle(activity.getActivityTitle());
             activityRes.setContent(activity.getActivityContent());
-            activityRes.setActivityPicture(activity.getActivityPicture());
+            activityRes.setActivityPicture(ImageUtils.base64Encode(activity.getActivityPicture()));
             activityRes.setPeopleCount(activity.getEnrollTotal());
             activityRes.setEnrollLimit(activity.getEnrollLimit());
             activityRes.setStatus(activity.getStatus());

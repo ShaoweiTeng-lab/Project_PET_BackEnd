@@ -12,10 +12,11 @@ public interface ActivityService {
 
     ResultResponse<ActivityRes> create(ActivityReq activityReq);
 
+
     ResultResponse<ActivityRes> update(int activityId, ActivityReq activityReq);
 
     /*
-     * 取消活動 更改活動狀態 - 通知所有參與活動的使用者
+     * 取消活動 更改活動狀態
      */
     ResultResponse<String> cancel(int activityId);
 
@@ -34,3 +35,5 @@ public interface ActivityService {
 
     ResultResponse<PageRes<ActivityRes>> convertToAcPage(Page<Activity> activityPage);
 }
+
+
