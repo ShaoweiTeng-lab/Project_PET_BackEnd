@@ -1,6 +1,7 @@
 package project_pet_backEnd.utils;
 
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Jwt 生成器 請勿亂動
  */
+@Slf4j
 @Component
 public class ManagerJwtUtil {
     private static final long EXPIRATION_TIME = TimeUnit.DAYS.toMillis(5);
@@ -45,23 +47,19 @@ public class ManagerJwtUtil {
                     .getBody();
 
         } catch (SignatureException e) {
-            System.out.println("SignatureException");
-            //throw new SignatureException("Invalid JWT signature.");
+            log.info("SignatureException");
         }
         catch (MalformedJwtException e) {
-            System.out.println("MalformedJwtException");
-            // throw new MalformedJwtException("Invalid JWT token.");
+            log.info("MalformedJwtException");
         }
         catch (ExpiredJwtException e) {
-            System.out.println("ExpiredJwtException");
-            // throw e;
+            log.info("ExpiredJwtException");
         }
         catch (UnsupportedJwtException e) {
-            System.out.println("UnsupportedJwtException");
-            // throw new UnsupportedJwtException("Unsupported JWT token");
+            log.info("UnsupportedJwtException");
         }
         catch (IllegalArgumentException e) {
-            //  throw new IllegalArgumentException("JWT token compact of handler are invalid");
+            log.info("JWT token compact of handler are invalid");
         }
         return null;
     }

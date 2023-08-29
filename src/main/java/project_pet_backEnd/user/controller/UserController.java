@@ -1,6 +1,7 @@
 package project_pet_backEnd.user.controller;
 
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.sql.Date;
+@Slf4j
 @Api(tags = "前台會員")
 @RestController
 @Validated
@@ -90,7 +92,6 @@ public class UserController {
             @RequestParam(required = false) @NotBlank(message = "姓名不可為空") String userName,
             @RequestParam(required = false) @NotBlank(message = "匿稱不可為空")  String userNickName,
             @RequestParam(required = false) @Max(1) @Min(0) Integer userGender,
-            @RequestParam(required = false) @NotBlank(message = "密碼不可為空")  String userPassword,
             @RequestParam(required = false) @NotBlank(message = "地址不可為空")  String userAddress,
             @RequestParam(required = false) @NotBlank(message = "電話不可為空")  String userPhone,
             @RequestParam(required = false) Date userBirthday,
@@ -100,15 +101,30 @@ public class UserController {
         adjustUserProfileRequest.setUserName(userName);
         adjustUserProfileRequest.setUserNickName(userNickName);
         adjustUserProfileRequest.setUserGender(userGender);
-        adjustUserProfileRequest.setUserPassword(userPassword);
         adjustUserProfileRequest.setUserPhone(userPhone);
         adjustUserProfileRequest.setUserAddress(userAddress);
         adjustUserProfileRequest.setUserBirthday(userBirthday);
         adjustUserProfileRequest.setUserPic(AllDogCatUtils.convertMultipartFileToByteArray(userPic));
         userService.adjustUserProfile(userId,adjustUserProfileRequest);
         ResultResponse rs =new ResultResponse();
-        rs.setMessage("修改完成");
+        rs.setMessage("修改成功");
         return  ResponseEntity.status(200).body(rs);
+    }
+    /**
+     * 修改密碼
+     * */
+    @ApiOperation("修改密碼")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PutMapping("/password")
+    public  ResultResponse<String> adjustPassword(@ApiParam(hidden = true) @RequestAttribute(name = "userId") Integer userId,
+                                                  @RequestParam @NotBlank(message = "密碼不可為空")  String userPassword){
+
+        userService.adjustPassword(userId,userPassword);
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改成功");
+        return  rs;
     }
 
     /**

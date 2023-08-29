@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.smtp.EmailService;
 import project_pet_backEnd.smtp.dto.EmailResponse;
-import project_pet_backEnd.user.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
@@ -26,9 +25,6 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImp implements UserService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserDao userDao;
-
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
@@ -52,7 +48,18 @@ public class UserServiceImp implements UserService {
         String encodePwd=bCryptPasswordEncoder.encode(userSignUpRequest.getUserPassword());
         userSignUpRequest.setUserPassword(encodePwd);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Local);
-        userDao.localSignUp(userSignUpRequest);
+        User user =new User();
+        user.setUserName(userSignUpRequest.getUserName());
+        user.setUserNickName(userSignUpRequest.getUserNickName());
+        user.setUserGender(userSignUpRequest.getUserGender());
+        user.setUserEmail(userSignUpRequest.getUserEmail());
+        user.setUserPassword(userSignUpRequest.getUserPassword());
+        user.setUserPhone(userSignUpRequest.getUserPhone());
+        user.setUserPic(userSignUpRequest.getUserPic());
+        user.setUserAddress(userSignUpRequest.getUserAddress());
+        user.setUserBirthday(userSignUpRequest.getUserBirthday());
+        user.setIdentityProvider(userSignUpRequest.getIdentityProvider());
+        userRepository.save(user);
     }
 
     public ResultResponse localSignIn(UserLoginRequest userLoginRequest){
@@ -139,15 +146,6 @@ public class UserServiceImp implements UserService {
         adjustUser.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
         adjustUser.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
         adjustUser.setUserEmail(user.getUserEmail());
-        if(user.getIdentityProvider()==IdentityProvider.Local){
-            String pwd =adjustUserProfileRequest.getUserPassword();
-            if(pwd!=null){
-                pwd=bCryptPasswordEncoder.encode(pwd);
-                adjustUser.setUserPassword(pwd);
-            }
-            else
-                adjustUser.setUserPassword(user.getUserPassword());
-        }
         adjustUser.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
         adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
         adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
@@ -157,6 +155,18 @@ public class UserServiceImp implements UserService {
         adjustUser.setUserCreated(user.getUserCreated());
         userRepository.save(adjustUser);
         return  new ResultResponse();
+    }
+
+    @Override
+    public void adjustPassword(Integer userId, String password) {
+        User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
+        if(user==null)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        if(user.getIdentityProvider()!=IdentityProvider.Local)
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"此帳戶不可修改密碼");
+        String pwd =bCryptPasswordEncoder.encode(password);
+        user.setUserPassword(pwd);
+        userRepository.save(user);
     }
 
     @Override
@@ -184,9 +194,10 @@ public class UserServiceImp implements UserService {
         User user =userRepository.findByUserEmail(email);
         if(user==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
-        AdjustUserProfileRequest adjustUserProfileRequest =new AdjustUserProfileRequest();
-        adjustUserProfileRequest.setUserPassword(newPassword);
-        ResultResponse rs =adjustUserProfile(user.getUserId(), adjustUserProfileRequest);
+        String pwd =bCryptPasswordEncoder.encode(newPassword);
+        user.setUserPassword(pwd);
+        userRepository.save(user);
+        ResultResponse rs =new ResultResponse();
         redisTemplate.delete(code);
         rs.setMessage("修改成功");
         return rs;

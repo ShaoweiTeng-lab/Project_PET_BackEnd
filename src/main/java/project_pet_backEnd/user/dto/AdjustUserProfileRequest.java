@@ -13,8 +13,6 @@ public class AdjustUserProfileRequest {
     @Min(0)
     @Max(1)
     private Integer userGender;
-    @NotBlank(message = "密碼不可為空")
-    private String  userPassword;
     @NotBlank(message = "使用者電話不可為空")
     private String  userPhone;
     @NotBlank(message = "使用者地址不可為空")

@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,7 @@ import project_pet_backEnd.utils.commonDto.Page;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
+@Slf4j
 @Api(tags = "會員管理")
 @Validated
 @RestController

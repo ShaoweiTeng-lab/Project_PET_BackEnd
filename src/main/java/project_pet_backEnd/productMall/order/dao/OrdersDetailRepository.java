@@ -1,13 +1,8 @@
 package project_pet_backEnd.productMall.order.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import project_pet_backEnd.productMall.order.dto.response.FrontOrderResDTO;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
-import project_pet_backEnd.productMall.order.vo.Orders;
-import java.util.List;
 
 @Repository
 public interface OrdersDetailRepository extends JpaRepository<OrderDetail, Integer> {

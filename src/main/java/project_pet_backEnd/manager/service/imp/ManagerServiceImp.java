@@ -73,14 +73,13 @@ public class ManagerServiceImp  implements ManagerService {
         if(managerDetail.getManager().getManagerState()==0)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"您已被停權");
         String managerId =String.valueOf( managerDetail.getManager().getManagerId());
-        ObjectMapper objectMapper =new ObjectMapper();
         String managerDetailJson=null;
         try {
             managerDetailJson=objectMapper.writeValueAsString(managerDetail);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        redisTemplate.opsForValue().set("Manager_Login_"+managerDetail.getManager().getManagerId(),managerDetailJson);
+        redisTemplate.opsForValue().set("Manager:Login:"+managerDetail.getManager().getManagerId(),managerDetailJson);
         String jwt= managerJwtUtil.createJwt(managerId);
         ResultResponse responseResult=new ResultResponse();
         responseResult.setMessage(jwt);
@@ -142,7 +141,7 @@ public class ManagerServiceImp  implements ManagerService {
         Manager manager =managerRepository.findByManagerAccount(adjustManagerRequest.getOrgManagerAccount());
         if(manager==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
-        if(adjustManagerRequest.getManagerPassword()!=null)
+        if(adjustManagerRequest.getManagerPassword()!=null && !adjustManagerRequest.getManagerPassword().trim().equals(""))
             manager.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
         managerRepository.save(manager);
         ResultResponse rs =new ResultResponse();

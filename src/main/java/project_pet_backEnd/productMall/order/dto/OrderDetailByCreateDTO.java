@@ -4,10 +4,10 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
 
 @Data
-public class OrderDetailDTO {
+public class OrderDetailByCreateDTO {
     @NotBlank
     private Integer proNo;
     @Min(0)
