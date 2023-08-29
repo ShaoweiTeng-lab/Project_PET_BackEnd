@@ -12,7 +12,9 @@ public class ProductListQueryParameter {
 //  pdName 商品名稱
 //  pdPrice 商品價錢
 //  pdStatus 商品上下架狀態 0:上架中  1:已下架
+    private Integer minPrice;
+    private Integer maxPrice;
     private Sort sort;
-    private  Integer limit;
-    private  Integer offset;
+    private Integer limit;
+    private Integer offset;
 }

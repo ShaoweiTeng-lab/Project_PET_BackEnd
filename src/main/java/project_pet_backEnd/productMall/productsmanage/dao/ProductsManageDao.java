@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface ProductsManageDao {
 
-    /**(可改用JPA就不用寫)
+    /**(改用JPA不用寫)
      * 條列顯示(取得)所有商品(dto(ProductListResponse):編號、名稱、價格、狀態)
      * @return 所有商品列表
      */
-    public List<ProductListResponse> getAllProduct(Integer pdNo);
+//    public static List<ProductListResponse> getAllProduct(Integer pdNo);
 
     /*
     * 根據條件獲取商品列表
