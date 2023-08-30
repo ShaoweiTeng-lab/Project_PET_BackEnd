@@ -1,7 +1,7 @@
 package project_pet_backEnd.userManager.dto;
 
 import lombok.Data;
-import project_pet_backEnd.user.vo.IdentityProvider;
+import project_pet_backEnd.user.dto.IdentityProvider;
 
 import java.sql.Date;
 @Data

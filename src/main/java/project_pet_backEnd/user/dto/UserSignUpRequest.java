@@ -1,9 +1,7 @@
 package project_pet_backEnd.user.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
-import project_pet_backEnd.user.vo.IdentityProvider;
 
 import javax.validation.constraints.*;
 import java.sql.Date;
