@@ -1,6 +1,7 @@
 package project_pet_backEnd.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,8 +16,9 @@ import javax.validation.ConstraintViolationException;
 import static project_pet_backEnd.ecpay.payment.integration.AllInOne.log;
 
 /**
- * 全域 異常處理 防止部分驗證回傳 500
+ * 全域 異常處理
  */
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler  {
 
@@ -30,7 +32,6 @@ public class GlobalExceptionHandler  {
         ResultResponse rs = new ResultResponse();
         rs.setCode(httpStatus.value());//改成將異常code丟入訊息中
         rs.setMessage(errorMessage);
-        //return new ResponseEntity<>(rs, httpStatus);
         return new ResponseEntity<>(rs, HttpStatus.OK);
     }
 
@@ -41,6 +42,7 @@ public class GlobalExceptionHandler  {
     public ResponseEntity<?> handleRequestValidError(ConstraintViolationException ex) throws JsonProcessingException {
         ResultResponse rs = new ResultResponse();
         String msg = ex.getMessage();
+        log.warn(msg);
         rs.setMessage(msg);
         rs.setCode(400);//改成將異常code丟入訊息中
         return new ResponseEntity<>(rs, HttpStatus.OK);
@@ -53,6 +55,7 @@ public class GlobalExceptionHandler  {
     public ResponseEntity<?> handleRequestValidError(MethodArgumentNotValidException  ex) throws JsonProcessingException {
         ResultResponse rs = new ResultResponse();
         String msg = ex.getBindingResult().getFieldError().getDefaultMessage();
+        log.info(msg);
         rs.setMessage(msg);
         rs.setCode(400);//改成將異常code丟入訊息中
         return new ResponseEntity<>(rs, HttpStatus.OK);
@@ -61,13 +64,13 @@ public class GlobalExceptionHandler  {
     /**
      * json轉型成class異常
      */
-//    @ExceptionHandler(JsonProcessingException.class)
-//    public ResponseEntity<?> handleRequestValidError(JsonProcessingException  ex) throws JsonProcessingException {
-//        ResultResponse rs = new ResultResponse();
-//        String msg = "前端參數異常";
-//        rs.setMessage(msg);
-//        log.warn(ex.getMessage());
-//        rs.setCode(500);//改成將異常code丟入訊息中
-//        return new ResponseEntity<>(rs, HttpStatus.OK);
-//    }
+    @ExceptionHandler(JsonProcessingException.class)
+    public ResponseEntity<?> handleRequestValidError(JsonProcessingException  ex) throws JsonProcessingException {
+        ResultResponse rs = new ResultResponse();
+        String msg = "json 序列化異常";
+        rs.setMessage(msg);
+        log.error(ex.getMessage());
+        rs.setCode(500);//改成將異常code丟入訊息中
+        return new ResponseEntity<>(rs, HttpStatus.OK);
+    }
 }
