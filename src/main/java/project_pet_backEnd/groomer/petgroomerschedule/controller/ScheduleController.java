@@ -49,19 +49,8 @@ public class ScheduleController {
             @RequestParam(value = "year",required = false)Integer yearParam,
             @RequestParam(value = "month",required = false)Integer monthParam){
 
-        int year;
-        int month;
 
-        if (yearParam == null || monthParam == null) {
-            // Get current year and month from server's time
-            Calendar calendar = Calendar.getInstance();
-            year = calendar.get(Calendar.YEAR);
-            month = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
-        } else {
-            year = yearParam;
-            month = monthParam;
-        }
-        return groomerScheduleService.getMonthScheduleForMan(year, pgId, month);
+        return groomerScheduleService.getMonthScheduleForMan(yearParam, pgId, monthParam);
     }
 
     //修改該筆班表，，前端需顯示可能會取消已預約的預約單，讓使用者確認。
