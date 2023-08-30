@@ -3,6 +3,7 @@ package project_pet_backEnd.user.vo;
 import lombok.Data;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import project_pet_backEnd.user.dto.IdentityProvider;
 
 import javax.persistence.*;
 import java.sql.Date;
