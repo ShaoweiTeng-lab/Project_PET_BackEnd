@@ -1,5 +1,7 @@
 package project_pet_backEnd.homepageManage.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/manager/homepageManager")
+@RequestMapping("/manager/homepageManage")
 @Validated
 @PreAuthorize("hasAnyAuthority('首頁管理')")
 public class HomepageManageController {
@@ -40,9 +42,8 @@ public class HomepageManageController {
             @RequestParam @NotBlank String picLocateUrl,
             @RequestParam @NotNull MultipartFile pic,
             @RequestParam @NotNull Integer picRotStatus,
-            @RequestParam Date picRotStart,
-            @RequestParam Date picRotEnd,
-            @RequestParam @NotBlank String rotePicPicLocateUrl
+            @RequestParam String picRotStart,
+            @RequestParam String picRotEnd
 
     ) {
         AddRotePicRequest addRotePicRequest = new AddRotePicRequest();
@@ -51,7 +52,6 @@ public class HomepageManageController {
         addRotePicRequest.setPicRotStatus(picRotStatus);
         addRotePicRequest.setPicRotStart(picRotStart);
         addRotePicRequest.setPicRotEnd(picRotEnd);
-        addRotePicRequest.setRotePicPicLocateUrl(rotePicPicLocateUrl);
         homepageManageService.addRotePic(addRotePicRequest);
         ResultResponse rs = new ResultResponse();
         rs.setMessage("新增成功");
@@ -96,9 +96,12 @@ public class HomepageManageController {
      * 新增最新消息
      **/
     @PostMapping("/addNews")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
     public ResponseEntity<ResultResponse<String>> addNews(@RequestBody @Valid AddNewsRequest addNewsRequest) {
         ResultResponse rs = homepageManageService.addNews(addNewsRequest);
-        return ResponseEntity.status(201).body(rs);
+        return ResponseEntity.status(200).body(rs);
     }
 
     /**
@@ -113,7 +116,7 @@ public class HomepageManageController {
     /**
      * 刪除最新消息
      **/
-    @GetMapping("/deleteNewsByPicNo")
+    @GetMapping("/deleteNewsByNewsNo")
     public ResponseEntity<ResultResponse<String>> deleteNewsByPicNo(@RequestParam("newsNo") int newsNo) {
         homepageManageService.deleteNewsByNewsNo(newsNo);
         ResultResponse rs = new ResultResponse();
@@ -139,7 +142,13 @@ public class HomepageManageController {
      * 新增最新消息圖片
      **/
     @PostMapping("/addNewsPic")
-    public ResponseEntity<ResultResponse<String>> addNewsPic(@RequestBody @Valid AddNewsPicRequest addNewsPicRequest) {
+    public ResponseEntity<ResultResponse<String>> addNewsPic(
+            @RequestParam @NotNull Integer newsNo,
+            @RequestBody @NotNull MultipartFile pic
+             ) {
+        AddNewsPicRequest addNewsPicRequest =new AddNewsPicRequest();
+        addNewsPicRequest.setNewsNo(newsNo);
+        addNewsPicRequest.setPic(AllDogCatUtils.convertMultipartFileToByteArray(pic));
         ResultResponse rs = homepageManageService.addNewsPic(addNewsPicRequest);
         return ResponseEntity.status(201).body(rs);
     }

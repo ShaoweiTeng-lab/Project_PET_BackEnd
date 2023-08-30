@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class HomepageManageImp implements HomepageManageDao {
+public class HomepageManageDaoImp implements HomepageManageDao {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -47,13 +47,15 @@ public class HomepageManageImp implements HomepageManageDao {
     @Override
     public void editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest) {
         String sql="UPDATE PIC_ROTATE\n" +
-                "SET PIC_LOCATE_URL = :picLocateUrl,\n" +
-                "    PIC= :pic\n" +
-                "    PIC_ROT_STATUS= :picRotStatus\n" +
-                "    PIC_ROT_START= :picRotStart\n" +
-                "    PIC_ROT_END= :picRotEnd\n" +
+                "SET PIC_NO =  :picNo,\n" +
+                "    PIC_LOCATE_URL = :picLocateUrl,\n" +
+                "    PIC= :pic,\n" +
+                "    PIC_ROT_STATUS= :picRotStatus,\n" +
+                "    PIC_ROT_START= :picRotStart,\n" +
+                "    PIC_ROT_END= :picRotEnd \n" +
                 "WHERE PIC_NO = :picNo ; ";
         Map<String,Object>map =new HashMap<>();
+        map.put("picNo", adjustRotePicRequest.getPicNo());
         map.put("picLocateUrl",adjustRotePicRequest.getPicRotateUrl());
         map.put("pic",adjustRotePicRequest.getPic());
         map.put("picRotStatus",adjustRotePicRequest.getPicRotStatus());
@@ -77,9 +79,9 @@ public class HomepageManageImp implements HomepageManageDao {
         String sql = "INSERT INTO PIC_ROTATE (PIC_LOCATE_URL, PIC, PIC_ROT_STATUS, PIC_ROT_START, PIC_ROT_END) " +
                 "VALUES (:picLocateUrl, :pic, :picRotStatus, :picRotStart, :picRotEnd)";
 
-
+        System.out.println(addRotePicRequest.getPicLocateUrl());
         Map<String, Object> map = new HashMap<>();
-        map.put("picLocateUrl", addRotePicRequest.getRotePicPicLocateUrl());
+        map.put("picLocateUrl", addRotePicRequest.getPicLocateUrl());
         map.put("pic", addRotePicRequest.getPic());
         map.put("picRotStatus", addRotePicRequest.getPicRotStatus());
         map.put("picRotStart", addRotePicRequest.getPicRotStart());
@@ -93,13 +95,13 @@ public class HomepageManageImp implements HomepageManageDao {
     //新增最新消息
     @Override
     public void addNews(AddNewsRequest addNewsRequest) {
-        String sql = "INSERT INTO NEWS (NEWS_TITLE, NEWS_CONT, UPDATE_TIME) " +
-                "VALUES (:newsTitle, :newsCont, :updateTime)";
+        String sql = "INSERT INTO NEWS (NEWS_TITLE, NEWS_CONT ) " +
+                "VALUES (:newsTitle, :newsCont )";
 
         Map<String, Object> map = new HashMap<>();
         map.put("newsTitle", addNewsRequest.getNewsTitle());
         map.put("newsCont", addNewsRequest.getNewsCont());
-        map.put("updateTime", addNewsRequest.getUpdateTime());
+      //  map.put("updateTime", addNewsRequest.getUpdateTime());
 
         namedParameterJdbcTemplate.update(sql, map);
 
@@ -111,12 +113,11 @@ public class HomepageManageImp implements HomepageManageDao {
             String sql="UPDATE NEWS\n" +
                     "SET NEWS_TITLE = :newsTitle,\n" +
                     "    NEWS_CONT= :newsCont\n" +
-                    "    UPDATE_TIME= :updateTime\n" +
                     "WHERE NEWS_NO = :newsNo ; ";
             Map<String,Object>map =new HashMap<>();
             map.put("newsTitle",adjustNewsRequest.getNewsTitle());
             map.put("newsCont",adjustNewsRequest.getNewsCont());
-            map.put("updateTime",adjustNewsRequest.getUpdateTime());
+          //  map.put("updateTime",adjustNewsRequest.getUpdateTime());
             namedParameterJdbcTemplate.update(sql,map);
     }
 

@@ -3,6 +3,7 @@ package project_pet_backEnd.homepageManage.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
 @Data
@@ -11,7 +12,6 @@ public class AddNewsRequest {
     private String newsTitle;
     @NotBlank
     private String newsCont;
-    private Integer newsStatus;
-    @NotBlank
-    private Date updateTime;
+   // private Integer newsStatus; 後端自動生成
+  //  private Date updateTime; 後端自動生成
 }

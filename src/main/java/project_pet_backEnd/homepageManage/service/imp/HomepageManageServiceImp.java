@@ -32,7 +32,9 @@ public class HomepageManageServiceImp implements HomepageManageService {
     @Override
     public ResultResponse editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest) {
         homepageManageDao.editRotePicByPicNo(adjustRotePicRequest);
-        return null;
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改成功");
+        return rs;
     }
 
     @Override
@@ -48,13 +50,17 @@ public class HomepageManageServiceImp implements HomepageManageService {
     @Override
     public ResultResponse addNews(AddNewsRequest addNewsRequest) {
         homepageManageDao.addNews(addNewsRequest);
-        return null;
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("新增成功");
+        return rs;
     }
 
     @Override
     public ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest) {
         homepageManageDao.editNewsByNewsNo(adjustNewsRequest);
-        return null;
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改成功");
+        return rs;
     }
 
     @Override
@@ -70,15 +76,17 @@ public class HomepageManageServiceImp implements HomepageManageService {
     @Override
     public ResultResponse addNewsPic(AddNewsPicRequest addNewsPicRequest) {
         homepageManageDao.addNewsPic(addNewsPicRequest);
-
-
-        return null;
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("新增成功");
+        return rs;
     }
 
     @Override
     public ResultResponse editNewsPicByPicNo(AdjustNewsPicRequest adjustNewsPicRequest) {
         homepageManageDao.editNewsPic(adjustNewsPicRequest);
-        return null;
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage("修改成功");
+        return rs;
     }
 
     @Override

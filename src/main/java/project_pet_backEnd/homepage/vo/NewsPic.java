@@ -16,9 +16,9 @@ public class NewsPic {
     private Integer newsPicNo;
     @Column(name = "NEWS_NO")
     private Integer newsNo;
-//    @OneToOne
-//    @JoinColumn(name = "NEWS_NO", referencedColumnName = "NEWS_NO")
-//    private News news;
+    @OneToOne
+    @JoinColumn(name = "NEWS_NO", insertable = false,updatable = false)
+    private News news;
     @Lob
     private byte[] pic;
 

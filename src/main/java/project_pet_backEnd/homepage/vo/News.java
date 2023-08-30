@@ -4,20 +4,20 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
-@Entity(name = "News")
+@Entity(name = "NEWS")
 @Data
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "news_No")
+    @Column(name = "NEWS_NO")
     private Integer newsNo;
-    @Column(name = "news_title")
+    @Column(name = "NEWS_TITLE")
     private String newsTitle;
-    @Column(name = "news_cont")
+    @Column(name = "NEWS_CONT")
     private String newsCont;
-    @Column(name = "news_Status")
+    @Column(name = "NEWS_STATUS")
     private Integer newsStatus;
-    @Column(name = "update_Time")
+    @Column(name = "UPDATE_TIME")
     private Date updateTime;
 
 }
