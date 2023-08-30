@@ -14,7 +14,7 @@ import project_pet_backEnd.user.dto.oAuth.OAuthRequest;
 import project_pet_backEnd.user.dto.oAuth.OAuthResponse;
 import project_pet_backEnd.user.dto.oAuth.UserInfoResponse;
 import project_pet_backEnd.user.service.OAuthService;
-import project_pet_backEnd.user.vo.IdentityProvider;
+import project_pet_backEnd.user.dto.IdentityProvider;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.UserJwtUtil;

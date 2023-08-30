@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.dto.*;
 import project_pet_backEnd.user.service.UserService;
-import project_pet_backEnd.user.vo.IdentityProvider;
+import project_pet_backEnd.user.dto.IdentityProvider;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.UserJwtUtil;
