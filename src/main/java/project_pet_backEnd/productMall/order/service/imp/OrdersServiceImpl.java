@@ -37,11 +37,12 @@ public class OrdersServiceImpl implements OrdersService {
      */
     @Override
     @Transactional
-    public void createOrders(CreateOrderDTO createOrderDTO) {
+    public void createOrders(CreateOrderDTO createOrderDTO, Integer userID) {
         final Orders orders = createOrderDTO.getOrders();
         final List<OrderDetailByCreateDTO> orderDetails = createOrderDTO.getOrderDetailByCreateDTOS();
 
         if(orders.getOrderAmount() == orders.getTotalAmount()-orders.getOrdFee()-orders.getUserPoint()){
+            orders.setUserId(userID);
             ordersRepository.save(orders);
         }else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "金額有誤,請重新輸入訂單");
@@ -97,6 +98,7 @@ public class OrdersServiceImpl implements OrdersService {
             orderRes.setRecipientName(originalOrder.getRecipientName());
             orderRes.setRecipientAddress(originalOrder.getRecipientAddress());
             orderRes.setRecipientPh(originalOrder.getRecipientPh());
+            orderRes.setEvaluateStatus(originalOrder.getEvaluateStatus());
             orderRes.setUserPoint(originalOrder.getUserPoint());
 
             OrderDetailResDTO orderDetailResDTO = new OrderDetailResDTO();
