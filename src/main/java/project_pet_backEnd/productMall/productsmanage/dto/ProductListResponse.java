@@ -14,11 +14,10 @@ public class ProductListResponse {
     @NotNull
     private Integer pdNo; //商品編號 Primary Key, AUTO_INCREMENT
 
-    @NotNull
-    @NotBlank
+    @NotBlank(message = "商品名稱不可為空")
     private String pdName; //商品名稱 VARCHAR(15) NOT NULL
 
-    @NotNull
+    @NotNull(message = "商品價格不可為空")
     private Integer pdPrice; //商品價錢 NOT NULL
 
     @Min(0)

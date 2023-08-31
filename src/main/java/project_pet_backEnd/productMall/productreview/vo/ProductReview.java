@@ -1,4 +1,4 @@
-package project_pet_backEnd.productMall.productsmanage.vo;
+package project_pet_backEnd.productMall.productreview.vo;
 
 import lombok.Data;
 
