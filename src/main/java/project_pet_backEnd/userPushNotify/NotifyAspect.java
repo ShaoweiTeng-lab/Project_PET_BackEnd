@@ -16,7 +16,7 @@ public class NotifyAspect {
     private PictureInfoRepository pictureInfoRepository;
     @Autowired
     private  UserNotifyWebSocketHandler userNotifyWebSocketHandler;
-    //To Do: 美容師 新增作品時
+    //todo: 美容師 新增作品時
     @After("execution(* project_pet_backEnd.groomer.groomerworkmanager.service.*.insert(..))")
     public  void  groomerUpdateNotify() throws Exception {
              NotifyType notifyType =NotifyType.Groomer;
@@ -24,19 +24,31 @@ public class NotifyAspect {
              NotifyMsg notifyMsg =new NotifyMsg(notifyType, AllDogCatUtils.base64Encode(pictureInfo.getPiPicture()),"有美容師發布作品了，趕快來看看喔~");
              userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
-    //To Do: 商城 新增商品時
+    //todo: 商城 新增商品時
     @After("execution(* project_pet_backEnd.productMall.productsmanage.service.*.insertProduct(..))")
     public  void  productUpdateNotify() throws Exception {
         NotifyType notifyType =NotifyType.Store;
         NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
-        System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+        userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+        // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
+
+    //todo: 社群 新增貼文時
+    @After("execution(* project_pet_backEnd.productMall.productsmanage.service.*.insertProduct(..))")
+    public  void  socialMediaUpdateNotify() throws Exception {
+        NotifyType notifyType =NotifyType.Store;
+        NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
+        userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+        // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+    }
+
+
     @After("execution(* project_pet_backEnd.user.service.*.localSignIn(..))")
     public  void  test() throws Exception {
         NotifyType notifyType =NotifyType.Store;
         PictureInfo pictureInfo= pictureInfoRepository.findFirstByOrderByPiDateDesc();
         NotifyMsg notifyMsg =new NotifyMsg(notifyType, AllDogCatUtils.base64Encode(pictureInfo.getPiPicture()),"商城有新的商品，趕快來看看喔~");
-        System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+       // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
 
 }
