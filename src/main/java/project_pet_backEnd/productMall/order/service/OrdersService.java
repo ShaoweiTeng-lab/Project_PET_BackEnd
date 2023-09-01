@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrdersService {
 
     //新增訂單商業邏輯
-    public abstract void createOrders(CreateOrderDTO createOrderDTO);
+    public abstract void createOrders(CreateOrderDTO createOrderDTO, Integer userId);
 
     //查詢該位會員所有未出貨之訂單
     public abstract List<Orders> getByUserIdAndOrdStatusNot(Integer userId);

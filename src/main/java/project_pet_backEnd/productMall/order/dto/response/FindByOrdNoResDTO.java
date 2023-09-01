@@ -34,6 +34,7 @@ public class FindByOrdNoResDTO {
     private String recipientAddress;
     private String recipientPh;
     private Integer userPoint;
+    private Integer evaluateStatus;
     private Integer qty;
     private Integer price;
     private String pdName;
