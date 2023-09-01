@@ -1,11 +1,15 @@
 package project_pet_backEnd.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.Scheduler.ITask;
+import project_pet_backEnd.Scheduler.IpScheduler;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +18,16 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 @Component
-public class IpRequestFilter extends OncePerRequestFilter {
+public class IpRequestFilter extends OncePerRequestFilter implements  ITask {
     private static final int MAX_REQUESTS_PER_DAY = 10000;
     private Map<String, Integer> ipRequestCountMap = new ConcurrentHashMap<>();
+    @Autowired
+    private IpScheduler ipScheduler;
+    @PostConstruct
+    public void init(){
+        ipScheduler.getTaskObserver().add(this);
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
@@ -47,5 +58,10 @@ public class IpRequestFilter extends OncePerRequestFilter {
         int requestCount = ipRequestCountMap.get(clientIp);
         requestCount++;
         ipRequestCountMap.put(clientIp,requestCount);
+    }
+
+    @Override
+    public void execute() {
+        clearCacheDaily();
     }
 }
