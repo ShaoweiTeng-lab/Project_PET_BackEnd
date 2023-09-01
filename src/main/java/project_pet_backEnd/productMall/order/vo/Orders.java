@@ -1,5 +1,9 @@
 package project_pet_backEnd.productMall.order.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +18,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "`Orders`")
+@Table(name = "orders")
 public class Orders {
 
     @Id
@@ -36,9 +40,13 @@ public class Orders {
     private Integer ordPick;
 
     @Column(name = "ORD_CREATE", insertable = false)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime ordCreate;
 
     @Column(name = "ORD_FINISH", insertable = false)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime ordFinish;
 
     @Column(name = "ORD_FEE")
@@ -62,6 +70,9 @@ public class Orders {
     @Column(name = "RECIPIENT_PH")
     @NotBlank
     private String recipientPh;
+
+    @Column(name = "EVALUATE_STATUS", insertable = false)
+    private Integer evaluateStatus;
 
     @Column(name = "USER_POINT", insertable = false)
     private Integer userPoint;

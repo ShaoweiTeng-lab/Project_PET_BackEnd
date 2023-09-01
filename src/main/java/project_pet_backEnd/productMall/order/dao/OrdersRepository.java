@@ -24,7 +24,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Integer> {
             "o.ordPick, o.ordCreate, o.ordFinish, o.ordFee, " +
             "o.totalAmount, o.orderAmount, o.recipientName, " +
             "o.recipientAddress, o.recipientPh, o.userPoint," +
-            "ol.qty, ol.price, p.pdName ) " +
+            "o.evaluateStatus, ol.qty, ol.price, p.pdName ) " +
             "FROM Orders o " +
             "JOIN project_pet_backEnd.user.vo.User u ON o.userId = u.userId " +
             "JOIN project_pet_backEnd.productMall.userPayment.vo.OrderList ol ON o.ordNo = ol.ordNo " +

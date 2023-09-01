@@ -31,6 +31,7 @@ public class OrderResDTO {
     private String recipientName;
     private String recipientAddress;
     private String recipientPh;
+    private Integer evaluateStatus;
     private Integer userPoint;
 
 
