@@ -16,6 +16,7 @@ import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
 import project_pet_backEnd.productMall.order.vo.OrderDetailPk;
 import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.user.dao.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -29,6 +30,8 @@ public class OrdersServiceImpl implements OrdersService {
     OrdersRepository ordersRepository;
     @Autowired
     OrdersDetailRepository ordersDetailRepository;
+    @Autowired
+    UserRepository userRepository;
 
 
     /**
@@ -41,7 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
         final Orders orders = createOrderDTO.getOrders();
         final List<OrderDetailByCreateDTO> orderDetails = createOrderDTO.getOrderDetailByCreateDTOS();
 
-        if(orders.getOrderAmount() == orders.getTotalAmount()-orders.getOrdFee()-orders.getUserPoint()){
+        if(orders.getOrderAmount() == orders.getTotalAmount()+orders.getOrdFee()-orders.getUserPoint()){
             orders.setUserId(userID);
             ordersRepository.save(orders);
         }else{

@@ -74,7 +74,8 @@ public class Orders {
     @Column(name = "EVALUATE_STATUS", insertable = false)
     private Integer evaluateStatus;
 
-    @Column(name = "USER_POINT", insertable = false)
+    @Column(name = "USER_POINT")
+    @NotNull
     private Integer userPoint;
 
 //    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
