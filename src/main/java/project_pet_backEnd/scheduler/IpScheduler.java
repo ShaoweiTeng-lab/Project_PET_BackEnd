@@ -1,9 +1,8 @@
-package project_pet_backEnd.Scheduler;
+package project_pet_backEnd.scheduler;
 
 import lombok.Data;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
