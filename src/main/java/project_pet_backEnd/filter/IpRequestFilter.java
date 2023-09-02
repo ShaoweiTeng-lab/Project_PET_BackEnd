@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class IpRequestFilter extends OncePerRequestFilter implements  ITask {
-    private static final int MAX_REQUESTS_PER_DAY = 1000;//設定 map api 一天內不可被呼叫次數
+    //todo 針對特定url 而不是整體
+    private static final int MAX_REQUESTS_PER_DAY = 10000;//設定 map api 一天內不可被呼叫次數
     private Map<String, Integer> ipRequestCountMap = new ConcurrentHashMap<>();
     @Autowired
     private IpScheduler ipScheduler;

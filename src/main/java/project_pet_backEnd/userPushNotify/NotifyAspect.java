@@ -48,7 +48,8 @@ public class NotifyAspect {
         NotifyType notifyType =NotifyType.Store;
         PictureInfo pictureInfo= pictureInfoRepository.findFirstByOrderByPiDateDesc();
         NotifyMsg notifyMsg =new NotifyMsg(notifyType, AllDogCatUtils.base64Encode(pictureInfo.getPiPicture()),"商城有新的商品，趕快來看看喔~");
-       // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+       // System.out.println("執行 groomerUpdateNotify");
+        userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
 
 }
