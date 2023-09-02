@@ -14,6 +14,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.PortResolver;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import project_pet_backEnd.filter.IpRequestFilter;
 import project_pet_backEnd.filter.ManagerJWTFilter;
 import project_pet_backEnd.filter.UserJWTFilter;
 import project_pet_backEnd.filter.UserPointFilter;
@@ -33,6 +34,8 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
     private ManagerJWTFilter managerJWTFilter;
     @Autowired
     private UserPointFilter userPointFilter;
+    @Autowired
+    private IpRequestFilter ipRequestFilter;
     @Bean
     public PasswordEncoder bCryptPasswordEncoder(){
 
@@ -66,7 +69,7 @@ public class SecurityConfig   extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(userJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(managerJWTFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(userPointFilter,UserJWTFilter.class);
-
+        http.addFilterBefore(ipRequestFilter,UsernamePasswordAuthenticationFilter.class);
         //配置異常處理
         http.exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
