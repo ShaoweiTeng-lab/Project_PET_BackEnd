@@ -63,7 +63,7 @@ public class GroomerController {
     @PostMapping("/manager/commitInsertNewGroomer")
     public ResultResponse<String> commitInsertNewGroomer(
             @RequestParam @NotNull Integer manId,
-            @RequestParam @NotBlank String pgName,
+            @RequestParam @NotBlank(message = "美容師姓名 不能為空白") String pgName,
             @RequestParam Integer pgGender,
             @RequestParam(required = false) MultipartFile pgPic,
             @RequestParam(required = false) String pgEmail,
@@ -71,6 +71,8 @@ public class GroomerController {
             @RequestParam(required = false) String pgAddress,
             @RequestParam(required = false) String pgBirthday
     ){
+
+
         PGInsertReq pgInsertReq = new PGInsertReq();
         pgInsertReq.setManId(manId);
         pgInsertReq.setPgName(pgName);

@@ -117,6 +117,17 @@ public class AppointmentController {
     })
     @PostMapping("/user/modifyAppointment")
     public ResultResponse<String>modifyAppointment(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
+
+        // 正則表達式驗證手機號碼格式 (台灣 10 位數字)
+        if(appointmentModifyReq.getPgaPhone() != null && !appointmentModifyReq.getPgaPhone().isEmpty()){
+            String phoneRegex = "^09[0-9]{8}$";
+            Pattern pattern = Pattern.compile(phoneRegex);
+            Matcher matcher = pattern.matcher(appointmentModifyReq.getPgaPhone());
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機號碼格式有誤 !，請輸入有效的台灣手機號碼（10位數字）");
+            }
+        }
+
         return groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
     }
     //完成或取消訂單 for UserV
