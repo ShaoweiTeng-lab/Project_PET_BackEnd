@@ -175,7 +175,7 @@ public class PetGroomerDaoImp implements PetGroomerDao {
 
         String sql = "select PG_ID, MAN_ID, PG_NAME, PG_GENDER, PG_PIC, PG_EMAIL, PG_PH, PG_ADDRESS, PG_BIRTHDAY from pet_groomer\n" +
                 "join manager on pet_groomer.MAN_ID = manager.manager_id\n" +
-                "where MAN_ID = :manId and MANAG ER_STATE = 1";
+                "where pet_groomer.MAN_ID = :manId and `manager`.manager_STATE = 1";
         Map map = new HashMap<>();
         map.put("manId",manId);
         List<PetGroomer> petGroomerList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PetGroomer>() {

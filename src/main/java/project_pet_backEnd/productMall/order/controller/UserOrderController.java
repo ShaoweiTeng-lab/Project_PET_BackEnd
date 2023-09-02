@@ -34,9 +34,10 @@ public class UserOrderController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
     @PostMapping(value = "/order",consumes = {"application/json"})
-    public ResponseEntity<ResultResponse<String>> postOrders(@RequestBody @Valid CreateOrderDTO createOrderDTO){
+    public ResponseEntity<ResultResponse<String>> postOrders(@RequestBody @Valid CreateOrderDTO createOrderDTO,
+                                                             @RequestAttribute(name = "userId") Integer userId){
         ResultResponse rs = new ResultResponse();
-        ordersService.createOrders(createOrderDTO);
+        ordersService.createOrders(createOrderDTO, userId);
         rs.setMessage("新增成功");
         return ResponseEntity.status(HttpStatus.OK).body(rs);
 
@@ -46,9 +47,10 @@ public class UserOrderController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
-    @GetMapping("/getUserOrders/{userId}")
+    @GetMapping("/getUserOrders")
     public ResponseEntity<ResultResponse<List<Orders>>> getByUserIdAndOrdStatusNot(@RequestAttribute(name = "userId") Integer userId){
         ResultResponse rs = new ResultResponse();
+        System.out.println(userId);
         rs.setMessage(ordersService.getByUserIdAndOrdStatusNot(userId));
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }

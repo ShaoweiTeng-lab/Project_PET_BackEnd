@@ -67,7 +67,7 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
         List<String> dataByYearMonthAndPgId = petScheduleRepository.findDataByYearMonthAndPgId(year, month, pgId);
 
         if(dataByYearMonthAndPgId.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師"+month+"月班表。");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "未找到該美容師"+year+"年"+month+"月班表。");
         }
         List<GetScheduleRes> scheduleResList = new ArrayList<>();
         for (String data : dataByYearMonthAndPgId) {
