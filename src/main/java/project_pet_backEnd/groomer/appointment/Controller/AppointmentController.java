@@ -2,9 +2,11 @@ package project_pet_backEnd.groomer.appointment.Controller;
 
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.appointment.dto.*;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentCompleteOrCancelReq;
 import project_pet_backEnd.groomer.appointment.dto.request.AppointmentModifyReq;
@@ -22,6 +24,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Api(tags = "美容師預約功能")
 @RestController
 @Validated
@@ -180,6 +185,23 @@ public class AppointmentController {
     })
     @PostMapping("/manager/modifyAppointment")
     public ResultResponse<String> modifyAppointmentForMan(@RequestBody @Valid AppointmentModifyReq appointmentModifyReq){
+        // 正則表達式驗證手機號碼格式 (台灣 10 位數字)
+        if(appointmentModifyReq.getPgaPhone() != null && !appointmentModifyReq.getPgaPhone().isEmpty()){
+            String phoneRegex = "^09[0-9]{8}$";
+            Pattern pattern = Pattern.compile(phoneRegex);
+            Matcher matcher = pattern.matcher(appointmentModifyReq.getPgaPhone());
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機號碼格式有誤 !，請輸入有效的台灣手機號碼（10位數字）");
+            }
+        }
+
+        // 驗證日期格式 (yyyy-MM-dd)
+        String dateRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+        if (appointmentModifyReq.getPgaNewDate() != null && !appointmentModifyReq.getPgaNewDate().isEmpty() &&
+                !Pattern.matches(dateRegex, appointmentModifyReq.getPgaNewDate())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤，請使用 yyyy-MM-dd 格式");
+        }
+
         return groomerAppointmentService.modifyAppointmentByByPgaNo(appointmentModifyReq);
     }
     //取消預約單or完成訂單。for Man v
