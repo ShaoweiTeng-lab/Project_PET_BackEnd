@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
 @RestController
 @Validated
 
-
 public class GroomerController {
 
     @Autowired
@@ -64,7 +63,7 @@ public class GroomerController {
     @PostMapping("/manager/commitInsertNewGroomer")
         public ResultResponse<String> commitInsertNewGroomer(
                 @RequestParam @NotNull Integer manId,
-                @RequestParam @NotBlank(message = "美容師姓名 不能為空白")  String pgName,
+                @RequestParam @NotBlank(message = "美容師姓名 不能為空白") String pgName,
                 @RequestParam Integer pgGender,
                 @RequestParam(required = false) MultipartFile pgPic,
                 @RequestParam(required = false)
