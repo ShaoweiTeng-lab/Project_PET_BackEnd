@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import project_pet_backEnd.socialMedia.activityManager.dao.ActivityDao;
 import project_pet_backEnd.userPushNotify.dao.PictureInfoRepository;
 import project_pet_backEnd.userPushNotify.vo.PictureInfo;
 import project_pet_backEnd.utils.AllDogCatUtils;
@@ -14,6 +15,8 @@ import project_pet_backEnd.utils.AllDogCatUtils;
 public class NotifyAspect {
     @Autowired
     private PictureInfoRepository pictureInfoRepository;
+    @Autowired
+    private ActivityDao activityDao;
     @Autowired
     private  UserNotifyWebSocketHandler userNotifyWebSocketHandler;
     //todo: 美容師 新增作品時
@@ -30,13 +33,15 @@ public class NotifyAspect {
         NotifyType notifyType =NotifyType.Store;
         NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
         userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
-        // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
+        // System.out.println("執行 groomerUpdateNotify");
+        // userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
 
     //todo: 社群 新增貼文時
     @After("execution(* project_pet_backEnd.productMall.productsmanage.service.*.insertProduct(..))")
     public  void  socialMediaUpdateNotify() throws Exception {
         NotifyType notifyType =NotifyType.Store;
+        //activityDao.findFirstByOrderByPiDateDesc();
         NotifyMsg notifyMsg =new NotifyMsg(notifyType,null,"商城有新的商品，趕快來看看喔~");
         userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
         // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
