@@ -7,6 +7,7 @@ import java.util.List;
 
 
 public interface HomepageService {
+    String getGoogleMapApiKey();
     List<String> getRotePic();
     ResultResponse getNews();
     List<NewsPic> getNewsPic();
