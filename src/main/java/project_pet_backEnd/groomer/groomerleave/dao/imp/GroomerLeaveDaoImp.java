@@ -150,9 +150,10 @@ public class GroomerLeaveDaoImp implements GroomerLeaveDao {
         String sql = "SELECT gl.LEAVE_NO, gl.PG_ID, gl.LEAVE_CREATED, gl.LEAVE_DATE, gl.LEAVE_TIME, gl.LEAVE_STATE, pg.PG_NAME " +
                 "FROM GROOMER_LEAVE gl " +
                 "JOIN PET_GROOMER pg ON gl.PG_ID = pg.PG_ID "+
-                "WHERE PG_ID = :pgId "+
+                "WHERE gl.PG_ID = :pgId "+
                 "ORDER BY LEAVE_DATE ";
         MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("pgId", pgId);
         List<PGLeaveSearchRes> GroomerLeaveList = namedParameterJdbcTemplate.query(sql, params, new RowMapper<PGLeaveSearchRes>() {
             @Override
             public PGLeaveSearchRes mapRow(ResultSet rs, int rowNum) throws SQLException {
