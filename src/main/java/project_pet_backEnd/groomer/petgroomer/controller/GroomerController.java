@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 @RestController
 @Validated
 
+
 public class GroomerController {
 
     @Autowired
@@ -61,60 +62,61 @@ public class GroomerController {
     })
     @PreAuthorize("hasAnyAuthority('美容師管理')")
     @PostMapping("/manager/commitInsertNewGroomer")
-    public ResultResponse<String> commitInsertNewGroomer(
-            @RequestParam @NotNull Integer manId,
-            @RequestParam @NotBlank(message = "美容師姓名 不能為空白") String pgName,
-            @RequestParam Integer pgGender,
-            @RequestParam(required = false) MultipartFile pgPic,
-            @RequestParam(required = false) String pgEmail,
-            @RequestParam(required = false) String pgPh,
-            @RequestParam(required = false) String pgAddress,
-            @RequestParam(required = false) String pgBirthday
-    ){
+        public ResultResponse<String> commitInsertNewGroomer(
+                @RequestParam @NotNull Integer manId,
+                @RequestParam @NotBlank(message = "美容師姓名 不能為空白")  String pgName,
+                @RequestParam Integer pgGender,
+                @RequestParam(required = false) MultipartFile pgPic,
+                @RequestParam(required = false)
+                String pgEmail,
+                @RequestParam(required = false) String pgPh,
+                @RequestParam(required = false) String pgAddress,
+                @RequestParam(required = false) String pgBirthday
+        ){
 
 
-        PGInsertReq pgInsertReq = new PGInsertReq();
-        pgInsertReq.setManId(manId);
-        pgInsertReq.setPgName(pgName);
-        pgInsertReq.setPgPic(AllDogCatUtils.convertMultipartFileToByteArray(pgPic));
-        pgInsertReq.setPgGender(pgGender);
-        pgInsertReq.setPgEmail(pgEmail);
-        pgInsertReq.setPgPh(pgPh);
-        pgInsertReq.setPgAddress(pgAddress);
+            PGInsertReq pgInsertReq = new PGInsertReq();
+            pgInsertReq.setManId(manId);
+            pgInsertReq.setPgName(pgName);
+            pgInsertReq.setPgPic(AllDogCatUtils.convertMultipartFileToByteArray(pgPic));
+            pgInsertReq.setPgGender(pgGender);
+            pgInsertReq.setPgEmail(pgEmail);
+            pgInsertReq.setPgPh(pgPh);
+            pgInsertReq.setPgAddress(pgAddress);
 
-        if(pgBirthday==null ||pgBirthday.isBlank()){
-            try {
-                pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate("1900-01-01"));
-            } catch (ParseException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+            if(pgBirthday==null ||pgBirthday.isBlank()){
+                try {
+                    pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate("1900-01-01"));
+                } catch (ParseException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+                }
+            }else {
+                try {
+                    pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
+                } catch (ParseException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
+                }
             }
-        }else {
-            try {
-                pgInsertReq.setPgBirthday(AllDogCatUtils.dateFormatToSqlDate(pgBirthday));
-            } catch (ParseException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
-            }
-        }
 
-        // 正則表達式驗證電子郵件格式
-        if (pgEmail != null && !pgEmail.isBlank()) {
-            String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
-            Pattern pattern = Pattern.compile(emailRegex);
-            Matcher matcher = pattern.matcher(pgEmail);
-            if (!matcher.matches()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email格式不正確");
+            // 正則表達式驗證電子郵件格式
+            if (pgEmail != null && !pgEmail.isBlank()) {
+                String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
+                Pattern pattern = Pattern.compile(emailRegex);
+                Matcher matcher = pattern.matcher(pgEmail);
+                if (!matcher.matches()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email格式不正確");
+                }
             }
-        }
 
-        // 正則表達式驗證手機號碼格式（台灣10位數字）
-        if (pgPh != null && !pgPh.isBlank()) {
-            String phoneRegex = "^[0-9]{10}$";
-            Pattern pattern = Pattern.compile(phoneRegex);
-            Matcher matcher = pattern.matcher(pgPh);
-            if (!matcher.matches()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機號碼格式不正確");
+            // 正則表達式驗證手機號碼格式（台灣10位數字）
+            if (pgPh != null && !pgPh.isBlank()) {
+                String phoneRegex = "^[0-9]{10}$";
+                Pattern pattern = Pattern.compile(phoneRegex);
+                Matcher matcher = pattern.matcher(pgPh);
+                if (!matcher.matches()) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機號碼格式不正確");
+                }
             }
-        }
 
         return petGroomerService.insertGroomer(pgInsertReq);
     }
