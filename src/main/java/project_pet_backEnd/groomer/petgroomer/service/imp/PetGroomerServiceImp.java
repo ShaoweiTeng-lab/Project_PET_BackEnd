@@ -255,8 +255,8 @@ public class PetGroomerServiceImp implements PetGroomerService {
         resPg.setManId(groomer.getManId());
         resPg.setPgName(groomer.getPgName());
         switch (groomer.getPgGender()) {
-            case 0 -> resPg.setPgGender("女性");
-            case 1 -> resPg.setPgGender("男性");
+            case 0 -> resPg.setPgGender("女");
+            case 1 -> resPg.setPgGender("男");
         }
         resPg.setPgPic(AllDogCatUtils.base64Encode(groomer.getPgPic()));
         resPg.setPgEmail(groomer.getPgEmail());
