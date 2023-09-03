@@ -20,7 +20,7 @@ public class HomepageController {
     @Autowired
     private HomepageService homepageService;
 
-    @GetMapping("/getRocPic")
+    @GetMapping("/getRotePic")
     public ResponseEntity<List<String>> getRotePic(){
         return ResponseEntity.status(200).body(homepageService.getRotePic());
     }
