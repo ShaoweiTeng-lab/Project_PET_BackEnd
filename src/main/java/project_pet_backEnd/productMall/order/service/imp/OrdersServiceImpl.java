@@ -75,9 +75,9 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public List<Orders> getByUserIdAndOrdStatusNot(Integer userId) {
-        Integer ordStatus = 0;
-        return ordersRepository.findByUserIdAndOrdStatus(userId, ordStatus);
+    public List<OrdersNotCancelDTO> getByUserIdAndOrdStatusNot(Integer userId) {
+        Integer ordStatus = 6;
+        return ordersRepository.findByOrdStatusNotCancel(userId, ordStatus);
     }
 
     @Override
