@@ -112,7 +112,7 @@ public class PetGroomerDaoImp implements PetGroomerDao {
         Map<String, Object> map = new HashMap<>();
 
         if (PGQueryParameter.getSearch() != null) {
-            sql += "AND (PG_NAME LIKE :search OR MAN_ID LIKE :search OR pet_groomer.PG_ID LIKE :search) ";
+            sql += "AND (PG_NAME LIKE :search OR MAN_ID LIKE :search OR pet_groomer.PG_ID LIKE :search OR pet_groomer.PG_ADDRESS LIKE :search) ";
             map.put("search", "%" + PGQueryParameter.getSearch() + "%");
         }
 
@@ -128,6 +128,12 @@ public class PetGroomerDaoImp implements PetGroomerDao {
                     break;
                 case PG_NAME:
                     orderBy = "PG_NAME";
+                    break;
+                case MAN_ID:
+                    orderBy = "MAN_ID";
+                    break;
+                case PG_ID:
+                    orderBy = "PG_ID";
                     break;
                 default:
                     orderBy = "PG_ID"; // Default sorting by PG_ID

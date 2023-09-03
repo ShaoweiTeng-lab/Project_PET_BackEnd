@@ -93,12 +93,10 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         // 當連線後先去 redis 拿對應的 history
         String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
         Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
-        System.out.println(lsSize);
         for(long i =0; i<lsSize;i++){
             if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
                 continue;
             String msg =redisTemplate.opsForList().leftPop("userNotify:" + userId);
-            System.out.println(userId);
             session.sendMessage(new TextMessage(msg));
         }
     }

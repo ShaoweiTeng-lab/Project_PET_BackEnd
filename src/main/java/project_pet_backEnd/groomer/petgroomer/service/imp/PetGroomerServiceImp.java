@@ -116,10 +116,10 @@ public class PetGroomerServiceImp implements PetGroomerService {
             int gender = groomers.getPgGender();
             switch (gender) {
                 case 0:
-                    getAllGroomerListSortRes.setPgGender("女性");
+                    getAllGroomerListSortRes.setPgGender("女");
                     break;
                 case 1:
-                    getAllGroomerListSortRes.setPgGender("男性");
+                    getAllGroomerListSortRes.setPgGender("男");
                     break;
             }
             getAllGroomerListSortRes.setPgPic(AllDogCatUtils.base64Encode(groomers.getPgPic()));
