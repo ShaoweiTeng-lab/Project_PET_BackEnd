@@ -22,7 +22,5 @@ public interface ActivityDao extends JpaRepository<Activity, Integer>
 
     Page<Activity> findByActivityContentContaining(String activityContent, Pageable pageable);
 
-    Activity findFirstByOrderByActivityIdDesc();
-
 
 }
