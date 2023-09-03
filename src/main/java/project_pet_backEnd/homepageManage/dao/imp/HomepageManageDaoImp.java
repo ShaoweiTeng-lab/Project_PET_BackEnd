@@ -9,6 +9,7 @@ import project_pet_backEnd.homepage.vo.NewsPic;
 import project_pet_backEnd.homepageManage.dto.*;
 import project_pet_backEnd.homepage.vo.PicRot;
 import project_pet_backEnd.homepageManage.dao.HomepageManageDao;
+import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +31,7 @@ public class HomepageManageDaoImp implements HomepageManageDao {
             @Override
             public PicRot mapRow(ResultSet rs, int rowNum) throws SQLException {
                 PicRot picRot=new PicRot();
+                picRot.setPicNo(rs.getInt("PIC_NO"));
                 picRot.setPicLocateUrl(rs.getString("PIC_LOCATE_URL"));
                 picRot.setPic(rs.getBytes("PIC"));
                 picRot.setPicRotStatus(rs.getInt("PIC_ROT_STATUS"));
@@ -57,7 +59,7 @@ public class HomepageManageDaoImp implements HomepageManageDao {
         Map<String,Object>map =new HashMap<>();
         map.put("picNo", adjustRotePicRequest.getPicNo());
         map.put("picLocateUrl",adjustRotePicRequest.getPicRotateUrl());
-        map.put("pic",adjustRotePicRequest.getPic());
+        map.put("pic", AllDogCatUtils.convertMultipartFileToByteArray(adjustRotePicRequest.getPic()));
         map.put("picRotStatus",adjustRotePicRequest.getPicRotStatus());
         map.put("picRotStart",adjustRotePicRequest.getPicRotStart());
         map.put("picRotEnd",adjustRotePicRequest.getPicRotEnd());
@@ -197,6 +199,7 @@ public class HomepageManageDaoImp implements HomepageManageDao {
                 "WHERE NEWS_PIC_NO = :newsPicNo ; ";
         Map<String,Object>map =new HashMap<>();
         map.put("newsNo",adjustNewsPicRequest.getNewsNo());
+        map.put("newsPicNo", adjustNewsPicRequest.getNewsPicNo());
         map.put("pic",adjustNewsPicRequest.getPic());
         namedParameterJdbcTemplate.update(sql,map);
 

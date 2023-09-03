@@ -1,6 +1,7 @@
 package project_pet_backEnd.homepageManage.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,12 +10,12 @@ import java.util.Date;
 public class AdjustRotePicRequest {
         private Integer picNo;
         private String picRotateUrl;
-        private Byte pic;
+        private MultipartFile pic;
         private Integer picRotStatus;
-        @NotBlank
-        private String picRotStart;
         @NotNull
-        private String picRotEnd;
+        private Date picRotStart;
+        @NotNull
+        private Date picRotEnd;
         private  String rotePicPicLocateUrl;
 
 

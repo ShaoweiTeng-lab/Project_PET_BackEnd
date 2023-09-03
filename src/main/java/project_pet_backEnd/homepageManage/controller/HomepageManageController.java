@@ -62,8 +62,8 @@ public class HomepageManageController {
      * 修改輪播圖
      **/
 
-    @PostMapping("/editRotePicByPicNo")
-    public ResponseEntity<ResultResponse<String>> editRotePicByPicNo(@RequestBody @Valid AdjustRotePicRequest adjustRotePicRequest) {
+    @PutMapping("/editRotePicByPicNo")
+    public ResponseEntity<ResultResponse<String>> editRotePicByPicNo(@ModelAttribute @Valid AdjustRotePicRequest adjustRotePicRequest) {
         ResultResponse rs = homepageManageService.editRotePicByPicNo(adjustRotePicRequest);
         return ResponseEntity.status(201).body(rs);
     }
@@ -107,10 +107,10 @@ public class HomepageManageController {
     /**
      * 修改最新消息
      **/
-    @PostMapping("/editNews")
+    @PutMapping("/editNews")
     public ResponseEntity<ResultResponse<String>> editNewsByNewsNo(@RequestBody @Valid AdjustNewsRequest adjustNewsRequest) {
         ResultResponse rs = homepageManageService.editNewsByNewsNo(adjustNewsRequest);
-        return ResponseEntity.status(201).body(rs);
+        return ResponseEntity.status(200).body(rs);
     }
 
     /**
@@ -144,7 +144,7 @@ public class HomepageManageController {
     @PostMapping("/addNewsPic")
     public ResponseEntity<ResultResponse<String>> addNewsPic(
             @RequestParam @NotNull Integer newsNo,
-            @RequestBody @NotNull MultipartFile pic
+            @RequestParam @NotNull MultipartFile pic
              ) {
         AddNewsPicRequest addNewsPicRequest =new AddNewsPicRequest();
         addNewsPicRequest.setNewsNo(newsNo);
@@ -157,9 +157,14 @@ public class HomepageManageController {
     /**
      * 修改最新消息圖片
      **/
-    @PostMapping("/editNewsPic")
-    public ResponseEntity<ResultResponse<String>> editNewsPicByPicNo(@RequestBody @Valid AdjustNewsPicRequest adjustNewsPicRequest) {
+    @PutMapping("/editNewsPic")
+    public ResponseEntity<ResultResponse<String>> editNewsPicByPicNo(@ModelAttribute AdjustNewsPicRequest adjustNewsPicRequest) {
         ResultResponse rs = homepageManageService.editNewsPicByPicNo(adjustNewsPicRequest);
+        NewsPic newsPic = new NewsPic();
+        newsPic.setNewsPicNo(adjustNewsPicRequest.getNewsPicNo());
+        newsPic.setNewsNo(adjustNewsPicRequest.getNewsNo());
+        newsPic.setPic(AllDogCatUtils.convertMultipartFileToByteArray(adjustNewsPicRequest.getPic()));
+        rs.setMessage("修改成功");
         return ResponseEntity.status(201).body(rs);
     }
 

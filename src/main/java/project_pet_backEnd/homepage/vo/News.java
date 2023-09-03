@@ -3,7 +3,7 @@ package project_pet_backEnd.homepage.vo;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 @Entity(name = "NEWS")
 @Data
 public class News {
