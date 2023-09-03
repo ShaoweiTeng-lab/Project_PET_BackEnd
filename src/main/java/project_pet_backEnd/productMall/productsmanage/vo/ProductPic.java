@@ -22,7 +22,7 @@ public class ProductPic {
         @Lob
         private byte[] pdPic; //商品照片 LONGBLOB
 
-        @Column(name = "PD_ORDERLIST")
+        @Column(name = "PIC_ORDER")
         private Integer pdOrderList;
 
         @ManyToOne
