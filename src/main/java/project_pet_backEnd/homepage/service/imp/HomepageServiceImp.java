@@ -1,6 +1,7 @@
 package project_pet_backEnd.homepage.service.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project_pet_backEnd.homepage.dao.HomepageDao;
 import project_pet_backEnd.homepage.service.HomepageService;
@@ -14,8 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class HomepageServiceImp  implements HomepageService {
+    @Value("${google-map-key:none}")
+    private  String  googleMapKey;
     @Autowired
     private HomepageDao homepageDao;
+
+    @Override
+    public String getGoogleMapApiKey() {
+        return googleMapKey;
+    }
+
     @Override
     public List<String> getRotePic() {
         List<PicRot>  picRotList=homepageDao.getRotePic();

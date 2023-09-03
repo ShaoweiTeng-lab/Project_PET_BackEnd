@@ -43,4 +43,14 @@ public class HomepageController {
     @GetMapping("/getNewsPic")
     public List<NewsPic> getNewsPic(){ return homepageService.getNewsPic();}
 
+    /**
+     * 取得Google Map Api key
+     * */
+    @GetMapping("/mapApiKey")
+    public ResultResponse<String> getMapApiKey(){
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(homepageService.getGoogleMapApiKey());
+        return rs;
+    }
+
 }
