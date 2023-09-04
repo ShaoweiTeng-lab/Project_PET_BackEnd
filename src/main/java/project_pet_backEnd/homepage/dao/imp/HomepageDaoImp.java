@@ -28,8 +28,7 @@ private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
             public PicRot mapRow(ResultSet rs, int rowNum) throws SQLException {
                 PicRot picRot=new  PicRot();
                 picRot.setPicNo(rs.getInt("PIC_NO"));
-                picRot.setPdNo(rs.getInt("PD_NO"));
-                picRot.setActivityId(rs.getInt("ACTIVITY_ID"));
+                picRot.setPicLocateUrl(rs.getString("PIC_LOCATE_URL"));
                 picRot.setPic(rs.getBytes("PIC"));
                 picRot.setPicRotStatus(rs.getInt("PIC_ROT_STATUS"));
                 picRot.setPicRotStart(rs.getDate("PIC_ROT_START"));
