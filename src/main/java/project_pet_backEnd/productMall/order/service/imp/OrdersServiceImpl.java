@@ -17,6 +17,7 @@ import project_pet_backEnd.productMall.order.vo.OrderDetail;
 import project_pet_backEnd.productMall.order.vo.OrderDetailPk;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.user.dao.UserRepository;
+import project_pet_backEnd.user.vo.User;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -72,6 +73,14 @@ public class OrdersServiceImpl implements OrdersService {
             });
         }
 
+        User user = userRepository.findById(userID).orElse(null);
+        Integer usePoint = orders.getUserPoint();
+        Integer currentPoint = user.getUserPoint();
+        Integer newPoint = currentPoint - usePoint;
+        if(newPoint >= 0 ){
+            user.setUserPoint(newPoint);
+            userRepository.save(user);
+        }
     }
 
     @Override
