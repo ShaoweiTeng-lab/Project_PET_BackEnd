@@ -288,6 +288,26 @@ public class GroomerController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "日期格式有誤!", e);
             }
         }
+        // 正則表達式驗證電子郵件格式
+        if (pgEmail != null && !pgEmail.isBlank()) {
+            String emailRegex = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
+            Pattern pattern = Pattern.compile(emailRegex);
+            Matcher matcher = pattern.matcher(pgEmail);
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email格式不正確");
+            }
+        }
+
+        // 正則表達式驗證手機號碼格式（台灣10位數字）
+        if (pgPh != null && !pgPh.isBlank()) {
+            String phoneRegex = "^[0-9]{10}$";
+            Pattern pattern = Pattern.compile(phoneRegex);
+            Matcher matcher = pattern.matcher(pgPh);
+            if (!matcher.matches()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "手機號碼格式不正確");
+            }
+        }
+
         return petGroomerService.updateGroomerByIdForMan(getAllGroomerListReq);
     }
 
