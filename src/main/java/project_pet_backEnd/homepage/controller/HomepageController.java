@@ -20,7 +20,7 @@ public class HomepageController {
     @Autowired
     private HomepageService homepageService;
 
-    @GetMapping("/getRocPic")
+    @GetMapping("/getRotePic")
     public ResponseEntity<List<String>> getRotePic(){
         return ResponseEntity.status(200).body(homepageService.getRotePic());
     }
@@ -42,5 +42,15 @@ public class HomepageController {
 
     @GetMapping("/getNewsPic")
     public List<NewsPic> getNewsPic(){ return homepageService.getNewsPic();}
+
+    /**
+     * 取得Google Map Api key
+     * */
+    @GetMapping("/mapApiKey")
+    public ResultResponse<String> getMapApiKey(){
+        ResultResponse rs =new ResultResponse();
+        rs.setMessage(homepageService.getGoogleMapApiKey());
+        return rs;
+    }
 
 }

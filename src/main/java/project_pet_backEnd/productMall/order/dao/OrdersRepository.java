@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
 import project_pet_backEnd.productMall.order.dto.response.FindByOrdNoResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersNotCancelDTO;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
 import java.util.List;
@@ -15,7 +16,14 @@ import java.util.List;
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
     List<Orders> findByUserId(Integer userId);
 
-    List<Orders> findByUserIdAndOrdStatus(Integer userId, Integer ordStatus);
+    @Query(value = "SELECT new project_pet_backEnd.productMall.order.dto.response.OrdersNotCancelDTO(" +
+            "o.ordNo, o.userId, o.ordStatus, o.ordPayStatus, o.ordPick, " +
+            "o.ordCreate, o.ordFinish, o.ordFee, o.totalAmount, o.orderAmount, " +
+            "o.recipientName, o.recipientAddress, o.recipientPh, o.evaluateStatus, " +
+            "o.userPoint) FROM Orders o " +
+            "WHERE o.ordStatus <> :ordStatus AND o.userId = :userId")
+    List<OrdersNotCancelDTO> findByOrdStatusNotCancel(@Param("userId") Integer userId,
+                                                      @Param("ordStatus") Integer ordStatus);
 
     Orders findByOrdNo(Integer ordNo);
 
