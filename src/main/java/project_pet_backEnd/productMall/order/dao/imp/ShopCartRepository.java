@@ -1,4 +1,4 @@
-package project_pet_backEnd.productMall.order.dao;
+package project_pet_backEnd.productMall.order.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.productMall.order.dao.ShopProductRepository;
 import project_pet_backEnd.productMall.order.dto.CartItemDTO;
 import project_pet_backEnd.productMall.order.dto.ProductForCartDTO;
 
@@ -31,6 +32,29 @@ public class ShopCartRepository {
         return "cart:" + shoppingCart_userId;
     }
 
+    public void addProduct(Integer shoppingCart_userId, Integer pdNo, Integer quantity){
+        String redisKey = getCartKey(shoppingCart_userId);
+        String field = String.valueOf(pdNo);
+
+        String existingQuantity = hashOperations.get(redisKey, field);
+
+        // 如果數量大於等於 0，則執行類似原本的操作
+        if (existingQuantity == null) {
+            if(shopProductRepository.findByPoNo(pdNo) == null){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "本商城無此商品");
+            }
+            hashOperations.put(redisKey, field, String.valueOf(quantity));
+        } else {
+            Integer newQuantity = Integer.parseInt(existingQuantity) + quantity;
+
+            if (newQuantity <= 0) {
+                hashOperations.delete(redisKey, field);
+            } else {
+                hashOperations.put(redisKey, field, String.valueOf(newQuantity));
+            }
+        }
+
+    }
     public void changCartAmount(Integer shoppingCart_userId, Integer pdNo, Integer quantity) {
         String redisKey = getCartKey(shoppingCart_userId);
         String field = String.valueOf(pdNo);
@@ -69,38 +93,6 @@ public class ShopCartRepository {
                 hashOperations.delete(redisKey, field);
             }
         }
-//        if (quantity < 0) {
-//            // 如果數量為負數，表示要從購物車扣除該數量
-//            if (existingQuantity == null) {
-//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "此商品不在購物車中，無法扣除數量");
-//            }
-//
-//            Integer currentQuantity = Integer.parseInt(existingQuantity);
-//            Integer newQuantity = currentQuantity + quantity;
-//
-//            if (newQuantity <= 0) {
-//                // 如果扣除後數量小於 0，則從購物車中刪除該商品
-//                hashOperations.delete(redisKey, field);
-//            } else {
-//                hashOperations.put(redisKey, field, String.valueOf(newQuantity));
-//            }
-//        } else {
-//            // 如果數量大於等於 0，則執行類似原本的操作
-//            if (existingQuantity == null) {
-//                if(shopProductRepository.findByPoNo(pdNo) == null){
-//                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "本商城無此商品");
-//                }
-//                hashOperations.put(redisKey, field, String.valueOf(quantity));
-//            } else {
-//                Integer newQuantity = Integer.parseInt(existingQuantity) + quantity;
-//
-//                if (newQuantity <= 0) {
-//                    hashOperations.delete(redisKey, field);
-//                } else {
-//                    hashOperations.put(redisKey, field, String.valueOf(newQuantity));
-//                }
-//            }
-//        }
 
     }
 

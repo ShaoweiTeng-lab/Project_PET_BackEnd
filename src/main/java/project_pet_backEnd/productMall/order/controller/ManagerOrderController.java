@@ -89,7 +89,7 @@ public class ManagerOrderController {
     @PatchMapping("/patchOrders")
     public ResponseEntity<ResultResponse<String>> manUpdateOrderStatus(@RequestBody @Valid ChangeOrderStatusDTO changeOrderStatusDTO){
         ResultResponse rs = new ResultResponse<>();
-        ordersService.updateOrderStatus(changeOrderStatusDTO.getOrdNo(), changeOrderStatusDTO.getOrdStatus());
+        ordersService.updateOrderContent(changeOrderStatusDTO);
         rs.setMessage("修改成功");
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
