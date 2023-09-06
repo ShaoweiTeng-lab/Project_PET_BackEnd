@@ -50,7 +50,7 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/all")
-    public ResponseEntity<ResultResponse<PageRes<ActivityRes>>> getAllActivitiesSortAndPaging(@RequestParam("page") int page) {
+    public ResponseEntity<ResultResponse<PageRes<ActivityRes>>> getAllActivitiesSortAndPaging(@RequestParam(value = "page", required = false, defaultValue = "0") int page) {
         ResultResponse<PageRes<ActivityRes>> activities = userActivityService.getAllActivities(page);
         return ResponseEntity.status(HttpStatus.OK).body(activities);
 
@@ -85,7 +85,7 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/join")
-    public ResponseEntity<ResultResponse<String>> joinActivity(@RequestParam("userId") int userId, @RequestBody JoinReq joinReq) {
+    public ResponseEntity<ResultResponse<String>> joinActivity(@RequestAttribute("userId") Integer userId, @RequestBody JoinReq joinReq) {
         ResultResponse<String> response = userActivityService.joinActivity(userId, joinReq.getActivityId(), joinReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -97,7 +97,7 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/leave")
-    public ResponseEntity<ResultResponse<String>> leaveActivity(@RequestBody JoinReq joinReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> leaveActivity(@RequestBody JoinReq joinReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = userActivityService.leaveActivity(userId, joinReq.getActivityId(), joinReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -109,7 +109,7 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/joinList")
-    public ResponseEntity<ResultResponse<PageRes<JoinListRes>>> getUerJoinDetails(@RequestParam("userId") int userId) {
+    public ResponseEntity<ResultResponse<PageRes<JoinListRes>>> getUerJoinDetails(@RequestAttribute("userId") Integer userId) {
         ResultResponse<PageRes<JoinListRes>> joinListRes = userActivityService.queryACHistory(userId);
         return ResponseEntity.status(HttpStatus.OK).body(joinListRes);
 

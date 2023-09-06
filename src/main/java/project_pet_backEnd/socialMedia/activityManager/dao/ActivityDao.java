@@ -22,5 +22,7 @@ public interface ActivityDao extends JpaRepository<Activity, Integer>
 
     Page<Activity> findByActivityContentContaining(String activityContent, Pageable pageable);
 
+    Page<Activity> findAllByStatus(int status, Pageable pageable);
+
 
 }

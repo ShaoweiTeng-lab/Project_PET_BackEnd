@@ -43,7 +43,7 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping
-    public ResponseEntity<ResultResponse<String>> create(@Valid @RequestBody PostReq postReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> create(@Valid @RequestBody PostReq postReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = postService.create(userId, postReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -54,7 +54,7 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/{postId}")
-    public ResponseEntity<ResultResponse<PostRes>> update(@PathVariable("postId") int postId, @RequestBody PostReq postReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<PostRes>> update(@PathVariable("postId") int postId, @RequestBody PostReq postReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<PostRes> response = postService.update(userId, postId, postReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -64,7 +64,7 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/{postId}")
-    public ResponseEntity<ResultResponse<String>> delete(@PathVariable("postId") int postId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> delete(@PathVariable("postId") int postId, @RequestAttribute("userId") Integer userId) {
         System.out.println(postId);
         ResultResponse<String> response = postService.delete(userId, postId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -76,7 +76,7 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/all")
-    public ResponseEntity<ResultResponse<PageRes<PostRes>>> getAllPost(@RequestParam("page") int page) {
+    public ResponseEntity<ResultResponse<PageRes<PostRes>>> getAllPost(@RequestParam(value = "page", required = false, defaultValue = "0") int page) {
         ResultResponse<PageRes<PostRes>> posts = postService.getAllPosts(page);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }

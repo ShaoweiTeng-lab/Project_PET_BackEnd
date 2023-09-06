@@ -23,6 +23,11 @@ public interface ActivityService {
     ResultResponse<ActivityRes> findActivityById(Integer activityId);
 
     /*
+     * 查詢活動狀態(執行中、取消)
+     */
+    ResultResponse<PageRes<ActivityRes>> getAcByStatus(int status, int page);
+
+    /*
      * 查詢活動列表-反向排序+分頁
      */
     ResultResponse<PageRes<ActivityRes>> getAllActivities(int pageSize, int offset);

@@ -42,7 +42,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping
-    public ResponseEntity<ResultResponse<String>> create(@RequestParam("postId") int postId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> create(@RequestParam("postId") int postId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = postCollService.create(postId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -53,7 +53,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/{pcId}")
-    public ResponseEntity<ResultResponse<String>> deletePostColl(@PathVariable("pcId") int pcId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> deletePostColl(@PathVariable("pcId") int pcId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = postCollService.delete(pcId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -64,7 +64,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/posts")
-    public ResponseEntity<ResultResponse<PageRes<PostColRes>>> getPosts(@RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<PageRes<PostColRes>>> getPosts(@RequestAttribute("userId") Integer userId) {
         ResultResponse<PageRes<PostColRes>> response = postCollService.getPostCol(userId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -75,7 +75,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/tags")
-    public ResponseEntity<ResultResponse<String>> createTagsByColId(@Valid @RequestBody CategoryReq categoryReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> createTagsByColId(@Valid @RequestBody CategoryReq categoryReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = categoryService.createCategory(userId, categoryReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -85,7 +85,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/tags/{pctId}")
-    public ResponseEntity<ResultResponse<String>> deleteTagsByColId(@PathVariable("pctId") int pctId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> deleteTagsByColId(@PathVariable("pctId") int pctId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = categoryService.deleteCategory(userId, pctId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -95,7 +95,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/tags")
-    public ResponseEntity<ResultResponse<List<TagRes>>> queryAllTags(@RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<List<TagRes>>> queryAllTags(@RequestAttribute("userId") Integer userId) {
         ResultResponse<List<TagRes>> response = categoryService.queryAllTags(userId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -106,7 +106,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/tags/{pctId}")
-    public ResponseEntity<ResultResponse<List<PostColRes>>> queryColByTagId(@PathVariable("pctId") int pctId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<List<PostColRes>>> queryColByTagId(@PathVariable("pctId") int pctId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<List<PostColRes>> response = categoryService.queryPostCollByTagId(userId, pctId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -116,7 +116,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/tags/{pctId}")
-    public ResponseEntity<ResultResponse<ColCategoryRes>> updateTagsByTagId(@RequestBody CategoryReq categoryReq, @PathVariable("pctId") int pctId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<ColCategoryRes>> updateTagsByTagId(@RequestBody CategoryReq categoryReq, @PathVariable("pctId") int pctId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<ColCategoryRes> response = categoryService.updateCategory(userId, pctId, categoryReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -127,7 +127,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/{pcId}/tags")
-    public ResponseEntity<ResultResponse<?>> addTagByPostId(@PathVariable("pcId") int pcId, @RequestBody PostTagReq postTagReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<?>> addTagByPostId(@PathVariable("pcId") int pcId, @RequestBody PostTagReq postTagReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = categoryService.createPostTagCol(pcId, userId, postTagReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -137,7 +137,7 @@ public class PostCollectionController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/{pcId}/tags")
-    public ResponseEntity<ResultResponse<?>> deleteTagByPostId(@PathVariable("pcId") int pcId, @RequestBody PostTagReq postTagReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<?>> deleteTagByPostId(@PathVariable("pcId") int pcId, @RequestBody PostTagReq postTagReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = categoryService.removePostTagCol(pcId, userId, postTagReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

@@ -155,6 +155,16 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     /**
+     * 查詢活動狀態
+     */
+    @Override
+    public ResultResponse<PageRes<ActivityRes>> getAcByStatus(int status,int page) {
+        Page<Activity> activityPage = activityDao.findAllByStatus(status, PageRequest.of(page, 7, Sort.Direction.DESC, "activityId"));
+        ResultResponse<PageRes<ActivityRes>> response = convertToAcPage(activityPage);
+        return response;
+    }
+
+    /**
      * 查詢所有活動
      */
 
