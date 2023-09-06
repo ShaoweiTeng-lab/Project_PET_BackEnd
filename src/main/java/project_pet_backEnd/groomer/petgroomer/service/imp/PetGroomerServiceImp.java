@@ -8,16 +8,15 @@ import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.petgroomer.dao.PortfolioRepository;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
-import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.*;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.groomer.petgroomercollection.vo.Portfolio;
+import project_pet_backEnd.userPushNotify.dao.PictureInfoRepository;
+import project_pet_backEnd.userPushNotify.vo.PictureInfo;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
@@ -34,6 +33,9 @@ public class PetGroomerServiceImp implements PetGroomerService {
 
     @Autowired
     PortfolioRepository portfolioRepository;
+
+    @Autowired
+    PictureInfoRepository pictureInfoRepository;
 
     /**
      * 獲取擁有美容師個人管理權限的管理員列表，供新增美容師使用。 for 管理員
@@ -297,6 +299,30 @@ public class PetGroomerServiceImp implements PetGroomerService {
         }).toList();
 
         ResultResponse<List<PortfolioRes>> rs = new ResultResponse<>();
+        rs.setMessage(resList);
+
+        return rs;
+    }
+
+    @Override
+    public ResultResponse<List<PictureInfoRes>> getPicByPorId(Integer porId) {
+        //pictureInfoRepository
+        List<PictureInfo> PicVoList = pictureInfoRepository.findByPorId(porId);
+
+        if(PicVoList==null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"此作品集尚未上傳任何照片!");
+
+        List<PictureInfoRes> resList = PicVoList.stream().map(picVo -> {
+            PictureInfoRes pictureInfoRes = new PictureInfoRes();
+            pictureInfoRes.setPiNo(picVo.getPiNo());
+            pictureInfoRes.setPorId(picVo.getPorId());
+            pictureInfoRes.setPiPicture(AllDogCatUtils.base64Encode(picVo.getPiPicture()));
+            pictureInfoRes.setPiDate(AllDogCatUtils.timestampToDateFormat(picVo.getPiDate()));
+
+            return pictureInfoRes;
+        }).toList();
+
+        ResultResponse<List<PictureInfoRes>> rs = new ResultResponse<>();
         rs.setMessage(resList);
 
         return rs;

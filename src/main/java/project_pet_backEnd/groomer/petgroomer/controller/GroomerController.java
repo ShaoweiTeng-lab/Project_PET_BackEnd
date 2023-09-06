@@ -16,10 +16,7 @@ import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.orderby.PGOrderBy;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
-import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.*;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.userManager.dto.Sort;
@@ -318,6 +315,12 @@ public class GroomerController {
     @GetMapping("/customer/getPortfolioByPgId")
     public ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId){
         return petGroomerService.getPortfolioByPgId(pgId);
+    }
+
+    @ApiOperation("Customer查詢作品集圖片")
+    @GetMapping("/customer/getPics")
+    public ResultResponse<List<PictureInfoRes>> getPics(Integer porId){
+        return petGroomerService.getPicByPorId(porId);
     }
 
 }
