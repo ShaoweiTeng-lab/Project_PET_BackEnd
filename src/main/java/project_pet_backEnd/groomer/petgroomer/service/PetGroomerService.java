@@ -7,6 +7,7 @@ import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -36,5 +37,7 @@ public interface PetGroomerService {
     ResultResponse<String> updateGroomerByIdForMan(GetAllGroomerListReq getAllGroomerListReq);
 
     ResultResponse<GetAllGroomerListSortRes> getPgInfoByManIdForPg(Integer manId);
+
+    ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId);
 
 }

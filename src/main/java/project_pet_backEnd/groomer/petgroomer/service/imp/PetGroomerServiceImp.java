@@ -5,28 +5,35 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.groomer.petgroomer.dao.PortfolioRepository;
 import project_pet_backEnd.groomer.petgroomer.dto.GetAllGroomers;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioRes;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
+import project_pet_backEnd.groomer.petgroomercollection.vo.Portfolio;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PetGroomerServiceImp implements PetGroomerService {
 
     @Autowired
     PetGroomerDao petGroomerDao;
+
+    @Autowired
+    PortfolioRepository portfolioRepository;
 
     /**
      * 獲取擁有美容師個人管理權限的管理員列表，供新增美容師使用。 for 管理員
@@ -267,6 +274,32 @@ public class PetGroomerServiceImp implements PetGroomerService {
         ResultResponse<GetAllGroomerListSortRes> resultResponse = new ResultResponse<>();
         resultResponse.setMessage(resPg);
         return resultResponse;
+    }
+
+    //查詢作品集ByPgId
+    @Override
+    public ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId) {
+
+        List<Portfolio> portfolioList = portfolioRepository.findByPgId(pgId);
+
+        if(portfolioList==null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"此美容師尚未上傳任何作品集");
+
+        List<PortfolioRes> resList = portfolioList.stream().map(portfolio -> {
+            PortfolioRes portfolioRes = new PortfolioRes();
+            portfolioRes.setPorId(portfolio.getPorId());
+            portfolioRes.setPgId(portfolio.getPgId());
+            portfolioRes.setPorTitle(portfolio.getPorTitle());
+            portfolioRes.setPorText(portfolio.getPorText());
+            portfolioRes.setPorUpload(AllDogCatUtils.timestampToSqlDateFormat(portfolio.getPorUpload()));
+
+            return portfolioRes;
+        }).toList();
+
+        ResultResponse<List<PortfolioRes>> rs = new ResultResponse<>();
+        rs.setMessage(resList);
+
+        return rs;
     }
 }
 

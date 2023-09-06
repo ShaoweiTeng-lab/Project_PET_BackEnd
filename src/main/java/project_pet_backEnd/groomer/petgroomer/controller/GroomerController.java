@@ -19,6 +19,7 @@ import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
 import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
 import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioRes;
 import project_pet_backEnd.groomer.petgroomer.service.PetGroomerService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.userManager.dto.Sort;
@@ -312,7 +313,11 @@ public class GroomerController {
     }
 
 
-
-
+    //取得作品集 ByPgId For Customer getPortfolioByPgId
+    @ApiOperation("Customer查詢作品集")
+    @GetMapping("/customer/getPortfolioByPgId")
+    public ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId){
+        return petGroomerService.getPortfolioByPgId(pgId);
+    }
 
 }
