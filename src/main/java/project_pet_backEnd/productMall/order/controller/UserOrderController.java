@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersNotCancelDTO;
 import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -48,7 +49,7 @@ public class UserOrderController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
     @GetMapping("/getUserOrders")
-    public ResponseEntity<ResultResponse<List<Orders>>> getByUserIdAndOrdStatusNot(@RequestAttribute(name = "userId") Integer userId){
+    public ResponseEntity<ResultResponse<List<OrdersNotCancelDTO>>> getByUserIdAndOrdStatusNot(@RequestAttribute(name = "userId") Integer userId){
         ResultResponse rs = new ResultResponse();
         System.out.println(userId);
         rs.setMessage(ordersService.getByUserIdAndOrdStatusNot(userId));

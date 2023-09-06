@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 @Component
-public class IpRequestFilter extends OncePerRequestFilter implements  ITask {
+public class IpRequestMapApiKeyFilter extends OncePerRequestFilter implements  ITask {
+    //todo 針對特定url 而不是整體
     private static final int MAX_REQUESTS_PER_DAY = 1000;//設定 map api 一天內不可被呼叫次數
     private Map<String, Integer> ipRequestCountMap = new ConcurrentHashMap<>();
     @Autowired
@@ -30,6 +31,10 @@ public class IpRequestFilter extends OncePerRequestFilter implements  ITask {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        if(!request.getRequestURI().startsWith("/customer/homePage/mapApiKey")){
+            filterChain.doFilter(request,response);
+            return;
+        }
         String clientIp = request.getRemoteAddr();
         ipAddCount(clientIp);
         if(isIpBlocked(clientIp)) {
