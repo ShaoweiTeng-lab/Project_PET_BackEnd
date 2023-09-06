@@ -1,5 +1,6 @@
 package project_pet_backEnd.productMall.mall.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import project_pet_backEnd.productMall.mall.dto.MallQueryParameter;
+import project_pet_backEnd.productMall.mall.dto.ProductPage;
 import project_pet_backEnd.productMall.mall.service.MallService;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.utils.commonDto.Page;
@@ -36,6 +38,7 @@ public class MallController {
      * @param offset
      * @return
      */
+    @ApiOperation("瀏覽商城")
     @GetMapping("/customer/mall")
     public ResponseEntity<ResultResponse<Page<List<Map<String, Object>>>>> list(
             @RequestParam(value = "pdNo", required = false) Integer pdNo,
@@ -57,4 +60,11 @@ public class MallController {
         return ResponseEntity.status(200).body(rs);
     }
 
+   //ok
+    @ApiOperation("瀏覽單一商品")
+    @GetMapping("/customer/mallproduct")
+    public ResultResponse<ProductPage> getProductPage(
+            @RequestParam(value = "pdNo") Integer pdNo){
+        return mallService.getProductPage(pdNo);
+    }
 }
