@@ -4,9 +4,7 @@ import org.springframework.data.relational.core.sql.In;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.request.PGInsertReq;
 import project_pet_backEnd.groomer.petgroomer.dto.request.GetAllGroomerListReq;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.GetAllGroomerListSortResForUser;
-import project_pet_backEnd.groomer.petgroomer.dto.response.ManagerGetByFunctionIdRes;
+import project_pet_backEnd.groomer.petgroomer.dto.response.*;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 import project_pet_backEnd.utils.commonDto.Page;
 
@@ -37,4 +35,7 @@ public interface PetGroomerService {
 
     ResultResponse<GetAllGroomerListSortRes> getPgInfoByManIdForPg(Integer manId);
 
+    ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId);
+
+    ResultResponse<List<PictureInfoRes>> getPicByPorId(Integer porId);
 }

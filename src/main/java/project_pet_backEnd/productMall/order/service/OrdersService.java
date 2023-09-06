@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
+import project_pet_backEnd.productMall.order.dto.response.OrdersNotCancelDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrdersResTestDTO;
 import project_pet_backEnd.productMall.order.vo.Orders;
 
@@ -15,7 +16,7 @@ public interface OrdersService {
     public abstract void createOrders(CreateOrderDTO createOrderDTO, Integer userId);
 
     //查詢該位會員所有未出貨之訂單
-    public abstract List<Orders> getByUserIdAndOrdStatusNot(Integer userId);
+    public abstract List<OrdersNotCancelDTO> getByUserIdAndOrdStatusNot(Integer userId);
 
     //查詢該筆訂單詳情
     public abstract List<OrderResDTO> getOrderDetailByOrdNo(Integer ordNo);
