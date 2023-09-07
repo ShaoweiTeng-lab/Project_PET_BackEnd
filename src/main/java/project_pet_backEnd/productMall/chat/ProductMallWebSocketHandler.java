@@ -36,6 +36,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
             String userNickName =user.getUserNickName();
             //格式 userId_1-姓名
             sessionMap.put(connector + "-" + userNickName, session);
+            System.out.println("連接: "+connector + "-" + userNickName);
             return;
         }
         //連線者為Manager

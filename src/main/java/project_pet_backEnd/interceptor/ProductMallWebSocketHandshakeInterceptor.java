@@ -29,6 +29,7 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
                                    Map<String, Object> attributes) throws Exception {
         HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
         String token=req.getParameter("access_token");
+        System.out.println("進入驗證中!");
         Map<String ,Object> attribute=websocketIdentityValid.validSession(token);
         if(attribute==null)
             return  false;
@@ -49,6 +50,7 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
         String connect =(String) attribute.get("connect");
         if(!connect.contains("managerId"))//如果是user 放行
             return  true;
+        //格式 managerId_1
         Integer managerId=Integer.parseInt( connect.split("_")[1]);
         String managerLoginJson=redisTemplate.opsForValue().get("Manager:Login:"+managerId);
         ManagerDetailsImp managerDetail=null;
