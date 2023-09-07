@@ -1,6 +1,7 @@
 package project_pet_backEnd.productMall.order.service;
 
 import org.springframework.data.domain.Pageable;
+import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.response.AllOrdersResDTO;
 import project_pet_backEnd.productMall.order.dto.response.OrderResDTO;
@@ -21,7 +22,7 @@ public interface OrdersService {
     //查詢該筆訂單詳情
     public abstract List<OrderResDTO> getOrderDetailByOrdNo(Integer ordNo);
 
-    //查詢該位會員所有未出貨之訂單
+    //修改訂單狀態
     public abstract String updateOrderStatus(Integer ordNo, Integer ordStatus);
 
     //後臺管理員查詢所有訂單
@@ -33,11 +34,17 @@ public interface OrdersService {
     //後臺管理員刪除已取消訂單
     public abstract void deleteByOrdNo(Integer ordNo);
 
+    //後臺管理員修改訂單內容
+    public abstract void updateOrderContent(ChangeOrderStatusDTO changeOrderStatusDTO);
+
+
+    //--------------------------------------------------------------------------------------------------
     //刪除訂單商業邏輯--byOrdNo
     public abstract void deleteOrdersByOrdNo(Integer ordNo);
 
     //修改訂單商業邏輯--byOrdNo
     public abstract void updateOrdersByOrdNo(Integer ordNo, OrdersResTestDTO ordersResTestDTO);
+
 
     //查詢訂單商業邏輯--byOrdNo
     public abstract OrdersResTestDTO getByOrdNo(Integer ordNo);

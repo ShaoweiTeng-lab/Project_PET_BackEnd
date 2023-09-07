@@ -1,7 +1,6 @@
 package project_pet_backEnd.socialMedia.postMessage.controller;
 
 
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -36,7 +35,7 @@ public class PostMessageController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/{postId}/message")
-    public ResponseEntity<ResultResponse<String>> create(@PathVariable("postId") int postId, @Valid @RequestBody MesReq mesReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> create(@PathVariable("postId") int postId, @Valid @RequestBody MesReq mesReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = mesService.create(userId, postId, mesReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -46,7 +45,7 @@ public class PostMessageController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<MesRes>> updateMessageById(@PathVariable("messageId") int mesId, @Valid @RequestBody MesReq mesReq, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<MesRes>> updateMessageById(@PathVariable("messageId") int mesId, @Valid @RequestBody MesReq mesReq, @RequestAttribute("userId") Integer userId) {
         ResultResponse<MesRes> updateResult = mesService.update(userId, mesId, mesReq);
         return ResponseEntity.status(HttpStatus.OK).body(updateResult);
 
@@ -58,7 +57,7 @@ public class PostMessageController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @DeleteMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<String>> deleteMessageById(@PathVariable("messageId") int mesId, @RequestParam("userId") Integer userId) {
+    public ResponseEntity<ResultResponse<String>> deleteMessageById(@PathVariable("messageId") int mesId, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> deleteResult = mesService.delete(userId, mesId);
         return ResponseEntity.status(HttpStatus.OK).body(deleteResult);
     }

@@ -45,7 +45,7 @@ public class WebsocketIdentityValid {
                 User user = userRepository.findById(Integer.parseInt(userId)).orElse(null);
                 if (user == null)
                     return null;
-                attributes.put("sender", user.getUserName());
+                attributes.put("sender", user.getUserNickName());
                 break;
             case Manager:
                 String managerId = mClaims.getSubject();

@@ -41,7 +41,7 @@ public class POST {
     Integer postStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
     @JsonIgnore
     private User user;
 
