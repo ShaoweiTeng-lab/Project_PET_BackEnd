@@ -1,5 +1,6 @@
 package project_pet_backEnd.productMall.chat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 @Component
@@ -36,7 +38,8 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         //連線者為Manager
-        sessionMap.put("商城管理員", session);
+        System.out.println("商品管理者進入連線");
+        sessionMap.put("PdManager", session);
     }
     /**
      * 處理收到的WebSocket消息
@@ -45,12 +48,22 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         // 解析訊息
         // 當連線後先去 redis 拿對應的 history
-        String userKey = AllDogCatUtils.getKeyByValue(sessionMap, session);
+        String senderKey = AllDogCatUtils.getKeyByValue(sessionMap, session);
         ChatMessage  chatMessage = objectMapper.readValue(message.getPayload().toString(), ChatMessage.class);
-        chatMessage.setReceiver("商城管理員");
-        //格式 userId_1-姓名
-        String sender = userKey.split("-")[1];//拿當前session的使用者名字
-        String userId=userKey.split("-")[0];
+
+        if(senderKey.contains("user")){
+            chatMessage.setReceiver("商城管理員");
+            //格式 userId_1-姓名
+            UserHandleMessage(senderKey,session,message,chatMessage);
+            return;
+        }
+        ManagerHandleMessage(senderKey,session,message,chatMessage);
+
+    }
+
+    public  void UserHandleMessage(String senderKey,WebSocketSession session, WebSocketMessage<?> message,ChatMessage chatMessage) throws IOException {
+        String sender = senderKey.split("-")[1];//拿當前session的使用者名字
+        String userId=senderKey.split("-")[0];
         String receiver = "PdManager";//商城只固定跟管理員聊天
         if ("getIdentity".equals(chatMessage.getType())){
             //得到個人訊息
@@ -90,7 +103,47 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         System.out.println("Message received: " + message);
     }
 
+    public  void ManagerHandleMessage(String senderKey,WebSocketSession session, WebSocketMessage<?> message,ChatMessage chatMessage) throws IOException {
+        String sender = senderKey.split("-")[1];//拿當前session的使用者名字
+        String userId=senderKey.split("-")[0];
+        String receiver = "PdManager";//商城只固定跟管理員聊天
+        if ("getIdentity".equals(chatMessage.getType())){
+            //得到個人訊息
+            ChatMessage cmIdentity = new ChatMessage("getIdentity", userId,receiver, sender);
+            String msg =objectMapper.writeValueAsString(cmIdentity);
+            TextMessage textMessage = new TextMessage(msg);
+            session.sendMessage(textMessage);
+            return;
+        }
+        //取得歷史訊息
+        if ("history".equals(chatMessage.getType())){
+            //使用userId拿回訊息
+            List<String> historyData = mallRedisHandleMessageService.getHistoryMsg(userId, receiver);
+            String historyMsg = objectMapper.writeValueAsString(historyData);
+            ChatMessage cmHistory = new ChatMessage("history", userId,receiver, historyMsg);
+            if (session != null && session.isOpen()) {
+                String msg =objectMapper.writeValueAsString(cmHistory);
+                TextMessage textMessage = new TextMessage(msg);
+                session.sendMessage(textMessage);
+                System.out.println("history = " + msg);
+                return;
+            }
+        }
 
+
+        //拿到接收方的session
+        WebSocketSession receiverSession = sessionMap.get(receiver);
+        String msg =objectMapper.writeValueAsString(chatMessage);
+        TextMessage textMessage = new TextMessage(msg);
+        if (receiverSession != null && receiverSession.isOpen()) {
+            receiverSession.sendMessage(textMessage);
+        }
+        //發送訊息
+        session.sendMessage(textMessage);
+        //存訊息
+        mallRedisHandleMessageService.saveChatMessage(userId, receiver, msg);
+        System.out.println("Message received: " + message);
+    }
 
     /**
      * 處理收到的錯誤消息
