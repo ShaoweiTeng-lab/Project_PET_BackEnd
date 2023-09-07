@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class MallRedisHandleMessageService {
@@ -23,5 +24,13 @@ public class MallRedisHandleMessageService {
         String receiverKey = new StringBuilder(root).append(":").append(receiver).append(":").append(sender).toString();
         redisTemplate.opsForList().rightPush(senderKey, message);
         redisTemplate.opsForList().rightPush(receiverKey, message);
+    }
+
+    public Set<String> getAllKeys(String key) {
+        // 使用 RedisTemplate 的 keys 方法來獲取所有匹配的鍵
+        Set<String> keys = redisTemplate.keys(key+"*"); // 此處的 * 表示匹配所有鍵
+
+        // 返回所有鍵的集合
+        return keys;
     }
 }
