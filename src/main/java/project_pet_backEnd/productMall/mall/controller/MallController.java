@@ -60,7 +60,7 @@ public class MallController {
         return ResponseEntity.status(200).body(rs);
     }
 
-   //ok
+
     @ApiOperation("瀏覽單一商品")
     @GetMapping("/customer/mallproduct")
     public ResultResponse<ProductPage> getProductPage(
