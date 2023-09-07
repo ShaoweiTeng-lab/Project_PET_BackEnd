@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 
 @Table(name = "PRODUCT_COLLECT")
@@ -11,15 +12,14 @@ import java.sql.Date;
 @Data
 public class ProductCollect {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PD_NO")
-    @Id
-    private Integer pdNo;
+    @EmbeddedId
+    private ProductCollectPk id;
 
-
-    @Column(name = "USER_ID")
-    private Integer userId;
-
-    @Column(name = "PDC_CREATED" , columnDefinition = "TIMESTAMP  DEFAULT CURRENT_DATE")
+    @Column(name = "PDC_CREATED" , columnDefinition = "DATE  DEFAULT CURRENT_DATE")
     private Date pdcCreated; //sql.date
+
+    @PrePersist
+    protected void onCreate() {
+        pdcCreated = new Date(System.currentTimeMillis());
+    }
 }
