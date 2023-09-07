@@ -47,11 +47,19 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         // 當連線後先去 redis 拿對應的 history
         String userKey = AllDogCatUtils.getKeyByValue(sessionMap, session);
         ChatMessage  chatMessage = objectMapper.readValue(message.getPayload().toString(), ChatMessage.class);
+        chatMessage.setReceiver("商城管理員");
         //格式 userId_1-姓名
         String sender = userKey.split("-")[1];//拿當前session的使用者名字
         String userId=userKey.split("-")[0];
-        String receiver = "商城管理員";//商城只固定跟管理員聊天
-
+        String receiver = "PdManager";//商城只固定跟管理員聊天
+        if ("getIdentity".equals(chatMessage.getType())){
+            //得到個人訊息
+            ChatMessage cmIdentity = new ChatMessage("getIdentity", userId,receiver, sender);
+            String msg =objectMapper.writeValueAsString(cmIdentity);
+            TextMessage textMessage = new TextMessage(msg);
+            session.sendMessage(textMessage);
+            return;
+        }
         //取得歷史訊息
         if ("history".equals(chatMessage.getType())){
             //使用userId拿回訊息
@@ -70,15 +78,15 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
 
         //拿到接收方的session
         WebSocketSession receiverSession = sessionMap.get(receiver);
+        String msg =objectMapper.writeValueAsString(chatMessage);
+        TextMessage textMessage = new TextMessage(msg);
         if (receiverSession != null && receiverSession.isOpen()) {
-            String msg =objectMapper.writeValueAsString(chatMessage);
-            TextMessage textMessage = new TextMessage(msg);
             receiverSession.sendMessage(textMessage);
-            //發送訊息
-            session.sendMessage(textMessage);
-            //存訊息
-            mallRedisHandleMessageService.saveChatMessage(userId, receiver, msg);
         }
+        //發送訊息
+        session.sendMessage(textMessage);
+        //存訊息
+        mallRedisHandleMessageService.saveChatMessage(userId, receiver, msg);
         System.out.println("Message received: " + message);
     }
 
