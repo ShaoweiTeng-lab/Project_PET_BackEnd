@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private ProductMallWebSocketHandshakeInterceptor productMallWebSocketHandshakeInterceptor;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(userNotifyWebSocketHandler, "/websocket")// 添加處理器
+        registry.addHandler(userNotifyWebSocketHandler, "/websocket/userNotify")// 添加處理器
                 .setAllowedOrigins("*")
                 .addInterceptors(httpSessionHandshakeInterceptor);
         registry.addHandler(productMallWebSocketHandler, "/websocket/productMallChat")// 添加處理器

@@ -33,7 +33,6 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
         Map<String ,Object> attribute=websocketIdentityValid.validSession(token);
         if(attribute==null)
             return  false;
-        //todo 判斷Manager 的token 是否具備 商城管理員權限
         if(!validManagerPermission(attribute))
             return  false;
         attributes.putAll(attribute);

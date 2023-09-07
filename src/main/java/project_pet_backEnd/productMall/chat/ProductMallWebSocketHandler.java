@@ -2,7 +2,6 @@ package project_pet_backEnd.productMall.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -22,8 +21,6 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
     private MallRedisHandleMessageService mallRedisHandleMessageService;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private UserRepository userRepository;
     private static final ConcurrentHashMap<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -32,8 +29,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         //如果連線者為user
         if(connector.contains("userId")){
             String id =connector.split("_")[1];//得到ID
-            User user =userRepository.findById(Integer.valueOf(id)).orElse(null);
-            String userNickName =user.getUserNickName();
+            String userNickName =(String) session.getAttributes().get("sender");
             //格式 userId_1-姓名
             sessionMap.put(connector + "-" + userNickName, session);
             System.out.println("連接: "+connector + "-" + userNickName);
