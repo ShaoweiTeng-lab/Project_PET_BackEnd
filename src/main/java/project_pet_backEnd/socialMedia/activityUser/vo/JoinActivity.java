@@ -39,12 +39,12 @@ public class JoinActivity {
     Integer status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ACTIVITY_ID", referencedColumnName = "ACTIVITY_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "ACTIVITY_ID", insertable = false, updatable = false)
     @JsonIgnore
     private Activity activity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
     @JsonIgnore
     private User user;
 

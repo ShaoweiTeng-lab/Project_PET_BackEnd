@@ -1,7 +1,6 @@
 package project_pet_backEnd.socialMedia.activityUser.service;
 
 
-
 import org.springframework.data.domain.Page;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;

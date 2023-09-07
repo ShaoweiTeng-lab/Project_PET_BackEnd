@@ -10,7 +10,7 @@ public class ActivityRes {
     String startTime;
     String endTime;
     String activityTime;
-    byte[] activityPicture;
+    String activityPicture;
     Integer enrollLimit;
     Integer peopleCount;
     Integer status;

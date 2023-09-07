@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project_pet_backEnd.socialMedia.report.dto.req.ReviewReq;
@@ -22,6 +23,7 @@ import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
+
 @Api(tags = "社群檢舉管理功能")
 @RestController
 @RequestMapping("/manager/social/report")
@@ -36,7 +38,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @GetMapping("/posts")
     public ResponseEntity<ResultResponse<PageRes<PostRepRes>>> getAllPostReportLists(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                                                      @RequestParam(value = "status", required = false, defaultValue = "0") Integer status) {
@@ -49,7 +51,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @GetMapping("/messages")
     public ResponseEntity<ResultResponse<PageRes<MesRepRes>>> getAllMesReportLists(@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                                                    @RequestParam(value = "status", required = false, defaultValue = "0") Integer status) {
@@ -62,7 +64,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @GetMapping("/posts/{postReportId}")
     public ResponseEntity<ResultResponse<PostReportDetails>> getPostReportById(@PathVariable("postReportId") int postReportId) {
         ResultResponse<PostReportDetails> reportDetail = reportService.getPostReportById(postReportId);
@@ -74,7 +76,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @GetMapping("/messages/{mesReportId}")
     public ResponseEntity<ResultResponse<MesReportDetails>> getMesReportById(@PathVariable("mesReportId") int mesReportId) {
         ResultResponse<MesReportDetails> reportDetail = reportService.getMesReportById(mesReportId);
@@ -85,7 +87,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @PutMapping("/post/{postReportId}")
     public ResponseEntity<ResultResponse<PostReport>> updatePostReportStatus(@PathVariable("postReportId") int postReportId, @RequestBody ReviewReq reviewReq) {
         ResultResponse<PostReport> response = reportService.reviewPostReportById(postReportId, reviewReq);
@@ -96,7 +98,7 @@ public class ManagerReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    //@PreAuthorize("hasAnyAuthority('社群管理')")
+    @PreAuthorize("hasAnyAuthority('社群管理')")
     @PutMapping("/message/{mesReportId}")
     public ResponseEntity<ResultResponse<MesReport>> updateMesReportStatus(@PathVariable("mesReportId") int mesReportId, @RequestBody ReviewReq reviewReq) {
         ResultResponse<MesReport> response = reportService.reviewMesReportById(mesReportId, reviewReq);

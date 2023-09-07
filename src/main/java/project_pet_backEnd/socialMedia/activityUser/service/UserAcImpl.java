@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
+import project_pet_backEnd.socialMedia.activityChat.dao.UserDao;
 import project_pet_backEnd.socialMedia.activityManager.dao.ActivityDao;
 import project_pet_backEnd.socialMedia.activityManager.dao.ActivityDaoImpl;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
@@ -39,6 +41,13 @@ public class UserAcImpl implements UserActivityService {
 
     @Autowired
     private ActivityServiceImpl activityService;
+
+    @Autowired
+    private RoomDao roomDao;
+
+    @Autowired
+    private UserDao userDao;
+
 
     /**
      * 查詢所有活動
@@ -101,7 +110,7 @@ public class UserAcImpl implements UserActivityService {
         //活動加入成功後必須在該活動上加入人數
         Optional<Activity> activity = activityDao.findById(activityId);
         if (!activity.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "沒有此活動");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "沒有此活動");
         }
         Activity activityCount = activity.get();
         //人數限制<(目前參加人數+新的參加人數)
@@ -114,15 +123,29 @@ public class UserAcImpl implements UserActivityService {
         if (joinExist != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "已經報名過，無法再次報名");
         }
-
-
-        JoinActivity joinResult = userJoinDao.save(joinData);
+        //修改活動參加人數並請新增參假者清單
         activityCount.setEnrollTotal((activityCount.getEnrollTotal() + joinReq.getCount()));
-        Activity saveResult = activityDao.save(activityCount);
 
-        if (joinResult == null || saveResult == null) {
+
+        try {
+            userJoinDao.save(joinData);
+            activityDao.save(activityCount);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "活動加入失敗");
         }
+
+        //redis 1.加入使用者資訊 create user 2.為活動加入此使用者資訊 3.為使用者活動聊天室加入此筆活動資訊
+        //檢查使用者是否存在redis快取中
+        boolean exists = userDao.checkUserExists(userId);
+
+        if (!exists) {
+            userDao.createUser(userId);
+        }
+        //活動聊天室使用者清單
+        roomDao.createRoomUserList(activityId, userId);
+        //使用者新增一筆活動聊天室列表
+        roomDao.addRoomKeyToUser(userId, activityId);
+
 
         ResultResponse<String> response = new ResultResponse<>();
         response.setMessage("活動加入成功");
@@ -150,6 +173,4 @@ public class UserAcImpl implements UserActivityService {
         ResultResponse<PageRes<JoinListRes>> response = activityService.convertToJoinListPage(joinPage);
         return response;
     }
-
-
 }

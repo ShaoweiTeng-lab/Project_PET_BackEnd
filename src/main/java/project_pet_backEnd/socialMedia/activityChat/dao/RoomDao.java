@@ -1,24 +1,46 @@
 package project_pet_backEnd.socialMedia.activityChat.dao;
 
 
+import project_pet_backEnd.socialMedia.activityChat.dto.Message;
+import project_pet_backEnd.socialMedia.activityChat.dto.UserActivity;
+
+import java.util.List;
 import java.util.Set;
 
 public interface RoomDao {
-    //create room
-    void createGroupRoom(int activityId, String activityName) ;
+    void createGroupRoom(int activityId, String activityName);
 
-    //get specific user  all roomIds
+    //建立活動聊天室使用者清單
+    void createRoomUserList(int activityId, int userId);
+
+    //移除聊天室-當活動結束或取消後
+    void removeGroupRoom(int roomId);
+
+    //移除活動聊天室user清單
+    void removeRoomUserList(int roomId, int userId);
+
     Set<String> getUserGroupRoomIds(int userId);
 
-    //get online userId list
     Set<Integer> getOnlineUsers();
 
-    // add user into group chat
-    boolean addToGroupChatRoom(int userId, int activityId);
+    //顯示在活動聊天室左邊的列表
+    boolean addRoomKeyToUser(int userId, int activityId);
 
-    // check room is exists?
+    //活動結束後，從列表中移除一筆活動
+    boolean removeRoomKeyToUser(int userId, int activityId);
+
     boolean checkRoomExists(String roomId);
 
-    // get chat room name
     String getRoomNameById(String roomId);
+
+    // 透過roomId 拿到所有message
+    Set<String> getMessages(String roomId, int offset, int size);
+
+    void saveMessage(Message message);
+
+
+    //拿取目前活動上線使用者
+    List<UserActivity> getCurrentRoomUserOnlineList(int roomId);
+
+
 }
