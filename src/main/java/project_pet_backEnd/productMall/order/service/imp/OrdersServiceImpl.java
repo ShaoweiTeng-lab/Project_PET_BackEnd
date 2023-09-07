@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.productMall.order.dao.OrdersDao;
 import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
+import project_pet_backEnd.productMall.order.dto.ChangeOrderStatusDTO;
 import project_pet_backEnd.productMall.order.dto.CreateOrderDTO;
 import project_pet_backEnd.productMall.order.dto.DeleteOrderDTO;
 import project_pet_backEnd.productMall.order.dto.OrderDetailByCreateDTO;
@@ -127,7 +128,7 @@ public class OrdersServiceImpl implements OrdersService {
         return orderSummaryList;
     }
 
-    //修改訂單
+    //使用者修改訂單
     @Override
     public String updateOrderStatus(Integer ordNo, Integer ordStatus) {
         Optional<Orders> ordersOptional = ordersRepository.findById(ordNo);
@@ -165,6 +166,26 @@ public class OrdersServiceImpl implements OrdersService {
         }
     }
 
+
+    //管理員修改訂單內容
+    @Override
+    @Transactional
+    public void updateOrderContent(ChangeOrderStatusDTO changeOrderStatusDTO) {
+        Orders orders = ordersRepository.findById(changeOrderStatusDTO.getOrdNo()).orElse(null);
+        if(changeOrderStatusDTO.getRecipientName() != null){
+            orders.setRecipientName(changeOrderStatusDTO.getRecipientName());
+        }
+        if(changeOrderStatusDTO.getRecipientPh() != null){
+            orders.setRecipientPh(changeOrderStatusDTO.getRecipientPh());
+        }
+        if(changeOrderStatusDTO.getRecipientAddress() != null){
+            orders.setRecipientAddress(changeOrderStatusDTO.getRecipientAddress());
+        }
+        if(changeOrderStatusDTO.getOrdStatus() != null){
+            orders.setOrdStatus(changeOrderStatusDTO.getOrdStatus());
+        }
+        ordersRepository.save(orders);
+    }
 
 
     //    @Override
@@ -225,6 +246,7 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setUserPoint(ordersResTestDTO.getUserPoint());
         ordersRepository.save(orders);
     }
+
 
     @Override
     public OrdersResTestDTO getByOrdNo(Integer ordNo) {

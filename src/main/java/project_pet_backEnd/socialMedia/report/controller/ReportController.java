@@ -38,7 +38,7 @@ public class ReportController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/message/{messageId}")
-    public ResponseEntity<ResultResponse<String>> createMesReport(@PathVariable("messageId") int messageId, @Valid @RequestBody ReportRequest reportRequest, @RequestParam("userId") int userId) {
+    public ResponseEntity<ResultResponse<String>> createMesReport(@PathVariable("messageId") int messageId, @Valid @RequestBody ReportRequest reportRequest, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = reportService.createMesRep(userId, messageId, reportRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -49,7 +49,7 @@ public class ReportController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping("/post/{postId}")
-    public ResponseEntity<ResultResponse<String>> createPostReport(@PathVariable("postId") int postId, @Valid @RequestBody ReportRequest reportRequest, @RequestParam("userId") int userId) {
+    public ResponseEntity<ResultResponse<String>> createPostReport(@PathVariable("postId") int postId, @Valid @RequestBody ReportRequest reportRequest, @RequestAttribute("userId") Integer userId) {
         ResultResponse<String> response = reportService.createPostRep(userId, postId, reportRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

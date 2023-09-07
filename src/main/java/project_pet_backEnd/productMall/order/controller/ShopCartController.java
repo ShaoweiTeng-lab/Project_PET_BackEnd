@@ -25,19 +25,33 @@ public class ShopCartController {
     @Autowired
     ShopCartService shopCartService;
 
-    @ApiOperation(value = "", notes = "更新(數量)商品至購物車")
+    @ApiOperation(value = "", notes = "商品頁面新增商品")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
                     required = true, dataType = "string", paramType = "header")})
     @PostMapping("/addProduct")
+    public ResponseEntity<ResultResponse<String>> addCartAmount(@RequestAttribute(name = "userId") @Min(0) Integer shoppingCart_userId,
+                                                                  @RequestParam Integer pdNo){
+
+        ResultResponse rs = new ResultResponse<>();
+        shopCartService.addProduct(shoppingCart_userId, pdNo);
+        rs.setMessage("成功新增至購物車!");
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
+
+
+    @ApiOperation(value = "", notes = "更新(數量)商品至購物車")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @PostMapping("/changProductAmount")
     public ResponseEntity<ResultResponse<String>> changCartAmount(@RequestAttribute(name = "userId") @Min(0) Integer shoppingCart_userId,
                                                             @RequestParam Integer pdNo,
                                                             @RequestParam Integer quantity){
 
         ResultResponse rs = new ResultResponse<>();
-        System.out.println(shoppingCart_userId);
         shopCartService.changCartAmount(shoppingCart_userId, pdNo, quantity);
-        rs.setMessage("成功新增至購物車!");
+        rs.setMessage("成功修改商品數量!");
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 

@@ -1,4 +1,4 @@
-package project_pet_backEnd.socialMedia.activityChat.service.Impl;
+package project_pet_backEnd.socialMedia.activityChat.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class RoomsServiceImpl implements RoomsService {
     //when user enter activity, put in group chat
     @Override
     public void addToGroupChatRoom(AddUserToRoomRequest addUserToRoomRequest) {
-        roomDao.addToGroupChatRoom(addUserToRoomRequest.getUserId(), addUserToRoomRequest.getActivityId());
+//        roomDao.addToGroupChatRoom(addUserToRoomRequest.getUserId(), addUserToRoomRequest.getActivityId());
     }
 
     @Override

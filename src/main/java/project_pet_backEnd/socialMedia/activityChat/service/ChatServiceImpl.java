@@ -1,4 +1,4 @@
-package project_pet_backEnd.socialMedia.activityChat.service.Impl;
+package project_pet_backEnd.socialMedia.activityChat.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

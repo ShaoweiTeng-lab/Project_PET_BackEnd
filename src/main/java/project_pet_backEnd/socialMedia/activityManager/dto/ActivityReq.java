@@ -9,11 +9,11 @@ public class ActivityReq {
     // 建立活動、修改活動
     String title;
     String content;
-    byte[] activityPicture;
+    //base64編碼
+    String activityPicture;
     String startTime;
     String endTime;
     String activityTime;
     Integer enrollLimit;
 }
-
 

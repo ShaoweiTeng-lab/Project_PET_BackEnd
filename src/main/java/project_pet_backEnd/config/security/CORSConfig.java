@@ -9,8 +9,8 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://yang-hung-fei.github.io", "http://localhost:5500")
-           //  .allowedOriginPatterns("*")
+                .allowedOrigins("https://yang-hung-fei.github.io", "http://localhost:5500", "https://payment-stage.ecpay.com.tw")//.allowedMethods("GET", "POST", "PUT", "DELETE")
+           //  .allowedOriginPatterns("*")//全開不建議
                 .allowedMethods("*")
                 .allowedHeaders("*");
     }
