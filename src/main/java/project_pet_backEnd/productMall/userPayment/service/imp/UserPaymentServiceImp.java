@@ -16,6 +16,8 @@ import project_pet_backEnd.productMall.userPayment.dao.OrderListRepository;
 import project_pet_backEnd.productMall.userPayment.service.UserPaymentService;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +51,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         if(orders==null)
             log.warn("orderId : "+orderId+" 回傳異常");
         orders.setOrdPayStatus(1); //修改為1 完成訂單
+        orders.setOrdFinish(LocalDateTime.now());
         ordersRepository.save(orders);
     }
 
