@@ -17,6 +17,13 @@ public class DateUtils {
     private DateUtils() {
     }
 
+    // int to date string
+    public static String intToString(int date) {
+        java.sql.Date sqlDate = new java.sql.Date((long) date);
+        String dateSqlStr = dateSqlToStr(sqlDate);
+        return dateSqlStr;
+    }
+
     /*
      * 標準時間格式（yyyy-MM-dd HH:mm:ss）
      * */
