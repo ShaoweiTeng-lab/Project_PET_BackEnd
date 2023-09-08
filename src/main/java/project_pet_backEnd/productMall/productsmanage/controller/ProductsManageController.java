@@ -129,12 +129,15 @@ public class ProductsManageController {
         List<ProductPic> pics = new ArrayList<>();
         List<MultipartFile> multipartFileList=productInfo.getPicFiles();
         // 將上傳的圖片轉換成 byte[] 格式並添加到商品圖片列表中
+        int orderIndex=1;
         for (MultipartFile picFile : multipartFileList) {
             byte[] picData = convertMultipartFileToByteArray(picFile);
             if (picData != null) {
                 ProductPic pic = new ProductPic();
                 pic.setPdPic(picData);
                 pics.add(pic);
+                pic.setPdOrderList(orderIndex);
+                orderIndex++;
             }
         }
         productsManageService.insertProduct(productInfo, pics);

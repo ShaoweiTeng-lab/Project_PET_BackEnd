@@ -53,10 +53,10 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
         Integer managerId=Integer.parseInt( connect.split("_")[1]);
         String managerLoginJson=redisTemplate.opsForValue().get("Manager:Login:"+managerId);
         ManagerDetailsImp managerDetail=null;
-        //判斷權限有無 商城管理
+        //判斷權限有無 商品管理
         managerDetail=objectMapper.readValue(managerLoginJson,ManagerDetailsImp.class);
         List<String> permissionList= managerDetail.getPermissionsList();
-        if(permissionList.contains("商城管理"))
+        if(permissionList.contains("商品管理"))
             return  true;
         return  false;
     }

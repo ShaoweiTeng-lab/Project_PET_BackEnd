@@ -5,7 +5,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
@@ -116,16 +118,22 @@ public class ProductsManageServiceImp implements ProductsManageService {
     @Transactional  //ok後台 修改編輯商品(資訊+圖片)
     // 更新成功 | *!=null
     public ResultResponse updateProduct(ProductPicData productPicData, List<ProductPic> pics) {
-        Product product = new Product();
-        if (!productPicData.getPdName().isBlank())
-            product.setPdName(productPicData.getPdName());
-        if (productPicData.getPdPrice() != null)
-            product.setPdPrice(productPicData.getPdPrice());
-
-        product.setPdStatus(productPicData.getPdStatus());
-        product.setPdDescription(productPicData.getPdDescription());
-
         try {
+//            // 檢查是否修改成以存在的商品名稱
+//            if (productRepository.existsByPdName(productInfo.getPdName())) {
+//                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "修改的商品名稱已存在");
+//            }
+
+            Product product = new Product();
+            if (!productPicData.getPdName().isBlank())
+                product.setPdName(productPicData.getPdName());
+            if (productPicData.getPdPrice() != null)
+                product.setPdPrice(productPicData.getPdPrice());
+
+            product.setPdStatus(productPicData.getPdStatus());
+            product.setPdDescription(productPicData.getPdDescription());
+
+
             productRepository.save(product); // 先保存商品，獲取商品編號
             for (ProductPic pic : pics) {
                 pic.setPdNo(product.getPdNo()); // 關聯商品編號
@@ -136,6 +144,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
             return rs;
 
         } catch (DataAccessException e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新失敗，請稍後重試", e);
         }
     }
@@ -144,6 +153,12 @@ public class ProductsManageServiceImp implements ProductsManageService {
     @Override  //ok後台 新增商品(資訊+圖片)
     //    新增成功 | *!=null
     public ResultResponse insertProduct(ProductInfo productInfo, List<ProductPic> pics) {
+        try {
+        // 檢查是否重覆新增商品(商品名)
+        if (productRepository.existsByPdName(productInfo.getPdName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "商品名稱已存在");
+        }
+
         // 1.創建商品資訊
         Product product = new Product();
         if (!productInfo.getPdName().isBlank())
@@ -155,7 +170,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
         product.setPdDescription(productInfo.getPdDescription());
 
         // 2.上傳圖片並關聯商品 3.(驗證)
-        try {
+
             productRepository.save(product); // 先保存商品，獲取商品編號
             for (ProductPic pic : pics) {
                 pic.setPdNo(product.getPdNo()); // 關聯商品編號
@@ -166,7 +181,8 @@ public class ProductsManageServiceImp implements ProductsManageService {
             return rs;
 
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請稍後重試", e);
+                e.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請檢查是否有空值", e);
         }
     }
 }

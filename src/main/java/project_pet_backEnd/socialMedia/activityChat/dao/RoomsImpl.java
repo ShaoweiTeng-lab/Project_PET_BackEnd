@@ -1,20 +1,17 @@
 package project_pet_backEnd.socialMedia.activityChat.dao;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
-import project_pet_backEnd.socialMedia.activityChat.dto.Message;
 import project_pet_backEnd.socialMedia.activityChat.dto.UserActivity;
+import project_pet_backEnd.socialMedia.activityChat.vo.PubSubMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Repository
 public class RoomsImpl implements RoomDao {
@@ -43,19 +40,27 @@ public class RoomsImpl implements RoomDao {
         String groupRoomKey = String.format(ROOM_KEY, roomId);
 
         //default one message
-        Message message = new Message();
-        message.setMessage("來自管理員的第一條訊息");
-        message.setUsername("社群管理員");
-        message.setRoomId(roomId);
-        message.setDate((int) System.currentTimeMillis());
-        message.setUserId("1");
-        redisTemplate.opsForSet().add(groupRoomKey, String.valueOf(message));
+        PubSubMessage pubSubMessage = new PubSubMessage();
+        pubSubMessage.setContent("來自管理員的第一條訊息");
+        pubSubMessage.setUsername("社群管理員");
+        pubSubMessage.setRoomId(roomId);
+        pubSubMessage.setDate((int) System.currentTimeMillis());
+        // 社群管理員預設id
+        pubSubMessage.setUserId("0");
+        redisTemplate.opsForSet().add(groupRoomKey, String.valueOf(pubSubMessage));
         //聊天室名稱
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
         redisTemplate.opsForSet().add(roomNameKey, activityName);
 
     }
 
+    // ================= 拿到所有活動聊天室的Id ================= //
+    @Override
+    public Set<String> getGroupRoomIds() {
+        String roomKey = "room";
+        Set<String> roomIds = redisTemplate.opsForSet().members(roomKey);
+        return roomIds;
+    }
 
     // ================= 拿到使用者所有聊天室列表 ================= //
 
@@ -132,12 +137,12 @@ public class RoomsImpl implements RoomDao {
 
     // ================= 儲存訊息到聊天室 ================= //
     @Override
-    public void saveMessage(Message message) {
-        String roomKey = String.format(ROOM_KEY, message.getRoomId());
+    public void saveMessage(PubSubMessage pubSubMessage) {
+        String roomKey = String.format(ROOM_KEY, pubSubMessage.getRoomId());
 
         try {
-            String jacksonMessage = objectMapper.writeValueAsString(message);
-            redisTemplate.opsForZSet().add(roomKey, objectMapper.writeValueAsString(message), message.getDate());
+            String jacksonMessage = objectMapper.writeValueAsString(pubSubMessage);
+            redisTemplate.opsForZSet().add(roomKey, objectMapper.writeValueAsString(pubSubMessage), pubSubMessage.getDate());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -197,6 +202,14 @@ public class RoomsImpl implements RoomDao {
             }
             return userActivityList;
         }
+    }
+
+    // ================= 拿到目前聊天室的使用者Id ================= //
+    @Override
+    public Set<String> getRoomUserList(String roomId) {
+        String groupRoomKey = String.format(ROOM_KEY, roomId);
+        Set<String> userIdLists = redisTemplate.opsForSet().members(groupRoomKey);
+        return userIdLists;
     }
 
 

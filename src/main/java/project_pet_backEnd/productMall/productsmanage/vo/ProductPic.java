@@ -3,7 +3,7 @@ package project_pet_backEnd.productMall.productsmanage.vo;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 
 @Data
 @Entity

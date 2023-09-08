@@ -9,6 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 import project_pet_backEnd.interceptor.ProductMallWebSocketHandshakeInterceptor;
 import project_pet_backEnd.productMall.chat.ProductMallWebSocketHandler;
+import project_pet_backEnd.socialMedia.activityChat.config.ActivityWebSocketHandler;
 import project_pet_backEnd.userPushNotify.UserNotifyWebSocketHandler;
 
 @Configuration
@@ -24,6 +25,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private ProductMallWebSocketHandler productMallWebSocketHandler;
     @Autowired
     private ProductMallWebSocketHandshakeInterceptor productMallWebSocketHandshakeInterceptor;
+    @Autowired
+    private ActivityWebSocketHandler activityWebSocketHandler;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(userNotifyWebSocketHandler, "/websocket/userNotify")// 添加處理器
@@ -32,6 +35,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(productMallWebSocketHandler, "/websocket/productMallChat")// 添加處理器
                 .setAllowedOrigins("*")
                 .addInterceptors(productMallWebSocketHandshakeInterceptor);
+        registry.addHandler(activityWebSocketHandler, "/websocket/activity")// 添加處理器
+                .setAllowedOrigins("*")
+                .addInterceptors(httpSessionHandshakeInterceptor);
     }
 
 }

@@ -1,5 +1,6 @@
 package project_pet_backEnd.socialMedia.activityChat.dao;
 
+
 import project_pet_backEnd.socialMedia.activityChat.dto.UserActivity;
 
 public interface UserDao {
