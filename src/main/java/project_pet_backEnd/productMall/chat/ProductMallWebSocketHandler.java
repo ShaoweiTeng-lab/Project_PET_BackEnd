@@ -37,6 +37,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         if(connector.contains("userId")){
             String userNickName =(String) session.getAttributes().get("sender");
             //格式 userId_1-姓名
+            mallRedisHandleMessageService.saveNickName(connector,userNickName);
             sessionMap.put(connector + "-" + userNickName, session);
             System.out.println("連接: "+connector + "-" + userNickName);
             return;
@@ -119,9 +120,8 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
            keys.forEach(data->{
                //拿到userId_1
                String uId =data.toString().split("PdManager:")[1];
-               User user=userRepository.findById(Integer.parseInt(uId.split("_")[1].split("-")[0])).orElse(null);
-               //得到使用者名稱
-               String userNickName=user.getUserNickName();
+                
+               String userNickName=mallRedisHandleMessageService.getNickName(uId);
                UserData userData =new UserData();
                userData.setUserId(uId);
                userData.setUserName(userNickName);

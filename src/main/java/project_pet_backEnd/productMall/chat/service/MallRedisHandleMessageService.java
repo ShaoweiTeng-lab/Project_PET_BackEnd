@@ -23,9 +23,17 @@ public class MallRedisHandleMessageService {
         String senderKey = new StringBuilder(root).append(":").append(sender).append(":").append(receiver).toString();
         String receiverKey = new StringBuilder(root).append(":").append(receiver).append(":").append(sender).toString();
         redisTemplate.opsForList().rightPush(senderKey, message);
-        redisTemplate.opsForList().rightPush(receiverKey, message);
+
     }
 
+    public  void saveNickName(String  userId,String nickName){
+        String nickNameKey = new StringBuilder(root).append(":").append("userNickName").append(":").append(userId).toString();
+        redisTemplate.opsForValue().set(nickNameKey,nickName);
+    }
+    public  String getNickName(String  userId){
+        String nickNameKey = new StringBuilder(root).append(":").append("userNickName").append(":").append(userId).toString();
+        return redisTemplate.opsForValue().get(nickNameKey);
+    }
     public Set<String> getAllKeys(String key) {
         // 使用 RedisTemplate 的 keys 方法來獲取所有匹配的鍵
         Set<String> keys = redisTemplate.keys(key+"*"); // 此處的 * 表示匹配所有鍵
