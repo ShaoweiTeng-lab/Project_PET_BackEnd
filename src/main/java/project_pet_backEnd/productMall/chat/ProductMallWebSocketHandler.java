@@ -35,7 +35,6 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         String connector = (String) session.getAttributes().get("connect");
         //如果連線者為user
         if(connector.contains("userId")){
-            String id =connector.split("_")[1];//得到ID
             String userNickName =(String) session.getAttributes().get("sender");
             //格式 userId_1-姓名
             sessionMap.put(connector + "-" + userNickName, session);
@@ -120,7 +119,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
            keys.forEach(data->{
                //拿到userId_1
                String uId =data.toString().split("PdManager:")[1];
-               User user=userRepository.findById(Integer.parseInt(uId.split("_")[1])).orElse(null);
+               User user=userRepository.findById(Integer.parseInt(uId.split("_")[1].split("-")[0])).orElse(null);
                //得到使用者名稱
                String userNickName=user.getUserNickName();
                UserData userData =new UserData();
@@ -160,7 +159,8 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         }
         //發送訊息
         session.sendMessage(textMessage);
-        //存訊息
+        //存訊息  因傳遞過來的receiver 為userId_1-Name, 需切割 receiver為 userId_1
+        receiver=receiver.split("-")[0];
         mallRedisHandleMessageService.saveChatMessage(sender, receiver, msg);
         System.out.println("Message received: " + message);
     }
