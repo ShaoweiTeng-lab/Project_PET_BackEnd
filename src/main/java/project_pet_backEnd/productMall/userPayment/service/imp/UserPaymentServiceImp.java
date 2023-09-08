@@ -84,8 +84,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         // 商店轉跳網址 (Optional)
         obj.setReturnURL(ecpayRedirectHttpsUrl+"/user/successPay/"+orderId);
         String form = all.aioCheckOut(obj, null);
-        obj.getMerchantTradeNo();
-
+        //obj.getMerchantTradeNo();
         return form;
     }
 }
