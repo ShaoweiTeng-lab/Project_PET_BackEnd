@@ -8,14 +8,14 @@ import project_pet_backEnd.utils.commonDto.Page;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
-import java.util.Map;
+
 
 public interface MallService {
 
     /*
      * 列表
      */
-    Page<List<Map<String, Object>>> list(MallQueryParameter mallQueryParameter);
+    Page<List<GetAllMall>> getMallProducts(MallQueryParameter mallQueryParameter);
 
 
     ResultResponse<ProductPage> getProductPage(Integer pdNo);

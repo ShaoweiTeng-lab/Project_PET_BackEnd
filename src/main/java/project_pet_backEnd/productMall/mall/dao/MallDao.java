@@ -24,12 +24,5 @@ public interface MallDao {
      */
     Integer countMallProducts(MallQueryParameter mallQueryParameter);
 
-    /*
-     * 列出單一商品的所有資料。
-     * @param ProductPage
-     * @return 單一商品的所有資料
-     */
-//    List<ProductPage> getOneProduct(ProductPage productPage);
-
 
 }

@@ -2,6 +2,7 @@ package project_pet_backEnd.productMall.productsmanage.dto;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -9,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Data        // req:新增商品、(編輯商品)修改商品資訊  res:(編輯商品)顯示商品資訊
-public class ProductInfo {
+@Data        // res:查看商品資訊+圖片
+public class ProductRes {
 
     private Integer pdNo;
 
@@ -26,8 +27,11 @@ public class ProductInfo {
 
     private String pdDescription; //商品說明 VARCHAR(500)
 
+
+    private Integer pdPicNo;
+
     private Integer PdOrderList;
 
-    private List<MultipartFile> picFiles;
+    private List<String> base64Image;
 
 }

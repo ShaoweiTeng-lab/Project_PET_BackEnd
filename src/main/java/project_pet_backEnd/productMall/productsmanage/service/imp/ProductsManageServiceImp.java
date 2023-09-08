@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
+import project_pet_backEnd.productMall.mall.dto.ProductPage;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
+import project_pet_backEnd.productMall.productsmanage.dao.ProductPicRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductsManageDao;
 import project_pet_backEnd.productMall.productsmanage.dto.*;
@@ -34,6 +36,9 @@ public class ProductsManageServiceImp implements ProductsManageService {
     private ProductRepository productRepository;
 
     @Autowired
+    private ProductPicRepository productPicRepository;
+
+    @Autowired
     private ProductPicDao productPicDao;
 
 
@@ -41,10 +46,10 @@ public class ProductsManageServiceImp implements ProductsManageService {
     public List<ProductListResponse> getAllProductsForMan() {
         List<Product> pdlist = new ArrayList<>();
         pdlist = productRepository.findAll();
-        List<ProductListResponse> rsList =new ArrayList<>();
-        for(int i = 0; i < pdlist.size(); i++){
+        List<ProductListResponse> rsList = new ArrayList<>();
+        for (int i = 0; i < pdlist.size(); i++) {
             Product pd = pdlist.get(i);
-            ProductListResponse productListResponse=new ProductListResponse();
+            ProductListResponse productListResponse = new ProductListResponse();
             productListResponse.setPdNo(pd.getPdNo());
             productListResponse.setPdName(pd.getPdName());
             productListResponse.setPdPrice(pd.getPdPrice());
@@ -59,10 +64,10 @@ public class ProductsManageServiceImp implements ProductsManageService {
     public Page<List<ProductListResponse>> getAllProductsWithSearch(ProductListQueryParameter productListQueryParameter) {
         List<Product> pdlist = new ArrayList<>();
         pdlist = productRepository.findAll();
-        List<ProductListResponse> rsList =new ArrayList<>();
-        for(int i = 0; i < pdlist.size(); i++){
+        List<ProductListResponse> rsList = new ArrayList<>();
+        for (int i = 0; i < pdlist.size(); i++) {
             Product pd = pdlist.get(i);
-            ProductListResponse productListResponse=new ProductListResponse();
+            ProductListResponse productListResponse = new ProductListResponse();
             productListResponse.setPdNo(pd.getPdNo());
             productListResponse.setPdName(pd.getPdName());
             productListResponse.setPdPrice(pd.getPdPrice());
@@ -84,40 +89,46 @@ public class ProductsManageServiceImp implements ProductsManageService {
 //    更新成功
     public ResultResponse<String> updateProductStatus(List<AdjustProductListResponse> adjustProductListResponse) {
         ResultResponse<String> rs = new ResultResponse<>();
-            productsManageDao.batchupdateproductstatusByPdNo(adjustProductListResponse);
-            rs.setMessage("更新成功");
-            return rs;
+        productsManageDao.batchupdateproductstatusByPdNo(adjustProductListResponse);
+        rs.setMessage("更新成功");
+        return rs;
     }
 
-    @Override  //ok後台 查看編輯商品(資訊(名稱、價錢、狀態、說明)+圖片)
-    public  List<Map<String, Object>> getProduct(ProductInfo productInfo, List<ProductPic> pics) {
-        List<Product> allProduct = productRepository.findAll();
-        List<Map<String, Object>> pdinfoList = new ArrayList<>();
-        for (Product product : allProduct) {
-            Map<String, Object> productData = new HashMap<>();
-            productData.put("pdName", product.getPdName());
-            productData.put("pdPrice", product.getPdPrice());
-            productData.put("pdStatus", product.getPdStatus());
-            productData.put("pdDescription", product.getPdDescription());
+    @Override //ok後台 查看編輯商品(資訊(名稱、價錢、狀態、說明)+圖片)
+    public ResultResponse<ProductRes> getProduct(Integer pdNo){
+        Product product = productRepository.findByPdNo(pdNo);
 
-            List<ProductPic> relatedPics = productPicDao.getAllProductPic(product.getPdNo());
-            List<String> base64EncodedPics = new ArrayList<>();
+        if (product == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "無此商品。");
 
-            for (ProductPic pic : relatedPics) {
-                String base64EncodedPic = AllDogCatUtils.base64Encode(pic.getPdPic());
-                base64EncodedPics.add(base64EncodedPic);
-            }
+        List<ProductPic> picList = productPicRepository.findByPdNo(pdNo);
 
-            productData.put("pdPics", base64EncodedPics);
-            pdinfoList.add(productData);
+        if (picList == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "此商品尚未上傳任何圖片。");
+
+        ProductRes productRes = new ProductRes();
+        productRes.setPdNo(product.getPdNo());
+        productRes.setPdName(product.getPdName());
+        productRes.setPdPrice(product.getPdPrice());
+        productRes.setPdStatus(product.getPdStatus());
+        productRes.setPdDescription(product.getPdDescription());
+
+        //圖片轉Base64 - > 放入List
+        List<String> pics = new ArrayList<>();
+        for (ProductPic productPic : picList) {
+            pics.add(AllDogCatUtils.base64Encode(productPic.getPdPic()));
         }
-        return pdinfoList;
+
+        productRes.setBase64Image(pics);
+        ResultResponse<ProductRes> rs = new ResultResponse<ProductRes>();
+        rs.setMessage(productRes);
+        return rs;
     }
+
 
     @Override
-    @Transactional  //ok後台 修改編輯商品(資訊+圖片)
-    // 更新成功 | *!=null
-    public ResultResponse updateProduct(ProductPicData productPicData, List<ProductPic> pics) {
+    @Transactional  //後台 修改編輯商品
+    public ResultResponse updateProduct(ProductUpdate productUpdate, List<ProductPic> pics) {
         try {
 //            // 檢查是否修改成以存在的商品名稱
 //            if (productRepository.existsByPdName(productInfo.getPdName())) {
@@ -125,22 +136,24 @@ public class ProductsManageServiceImp implements ProductsManageService {
 //            }
 
             Product product = new Product();
-            if (!productPicData.getPdName().isBlank())
-                product.setPdName(productPicData.getPdName());
-            if (productPicData.getPdPrice() != null)
-                product.setPdPrice(productPicData.getPdPrice());
+            product.setPdNo(productUpdate.getPdNo());
+            if (!productUpdate.getPdName().isBlank())
+                product.setPdName(productUpdate.getPdName());
+            if (productUpdate.getPdPrice() != null)
+                product.setPdPrice(productUpdate.getPdPrice());
 
-            product.setPdStatus(productPicData.getPdStatus());
-            product.setPdDescription(productPicData.getPdDescription());
+            product.setPdStatus(productUpdate.getPdStatus());
+            product.setPdDescription(productUpdate.getPdDescription());
 
 
             productRepository.save(product); // 先保存商品，獲取商品編號
             for (ProductPic pic : pics) {
                 pic.setPdNo(product.getPdNo()); // 關聯商品編號
             }
+
             productPicDao.batchupdateproductPicByPdNo(pics); // 執行批次修改圖片
             ResultResponse<String> rs = new ResultResponse<>();
-            rs.setMessage("新增成功");
+            rs.setMessage("修改成功");
             return rs;
 
         } catch (DataAccessException e) {
@@ -154,22 +167,22 @@ public class ProductsManageServiceImp implements ProductsManageService {
     //    新增成功 | *!=null
     public ResultResponse insertProduct(ProductInfo productInfo, List<ProductPic> pics) {
         try {
-        // 檢查是否重覆新增商品(商品名)
-        if (productRepository.existsByPdName(productInfo.getPdName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "商品名稱已存在");
-        }
+            // 檢查是否重覆新增商品(商品名)
+            if (productRepository.existsByPdName(productInfo.getPdName())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "商品名稱已存在");
+            }
 
-        // 1.創建商品資訊
-        Product product = new Product();
-        if (!productInfo.getPdName().isBlank())
-            product.setPdName(productInfo.getPdName());
-        if (productInfo.getPdPrice() != null)
-            product.setPdPrice(productInfo.getPdPrice());
+            // 1.創建商品資訊
+            Product product = new Product();
+            if (!productInfo.getPdName().isBlank())
+                product.setPdName(productInfo.getPdName());
+            if (productInfo.getPdPrice() != null)
+                product.setPdPrice(productInfo.getPdPrice());
 
-        product.setPdStatus(productInfo.getPdStatus());
-        product.setPdDescription(productInfo.getPdDescription());
+            product.setPdStatus(productInfo.getPdStatus());
+            product.setPdDescription(productInfo.getPdDescription());
 
-        // 2.上傳圖片並關聯商品 3.(驗證)
+            // 2.上傳圖片並關聯商品 3.(驗證)
 
             productRepository.save(product); // 先保存商品，獲取商品編號
             for (ProductPic pic : pics) {
@@ -181,11 +194,13 @@ public class ProductsManageServiceImp implements ProductsManageService {
             return rs;
 
         } catch (DataAccessException e) {
-                e.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請檢查是否有空值", e);
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請檢查是否有空值", e);
         }
     }
+
 }
+
 
 
 
