@@ -37,7 +37,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 .addInterceptors(productMallWebSocketHandshakeInterceptor);
         registry.addHandler(activityWebSocketHandler, "/websocket/activity")// 添加處理器
                 .setAllowedOrigins("*")
-                .addInterceptors(productMallWebSocketHandshakeInterceptor);
+                .addInterceptors(httpSessionHandshakeInterceptor);
     }
 
 }

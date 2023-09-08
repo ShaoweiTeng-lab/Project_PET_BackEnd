@@ -93,7 +93,8 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-
+        chatMessage.setSender(userId);
+        chatMessage.setReceiver("PdManager");
         //拿到接收方的session
         WebSocketSession receiverSession = sessionMap.get(receiver);
         String msg =objectMapper.writeValueAsString(chatMessage);
@@ -152,6 +153,10 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
 
         //拿到接收方的session
         WebSocketSession receiverSession = sessionMap.get(receiver);
+        //存訊息  因傳遞過來的receiver 為userId_1-Name, 需切割 receiver為 userId_1
+        String userId=receiver.split("-")[0];
+        chatMessage.setSender("PdManager");
+        chatMessage.setReceiver(userId);
         String msg =objectMapper.writeValueAsString(chatMessage);
         TextMessage textMessage = new TextMessage(msg);
         if (receiverSession != null && receiverSession.isOpen()) {
@@ -159,9 +164,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         }
         //發送訊息
         session.sendMessage(textMessage);
-        //存訊息  因傳遞過來的receiver 為userId_1-Name, 需切割 receiver為 userId_1
-        String receiverSplit=receiver.split("-")[0];
-        mallRedisHandleMessageService.saveChatMessage(sender, receiverSplit, msg);
+        mallRedisHandleMessageService.saveChatMessage(sender, userId, msg);
         System.out.println("Message received: " + msg);
     }
 
