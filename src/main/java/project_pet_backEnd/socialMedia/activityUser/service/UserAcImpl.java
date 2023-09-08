@@ -167,9 +167,9 @@ public class UserAcImpl implements UserActivityService {
      * user 查詢參加活動歷史清單
      */
     @Override
-    public ResultResponse<PageRes<JoinListRes>> queryACHistory(Integer userId) {
+    public ResultResponse<PageRes<JoinListRes>> queryACHistory(Integer userId, Integer page) {
         Page<JoinActivity> joinPage = userJoinDao
-                .findAllByUserId(userId, PageRequest.of(0, 10, Sort.by("enterTime").descending().and(Sort.by("status").descending())));
+                .findAllByUserId(userId, PageRequest.of(page, 5, Sort.by("enterTime").descending().and(Sort.by("status").descending())));
         ResultResponse<PageRes<JoinListRes>> response = activityService.convertToJoinListPage(joinPage);
         return response;
     }
