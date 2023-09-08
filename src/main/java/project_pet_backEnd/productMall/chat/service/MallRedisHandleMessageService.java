@@ -23,7 +23,7 @@ public class MallRedisHandleMessageService {
         String senderKey = new StringBuilder(root).append(":").append(sender).append(":").append(receiver).toString();
         String receiverKey = new StringBuilder(root).append(":").append(receiver).append(":").append(sender).toString();
         redisTemplate.opsForList().rightPush(senderKey, message);
-
+        redisTemplate.opsForList().rightPush(receiverKey, message);
     }
 
     public  void saveNickName(String  userId,String nickName){
