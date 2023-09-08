@@ -1,8 +1,8 @@
 package project_pet_backEnd.socialMedia.activityChat.dao;
 
 
-import project_pet_backEnd.socialMedia.activityChat.dto.Message;
 import project_pet_backEnd.socialMedia.activityChat.dto.UserActivity;
+import project_pet_backEnd.socialMedia.activityChat.vo.PubSubMessage;
 
 import java.util.List;
 import java.util.Set;
@@ -12,6 +12,12 @@ public interface RoomDao {
 
     //建立活動聊天室使用者清單
     void createRoomUserList(int activityId, int userId);
+
+    //拿到所有活動聊天室列表
+    Set<String> getGroupRoomIds();
+
+    //拿到聊天室使用者清單
+    Set<String> getRoomUserList(String roomId);
 
     //移除聊天室-當活動結束或取消後
     void removeGroupRoom(int roomId);
@@ -36,7 +42,7 @@ public interface RoomDao {
     // 透過roomId 拿到所有message
     Set<String> getMessages(String roomId, int offset, int size);
 
-    void saveMessage(Message message);
+    void saveMessage(PubSubMessage pubSubMessage);
 
 
     //拿取目前活動上線使用者

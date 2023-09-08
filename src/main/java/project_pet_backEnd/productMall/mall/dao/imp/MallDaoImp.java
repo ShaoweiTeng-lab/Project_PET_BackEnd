@@ -2,11 +2,14 @@ package project_pet_backEnd.productMall.mall.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.productMall.mall.dao.MallDao;
 import project_pet_backEnd.productMall.mall.dto.GetAllMall;
 import project_pet_backEnd.productMall.mall.dto.MallQueryParameter;
+import project_pet_backEnd.productMall.mall.dto.ProductPage;
 
 
 import java.sql.Blob;
@@ -135,4 +138,38 @@ public class MallDaoImp implements MallDao {
         return total;
     }
 
+//    @Override
+//    public List<ProductPage> getOneProduct(ProductPage productPage) {
+//        String sql = "SELECT P.PD_NO, P.PD_NAME, P.PD_PRICE, P.PD_DESCRIPTION, PIC.PD_PIC "
+//                + "FROM PRODUCT P "
+//                + "LEFT JOIN PRODUCT_PIC PIC ON P.PD_NO = PIC.PD_NO " // 與 product_pic 表進行聯結
+//                + "WHERE P.PD_NO = :pdNo ";
+//
+//        SqlParameterSource parameters = new MapSqlParameterSource("pdNo", productPage.getPdNo());
+//
+//
+//        List<ProductPage> pdpagelist = namedParameterJdbcTemplate.query(sql, parameters, new RowMapper<ProductPage>() {
+//            @Override
+//            public ProductPage mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                ProductPage oneProduct = new ProductPage();
+//                oneProduct.setPdNo(rs.getInt("PD_NO"));
+//                oneProduct.setPdName(rs.getString("PD_NAME"));
+//                oneProduct.setPdPrice(rs.getInt("PD_PRICE"));
+//                oneProduct.setPdDescription(rs.getString("PD_DESCRIPTION"));
+//
+////                 將 BLOB 數據轉換為 Base64 字符串
+//                Blob blob = rs.getBlob("PD_PIC");
+//                if (blob != null) {
+//                        byte[] blobData = blob.getBytes(1, (int) blob.length());
+//                        String base64Image = Base64.getEncoder().encodeToString(blobData);
+//                        oneProduct.addBase64Image(base64Image);
+//                    }
+//
+//
+//                return oneProduct;
+//            }
+//        });
+//
+//        return pdpagelist;
+//    }
 }

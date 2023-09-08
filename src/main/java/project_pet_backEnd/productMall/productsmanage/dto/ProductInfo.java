@@ -24,7 +24,7 @@ public class ProductInfo {
 
     private String pdDescription; //商品說明 VARCHAR(500)
 
-    private Integer PdOrderlist;
+    private Integer PdOrderList;
 
     private List<MultipartFile> picFiles;
 
