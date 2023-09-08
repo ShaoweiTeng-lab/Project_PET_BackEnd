@@ -103,9 +103,10 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         }
         //發送訊息
         session.sendMessage(textMessage);
+        String pdReceiver="PdManager";
         //存訊息
-        mallRedisHandleMessageService.saveChatMessage(userId, receiver, msg);
-        System.out.println("Message received: " + message);
+        mallRedisHandleMessageService.saveChatMessage(userId, pdReceiver, msg);
+        System.out.println("Message received: " + msg);
     }
 
     public  void ManagerHandleMessage(String senderKey,WebSocketSession session, WebSocketMessage<?> message,ChatMessage chatMessage) throws IOException {
@@ -120,7 +121,6 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
            keys.forEach(data->{
                //拿到userId_1
                String uId =data.toString().split("PdManager:")[1];
-                
                String userNickName=mallRedisHandleMessageService.getNickName(uId);
                UserData userData =new UserData();
                userData.setUserId(uId);
@@ -160,9 +160,9 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         //發送訊息
         session.sendMessage(textMessage);
         //存訊息  因傳遞過來的receiver 為userId_1-Name, 需切割 receiver為 userId_1
-        receiver=receiver.split("-")[0];
-        mallRedisHandleMessageService.saveChatMessage(sender, receiver, msg);
-        System.out.println("Message received: " + message);
+        String receiverSplit=receiver.split("-")[0];
+        mallRedisHandleMessageService.saveChatMessage(sender, receiverSplit, msg);
+        System.out.println("Message received: " + msg);
     }
 
     /**
