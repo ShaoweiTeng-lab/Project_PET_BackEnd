@@ -147,6 +147,7 @@ public class ManagerServiceImp  implements ManagerService {
         manager.setManagerAccount(adjustManagerRequest.getManagerAccount());
         if(adjustManagerRequest.getManagerPassword()!=null && !adjustManagerRequest.getManagerPassword().trim().equals(""))
             manager.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
+        manager.setManagerState(adjustManagerRequest.getManagerState());
         managerRepository.save(manager);
         ResultResponse rs =new ResultResponse();
         rs.setMessage("修改完成");

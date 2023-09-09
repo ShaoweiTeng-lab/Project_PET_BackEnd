@@ -2,6 +2,7 @@ package project_pet_backEnd.socialMedia.activityUser.service;
 
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.relational.core.sql.In;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
 import project_pet_backEnd.socialMedia.activityUser.dto.JoinListRes;
@@ -36,7 +37,7 @@ public interface UserActivityService {
      * 查詢使用者報名活動紀錄
      */
 
-    ResultResponse<PageRes<JoinListRes>> queryACHistory(Integer userId);
+    ResultResponse<PageRes<JoinListRes>> queryACHistory(Integer userId, Integer page);
 
 
     /**
