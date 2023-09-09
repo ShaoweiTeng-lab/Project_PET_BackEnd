@@ -1,6 +1,6 @@
 package project_pet_backEnd.productMall.chat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import project_pet_backEnd.productMall.chat.dto.UserData;
 import project_pet_backEnd.productMall.chat.service.MallRedisHandleMessageService;
 import project_pet_backEnd.user.dao.UserRepository;
-import project_pet_backEnd.user.vo.User;
 import project_pet_backEnd.utils.AllDogCatUtils;
 
 import java.io.IOException;
@@ -101,6 +100,9 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         TextMessage textMessage = new TextMessage(msg);
         if (receiverSession != null && receiverSession.isOpen()) {
             receiverSession.sendMessage(textMessage);
+        }else{
+            //儲存為尚讀訊息
+            mallRedisHandleMessageService.setNotRead("PdManager",userId);
         }
         //發送訊息
         session.sendMessage(textMessage);
@@ -117,8 +119,10 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
             //顯示聊天列表
            Set keys= mallRedisHandleMessageService.getAllKeys("ProductMallChat:PdManager:userId");
            List<UserData> userDataList=new ArrayList<>();
-
+           //拿到所有未讀的id
+           Set<String>notReadList=  mallRedisHandleMessageService.getAllNotRead("PdManager");
            PdManagerChatList pdManagerChatList =new PdManagerChatList();
+           pdManagerChatList.setNotReadList(notReadList);
            keys.forEach(data->{
                //拿到userId_1
                String uId =data.toString().split("PdManager:")[1];
@@ -135,13 +139,14 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
             session.sendMessage(textMessage);
             return;
         }
-
         //取得歷史訊息
         if ("history".equals(chatMessage.getType())){
             //使用userId拿回訊息
             List<String> historyData = mallRedisHandleMessageService.getHistoryMsg(sender, receiver);
             String historyMsg = objectMapper.writeValueAsString(historyData);
             ChatMessage cmHistory = new ChatMessage("history", sender,receiver, historyMsg);
+            //移除未讀消息
+            mallRedisHandleMessageService.removeFromSet("PdManager",receiver);
             if (session != null && session.isOpen()) {
                 String msg =objectMapper.writeValueAsString(cmHistory);
                 TextMessage textMessage = new TextMessage(msg);
