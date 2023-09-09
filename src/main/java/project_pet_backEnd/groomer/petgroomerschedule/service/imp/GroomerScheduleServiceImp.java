@@ -12,6 +12,7 @@ import project_pet_backEnd.groomer.petgroomer.dao.PetGroomerDao;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetGroomerScheduleDao;
 import project_pet_backEnd.groomer.petgroomerschedule.dao.PetScheduleRepository;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.BatchInsertScheduleReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleInsertReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
@@ -23,6 +24,8 @@ import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.sql.Date;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,7 +149,7 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
         try {
             date = AllDogCatUtils.dateFormatToSqlDate(scheduleInsertReq.getPgsDate());//yyyy->sql.date
         } catch (ParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "修改班表日期格式有誤");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增班表日期格式有誤");
         }
 
         PetGroomerSchedule pgScheduleByPgIdAndPgsDate = petGroomerScheduleDao.getPgScheduleByPgIdAndPgsDate(pgId, date);
@@ -165,6 +168,51 @@ public class GroomerScheduleServiceImp implements GroomerScheduleService {
         rs.setMessage("您欲新增之美容師編號:"+pgId+" 日期:"+scheduleInsertReq.getPgsDate()+"  的班表成功!");
         return rs;
     }
+
+    /**
+     * 批次新增班表
+     * @param batchInsertScheduleReq 參數
+     * @return rs
+     */
+    @Override
+    public ResultResponse<String> insertBatchSchedule(BatchInsertScheduleReq batchInsertScheduleReq) {
+        int year = batchInsertScheduleReq.getYear();
+        int month = batchInsertScheduleReq.getMonth();
+        int pgId = batchInsertScheduleReq.getPgId();
+
+        String state = batchInsertScheduleReq.getPgsState();
+
+        List<String> dataByYearMonthAndPgId = petScheduleRepository.findDataByYearMonthAndPgId(year, month, pgId);
+
+        ResultResponse<String> rs = new ResultResponse<>();
+
+        if(!dataByYearMonthAndPgId.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "美容師ID:[ "+pgId+" ]於"+year+"年"+month+"月已有班表存在，因此無法批次新增"+month+"月份班表。");
+        }else {
+            int daysInMonth = YearMonth.of(year, month).lengthOfMonth();
+
+            for (int day = 1; day <= daysInMonth; day++) {
+                LocalDate date = LocalDate.of(year, month, day);
+                // 組合成 yyyy-MM-dd 格式的日期
+                try {
+                    // 嘗試儲存資料
+                    PetGroomerSchedule schedule = new PetGroomerSchedule(
+                            null, // 自動遞增的主鍵，所以給 null
+                            pgId,
+                            java.sql.Date.valueOf(date), // 將 LocalDate 轉換成 java.sql.Date
+                            state
+                    );
+                    petScheduleRepository.save(schedule);
+                } catch (Exception e) {
+                    // 如果儲存操作失敗，這裡可以處理相應的錯誤
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "新增班表錯誤，請在試一次。");
+                }
+            }
+            rs.setMessage("美容師ID:" + pgId + "於" + year + "年" + month + "的班表批次新增成功!!");
+            return rs;
+        }
+    }
+
     //--------------------------------美容師個人管理(排班)-----------------------------------------//
 
     //查看排班
