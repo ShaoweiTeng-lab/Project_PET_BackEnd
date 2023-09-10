@@ -27,7 +27,7 @@ public class RedisMessagePublisher {
         redisTemplate.convertAndSend(topic.getTopic(), message);
     }
 
-    public void notify(NotifyMessage notifyMessage) {
+    public void notify(String notifyMessage) {
         redisTemplate.convertAndSend(topic.getTopic(), notifyMessage);
     }
 }
