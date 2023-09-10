@@ -40,7 +40,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         List<String> products=orderListRepository.findOrderProductByOrderId(orderId);
         StringBuilder str =new StringBuilder();
         products.forEach(val->str.append(val+"  "));
-        String form=generateEcpayForm(orderId,str.toString(),orders.getTotalAmount());
+        String form=generateEcpayForm(orderId,str.toString(),orders.getOrderAmount());
 
         return form;
     }
