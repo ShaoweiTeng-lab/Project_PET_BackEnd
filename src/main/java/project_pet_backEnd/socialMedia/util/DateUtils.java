@@ -18,8 +18,8 @@ public class DateUtils {
     }
 
     // int to date string
-    public static String intToString(int date) {
-        java.sql.Date sqlDate = new java.sql.Date((long) date);
+    public static String longToString(long date) {
+        java.sql.Date sqlDate = new java.sql.Date(date);
         String dateSqlStr = dateSqlToStr(sqlDate);
         return dateSqlStr;
     }

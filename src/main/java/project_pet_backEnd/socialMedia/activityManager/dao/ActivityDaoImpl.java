@@ -8,6 +8,7 @@ import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
 import project_pet_backEnd.socialMedia.activityManager.dto.ActivityRes;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
 import project_pet_backEnd.socialMedia.activityUser.dto.JoinReq;
+import project_pet_backEnd.socialMedia.activityUser.vo.JoinActivity;
 import project_pet_backEnd.socialMedia.util.DateUtils;
 
 import java.util.Date;
@@ -22,6 +23,7 @@ public class ActivityDaoImpl {
 
     @Autowired
     private RoomDao roomDao;
+
 
     //查詢熱門活動
     public List<ActivityRes> getHotActivities() {
@@ -54,7 +56,7 @@ public class ActivityDaoImpl {
 
 
     //退出活動
-    public String leaveActivity(int userId, int activityId, JoinReq joinReq) {
+    public String leaveActivity(int userId, int activityId) {
 
         String querySql = "select * FROM activity\n" +
                 "where activity_id = :activityId";
@@ -86,12 +88,33 @@ public class ActivityDaoImpl {
             userMap.put("userId", userId);
             template.update(userStatusUpdate, userMap);
 
+            //查詢user參加活動清單人數
+
+            String enrollCountSql = "select * FROM activity_participation\n" +
+                    "where activity_id = :activityId AND user_id = :userId";
+
+            MapSqlParameterSource countParams = new MapSqlParameterSource();
+            countParams.addValue("activityId", activityId);
+            countParams.addValue("userId", userId);
+
+            JoinActivity queryJoinData =
+                    template.queryForObject(enrollCountSql, countParams, (rs, rowNum) -> {
+                        JoinActivity joinActivity = new JoinActivity();
+                        joinActivity.setActivityId(rs.getInt("ACTIVITY_ID"));
+                        joinActivity.setPeopleCount(rs.getInt("ENTER_COUNT"));
+                        joinActivity.setStatus(rs.getInt("ENTER_STATUS"));
+                        return joinActivity;
+                    });
+
+            if (queryJoinData.getStatus() == 1) {
+                return "你已經退出活動，無法再退出一次!";
+            }
+
             //改變參加活動人數的數量
-            //
             String activityCountUpdate = "update activity set enrollment_count = enrollment_count - :leaveCount\n" +
                     "where activity_id = :activityId";
             Map<String, Object> countMap = new HashMap<>();
-            countMap.put("leaveCount", joinReq.getCount());
+            countMap.put("leaveCount", queryJoinData.getPeopleCount());
             countMap.put("activityId", activityId);
             template.update(activityCountUpdate, countMap);
 

@@ -56,5 +56,5 @@ public interface UserActivityService {
     /**
      * 使用者退出活動
      */
-    ResultResponse<String> leaveActivity(Integer userId, Integer activityId, JoinReq joinReq);
+    ResultResponse<String> leaveActivity(Integer userId, Integer activityId);
 }

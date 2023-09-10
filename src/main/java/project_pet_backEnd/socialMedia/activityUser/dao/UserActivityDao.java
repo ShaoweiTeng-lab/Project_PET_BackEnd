@@ -16,7 +16,7 @@ public interface UserActivityDao extends JpaRepository<JoinActivity, JoinKey>,
         QueryByExampleExecutor<JoinActivity>,
         JpaSpecificationExecutor<JoinActivity> {
 
-    JoinActivity findByActivityIdAndUserId(int userId, int activityId);
+    JoinActivity findByActivityIdAndUserId(int activityId, int userId);
 
     //查看活動清單歷史
     Page<JoinActivity> findAllByUserId(int userId, Pageable pageable);
