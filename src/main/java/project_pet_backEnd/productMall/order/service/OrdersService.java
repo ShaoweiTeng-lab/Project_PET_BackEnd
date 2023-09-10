@@ -25,6 +25,9 @@ public interface OrdersService {
     //修改訂單狀態
     public abstract String updateOrderStatus(Integer ordNo, Integer ordStatus);
 
+    //會員查詢剩餘點數
+    public abstract Integer getUserPoint(Integer userId);
+
     //後臺管理員查詢所有訂單
     public abstract List<AllOrdersResDTO> getAllOrders(Pageable pageable);
 

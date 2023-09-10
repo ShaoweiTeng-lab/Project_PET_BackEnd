@@ -17,6 +17,8 @@ import project_pet_backEnd.productMall.order.service.OrdersService;
 import project_pet_backEnd.productMall.order.vo.OrderDetail;
 import project_pet_backEnd.productMall.order.vo.OrderDetailPk;
 import project_pet_backEnd.productMall.order.vo.Orders;
+import project_pet_backEnd.smtp.EmailService;
+import project_pet_backEnd.smtp.dto.EmailResponse;
 import project_pet_backEnd.user.dao.UserRepository;
 import project_pet_backEnd.user.vo.User;
 
@@ -34,6 +36,8 @@ public class OrdersServiceImpl implements OrdersService {
     OrdersDetailRepository ordersDetailRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private EmailService emailService;
 
 
     /**
@@ -77,13 +81,31 @@ public class OrdersServiceImpl implements OrdersService {
         User user = userRepository.findById(userID).orElse(null);
         Integer usePoint = orders.getUserPoint();
         Integer currentPoint = user.getUserPoint();
+        String userEmail = user.getUserEmail();
         Integer newPoint = currentPoint - usePoint;
         if(newPoint >= 0 ){
             user.setUserPoint(newPoint);
             userRepository.save(user);
         }
+        String subject = "AllDogCat商成 感謝您本次訂購!";
+        String body = "<div style=\"font-size: 16px;\">"
+                + "<p>付款狀態為: <strong>尚未付款</strong></p>"
+                + "<p>訂單狀態為: <strong>備貨中</strong></p>"
+                + "<p>若要付款至訂單詳情，請點擊以下按鈕：</p>"
+                + "<a href=\"http://localhost:5500/frontend/pages/mall/order/memberCenterOrders.html\" "
+                + "style=\"display: block; text-align: center; text-decoration: none;\">"
+                + "<button id=\"checkDetail\" style=\"background-color: #D9AE94; color: white; border: none; border-radius: 5px; "
+                + "cursor: pointer; font-size: 16px; padding: 10px 20px;\">訂單詳情</button>"
+                + "</a></div>";
+
+        sendEmailToCustomer(userEmail, subject, body);
+
     }
 
+    public  void  sendEmailToCustomer(String to, String subject, String body){
+        EmailResponse emailResponse =new EmailResponse(to,subject,body);
+        emailService.sendEmail(emailResponse);
+    }
     @Override
     public List<OrdersNotCancelDTO> getByUserIdAndOrdStatusNot(Integer userId) {
         Integer ordStatus = 6;
@@ -140,6 +162,13 @@ public class OrdersServiceImpl implements OrdersService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OrderMaster not found with id :" + ordNo);
         }
         return null;
+    }
+
+    @Override
+    public Integer getUserPoint(Integer userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Integer userPoint = user.getUserPoint();
+        return userPoint;
     }
 
     @Override
