@@ -14,5 +14,5 @@ public class GetAllMall {
     @Min(0)
     @Max(1)
     private Integer pdStatus;  //商品上下架狀態 DEFAULT 1 ,'0:上架中  1:已下架 此為商品上架狀態'
-    private String base64Image;;
+    private String base64Image;
 }

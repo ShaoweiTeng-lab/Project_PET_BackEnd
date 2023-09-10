@@ -40,7 +40,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         List<String> products=orderListRepository.findOrderProductByOrderId(orderId);
         StringBuilder str =new StringBuilder();
         products.forEach(val->str.append(val+"  "));
-        String form=generateEcpayForm(orderId,str.toString(),orders.getTotalAmount());
+        String form=generateEcpayForm(orderId,str.toString(),orders.getOrderAmount());
 
         return form;
     }
@@ -84,8 +84,7 @@ public class UserPaymentServiceImp implements UserPaymentService {
         // 商店轉跳網址 (Optional)
         obj.setReturnURL(ecpayRedirectHttpsUrl+"/user/successPay/"+orderId);
         String form = all.aioCheckOut(obj, null);
-        obj.getMerchantTradeNo();
-
+        //obj.getMerchantTradeNo();
         return form;
     }
 }

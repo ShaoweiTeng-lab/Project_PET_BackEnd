@@ -11,8 +11,8 @@ public class MallQueryParameter {
     private String pdName;
     private MallOrderBy order;
     private Sort sort;
-    private String sortField; // 用于存储排序属性（例如：PD_NAME、PD_PRICE等）
-    private String sortOrder; // 用于存储排序顺序（例如：ASC、DESC）
+    private String sortField; // 儲存排序屬性（例如：PD_NAME、PD_PRICE等）
+    private String sortOrder; // 儲存排序顺序（例如：ASC、DESC）
     private Integer limit;
     private Integer offset;
     private Integer minPrice;

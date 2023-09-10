@@ -139,10 +139,15 @@ public class ManagerServiceImp  implements ManagerService {
     @Transactional
     public ResultResponse adjustManager(AdjustManagerRequest adjustManagerRequest) {
         Manager manager =managerRepository.findByManagerAccount(adjustManagerRequest.getOrgManagerAccount());
+        Manager checkSameManager=managerRepository.findByManagerAccount(adjustManagerRequest.getManagerAccount());
         if(manager==null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
+        if(checkSameManager!=null && manager.getManagerId()!=checkSameManager.getManagerId())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"您取的名字已有人使用");
+        manager.setManagerAccount(adjustManagerRequest.getManagerAccount());
         if(adjustManagerRequest.getManagerPassword()!=null && !adjustManagerRequest.getManagerPassword().trim().equals(""))
             manager.setManagerPassword(bcryptEncoder.encode(adjustManagerRequest.getManagerPassword()));
+        manager.setManagerState(adjustManagerRequest.getManagerState());
         managerRepository.save(manager);
         ResultResponse rs =new ResultResponse();
         rs.setMessage("修改完成");

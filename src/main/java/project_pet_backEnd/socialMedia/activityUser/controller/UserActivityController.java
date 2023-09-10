@@ -45,7 +45,7 @@ public class UserActivityController {
 
     }
 
-    @ApiOperation("查看所有活動(分頁 每頁10筆, sort by活動Id)")
+    @ApiOperation("查看所有活動")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
@@ -61,8 +61,8 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/search")
-    public ResponseEntity<ResultResponse<PageRes<ActivityRes>>> searchActivity(@RequestParam("activityContent") String content) {
-        ResultResponse<PageRes<ActivityRes>> searchResult = userActivityService.queryWithText(content);
+    public ResponseEntity<ResultResponse<PageRes<ActivityRes>>> searchActivity(@RequestParam("activityContent") String content, @RequestParam(value = "page", required = false, defaultValue = "0") int page) {
+        ResultResponse<PageRes<ActivityRes>> searchResult = userActivityService.queryWithText(content, page);
         return ResponseEntity.status(HttpStatus.OK).body(searchResult);
 
     }
@@ -109,8 +109,8 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping("/joinList")
-    public ResponseEntity<ResultResponse<PageRes<JoinListRes>>> getUerJoinDetails(@RequestAttribute("userId") Integer userId) {
-        ResultResponse<PageRes<JoinListRes>> joinListRes = userActivityService.queryACHistory(userId);
+    public ResponseEntity<ResultResponse<PageRes<JoinListRes>>> getUerJoinDetails(@RequestAttribute("userId") Integer userId, @RequestParam(value = "page", required = false, defaultValue = "0") Integer page) {
+        ResultResponse<PageRes<JoinListRes>> joinListRes = userActivityService.queryACHistory(userId, page);
         return ResponseEntity.status(HttpStatus.OK).body(joinListRes);
 
     }

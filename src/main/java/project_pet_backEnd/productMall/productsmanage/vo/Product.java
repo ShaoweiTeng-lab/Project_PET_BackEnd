@@ -32,7 +32,7 @@ public class Product {
 
     @Column(name = "PD_TOTALREVIEW")
     private Integer pdTotalreview;
-
+    @Column(name = "PD_SCORE")
     private Integer pdScore;
 
     @OneToMany(mappedBy = "product")

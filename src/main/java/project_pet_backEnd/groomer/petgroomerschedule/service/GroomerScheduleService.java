@@ -1,5 +1,6 @@
 package project_pet_backEnd.groomer.petgroomerschedule.service;
 
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.BatchInsertScheduleReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleInsertReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
@@ -21,6 +22,10 @@ public interface GroomerScheduleService {
     //新增美容師 for Man
     ResultResponse<String> insertNewSchedule(ScheduleInsertReq scheduleInsertReq);
 
+    //批次新增該月班表(按該月)
 
+    ResultResponse<String> insertBatchSchedule(BatchInsertScheduleReq batchInsertScheduleReq);
+
+    //取得參數該月班表
     ResultResponse<List<GetScheduleRes>> getMonthScheduleForPg(Integer manId, Integer year, Integer month);
 }

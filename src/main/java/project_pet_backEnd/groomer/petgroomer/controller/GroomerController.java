@@ -313,13 +313,14 @@ public class GroomerController {
     //取得作品集 ByPgId For Customer getPortfolioByPgId
     @ApiOperation("Customer查詢作品集")
     @GetMapping("/customer/getPortfolioByPgId")
-    public ResultResponse<List<PortfolioRes>> getPortfolioByPgId(Integer pgId){
+    public ResultResponse<List<PortfolioRes>> getPortfolioByPgId(@RequestParam Integer pgId){
         return petGroomerService.getPortfolioByPgId(pgId);
     }
 
+    //根據PorId取得作品集照片
     @ApiOperation("Customer查詢作品集圖片")
     @GetMapping("/customer/getPics")
-    public ResultResponse<List<PictureInfoRes>> getPics(Integer porId){
+    public ResultResponse<List<PictureInfoRes>> getPics(@RequestParam Integer porId){
         return petGroomerService.getPicByPorId(porId);
     }
 
