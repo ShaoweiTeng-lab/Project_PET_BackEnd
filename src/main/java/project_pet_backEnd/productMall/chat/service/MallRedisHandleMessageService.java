@@ -2,6 +2,7 @@ package project_pet_backEnd.productMall.chat.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,4 +42,23 @@ public class MallRedisHandleMessageService {
         // 返回所有鍵的集合
         return keys;
     }
+
+    //設定尚未讀取訊息
+    public  void setNotRead(String key,String userId){
+        String notReadKey = new StringBuilder(root).append(":").append(key).append(":").append("NotRead").toString();
+        redisTemplate.opsForSet().add(notReadKey,userId);
+    }
+
+    //更改為已經讀取
+    public void removeFromSet(String key, String valueToRemove) {
+        String notReadKey = new StringBuilder(root).append(":").append(key).append(":").append("NotRead").toString();
+        redisTemplate.opsForSet().remove(notReadKey,valueToRemove);
+    }
+    //得到所有未讀的訊息
+    public Set<String> getAllNotRead(String key) {
+        String notReadKey = new StringBuilder(root).append(":").append(key).append(":").append("NotRead").toString();
+        SetOperations<String, String> setOps = redisTemplate.opsForSet();
+        return setOps.members(notReadKey);
+    }
+
 }

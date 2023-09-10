@@ -435,7 +435,7 @@ public class EmailService {
                 "                                                            <tr style=\"border-collapse:collapse\">\n" +
                 "                                                                <td class=\"es-m-p0l es-m-txt-c\" align=\"left\"\n" +
                 "                                                                    style=\"padding:0;Margin:0;padding-left:15px;font-size:0\">\n" +
-                "                                                                    <a href=\"https://viewstripo.email/\" target=\"_blank\"\n" +
+                "                                                                    <a href=https://yang-hung-fei.github.io/" +
                 "                                                                        style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#999999;font-size:14px\"><img\n" +
                 "                                                                            src=\"https://siovhl.stripocdn.email/content/guids/CABINET_5ebd51945adb862745b1a105fbb2c4f4/images/431502878865957.png\"\n" +
                 "                                                                            alt=\"Petshop logo\" title=\"Petshop logo\"\n" +

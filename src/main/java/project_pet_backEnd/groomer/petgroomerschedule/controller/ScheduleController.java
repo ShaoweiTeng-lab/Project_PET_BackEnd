@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project_pet_backEnd.groomer.petgroomerschedule.dto.request.BatchInsertScheduleReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleInsertReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.request.ScheduleModifyReq;
 import project_pet_backEnd.groomer.petgroomerschedule.dto.response.GetScheduleRes;
@@ -15,6 +16,7 @@ import project_pet_backEnd.groomer.petgroomerschedule.dto.response.ListForSchedu
 import project_pet_backEnd.groomer.petgroomerschedule.service.GroomerScheduleService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.List;
 
@@ -72,6 +74,17 @@ public class ScheduleController {
     @PostMapping("/manager/insertNewSchedule")
     public ResultResponse<String> insertNewSchedule(@RequestBody ScheduleInsertReq scheduleInsertReq){
         return groomerScheduleService.insertNewSchedule(scheduleInsertReq);
+    }
+
+    //批次新增班表
+    @ApiOperation("Man排班批次新增")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PreAuthorize("hasAnyAuthority('美容師管理')")
+    @PostMapping("/manager/batchInsertSchedule")
+    public ResultResponse<String> batchInsertSchedule(@RequestBody @Valid BatchInsertScheduleReq batchInsertScheduleReq){
+        return groomerScheduleService.insertBatchSchedule(batchInsertScheduleReq);
     }
 
     //--------------------------------美容師個人管理(排班)-----------------------------------------//
