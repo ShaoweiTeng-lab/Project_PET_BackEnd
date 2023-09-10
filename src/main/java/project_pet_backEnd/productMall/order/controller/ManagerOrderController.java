@@ -43,7 +43,7 @@ public class ManagerOrderController {
     @GetMapping("/getAllOrders")
     public ResponseEntity<ResultResponse<List<AllOrdersResDTO>>> getAllOrders(
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(name = "rows", required = false, defaultValue = "10") Integer rows){
+            @RequestParam(name = "rows", required = false, defaultValue = "50") Integer rows){
         Pageable pageable = PageRequest.of(page, rows);
 //      Pageable pageable = PageRequest.of(page, rows, Sort.by("id"));
         ResultResponse rs = new ResultResponse();

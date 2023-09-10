@@ -79,4 +79,16 @@ public class UserOrderController {
         rs.setMessage("刪除成功!");
         return ResponseEntity.status(200).body(rs);
     }
+
+    @ApiOperation(value = "v", notes = "會員查詢剩餘點數")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_U", value = "User Access Token",
+                    required = true, dataType = "string", paramType = "header")})
+    @GetMapping("/getUserPoint")
+    public ResponseEntity<ResultResponse> getUserPoint(
+            @RequestAttribute(name = "userId") Integer userId){
+        ResultResponse rs = new ResultResponse();
+        rs.setMessage(ordersService.getUserPoint(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(rs);
+    }
 }
