@@ -60,7 +60,8 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
             //get username username_
             String userNameString = (String) session.getAttributes().get("sender");
             String[] getUserName = userNameString.split("_");
-            String userName = getUserName[1];
+            String userName = getUserName[0];
+            System.out.println(userName);
             //當使用者上線後使用redis紀錄使用者狀態
             userDao.addUserToOnlineList(userId);
             //放入sessionMap中進行管理
@@ -71,7 +72,8 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
             notifyMessage.setUsername(userName);
             notifyMessage.setUserId(userId);
             notifyMessage.setDate(DateUtils.dateTimeSqlToStr(new Timestamp(System.currentTimeMillis())));
-            messagePublisher.notify(notifyMessage);
+            String notifyMesJson = objectMapper.writeValueAsString(notifyMessage);
+            messagePublisher.notify(notifyMesJson);
         } else if (idString.contains("managerId_")) {
             //管理員可以直接拿到大家的session
             sessionMap.putIfAbsent("0", session);
