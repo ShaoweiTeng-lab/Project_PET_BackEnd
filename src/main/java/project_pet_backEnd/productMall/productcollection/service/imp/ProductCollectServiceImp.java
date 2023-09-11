@@ -16,6 +16,7 @@ import project_pet_backEnd.productMall.productcollection.vo.ProductCollect;
 import project_pet_backEnd.productMall.productcollection.vo.ProductCollectPk;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -27,21 +28,6 @@ public class ProductCollectServiceImp implements ProductCollectService {
     @Autowired
     ProductCollectRepository productCollectRepository;
 
-
-//    @Override  // 新增商品收藏
-//    public ResultResponse insertProductCollect(EditProductCollect editProductCollect) {
-//        try {
-//            productCollectDao.insertProductCollect(editProductCollect);
-//            ResultResponse rs = new ResultResponse<>();
-//            rs.setMessage("新增成功");
-//            return rs;
-//        } catch (DataAccessException e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請稍後重試", e);
-//        }
-//    }
-
-
-
     @Override  //新增商品收藏
     public ResultResponse createProductCollect(EditProductCollect editProductCollect) {
         try {
@@ -49,8 +35,13 @@ public class ProductCollectServiceImp implements ProductCollectService {
             primaryKey.setUserId(editProductCollect.getUserId());
             primaryKey.setPdNo(editProductCollect.getPdNo());
 
+            // 創建 java.util.Date 對象並轉換為 java.sql.Date
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
             ProductCollect productCollect = new ProductCollect();
             productCollect.setId(primaryKey);
+            productCollect.setPdcCreated(sqlDate);
 
             productCollectRepository.save(productCollect);
             ResultResponse rs = new ResultResponse<>();
@@ -83,20 +74,8 @@ public class ProductCollectServiceImp implements ProductCollectService {
         }
     }
 
-    @Override  // 瀏覽商品收藏
-    public List<Map<String, Object>> getAllCollect(Integer userId) {
-        List<ProductCollectList> pc = productCollectDao.getAllCollect(userId);
-
-        List<Map<String, Object>> pcList = new ArrayList<>();
-        for(ProductCollectList pcl : pc) {
-            Map<String, Object> res = new HashMap<>();
-            res.put("pdNo", pcl.getPdNo());
-            res.put("userId", pcl.getUserId());
-            res.put("PdPrice", pcl.getPdPrice());
-            res.put("base64Image", pcl.getBase64Image());
-
-            pcList.add(res);
-        }
-        return pcList;
+    //    @Override  // 瀏覽商品收藏
+    public List<ProductCollectList> getAllCollect(Integer userId) {
+        return productCollectDao.getAllCollect(userId);
     }
 }

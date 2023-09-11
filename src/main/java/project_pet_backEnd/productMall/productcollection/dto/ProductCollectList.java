@@ -11,6 +11,8 @@ public class ProductCollectList {
 
     private Integer userId;
 
+    private String pdName;
+
     private Integer pdPrice;
 
     private Date pdcCreated;

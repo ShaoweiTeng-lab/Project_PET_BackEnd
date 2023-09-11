@@ -14,6 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     //修改商品資訊
     boolean existsByPdName(String pdName);
 
+    //列出單一商品的所有資料。
     Product findByPdNo (Integer pdNo);
 
 }
