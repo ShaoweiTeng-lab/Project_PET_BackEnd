@@ -55,7 +55,7 @@ public class UserAcImpl implements UserActivityService {
 
     @Override
     public ResultResponse<PageRes<ActivityRes>> getAllActivities(int page) {
-        Page<Activity> activityPage = activityDao.findAll(PageRequest.of(page, 10, Sort.Direction.DESC, "activityId"));
+        Page<Activity> activityPage = activityDao.findAll(PageRequest.of(page, 5, Sort.by("status").ascending().and(Sort.by("activityId").descending())));
         ResultResponse<PageRes<ActivityRes>> response = activityService.convertToAcPage(activityPage);
         return response;
     }
@@ -88,8 +88,8 @@ public class UserAcImpl implements UserActivityService {
      * 關鍵字搜尋(活動內容)
      */
     @Override
-    public ResultResponse<PageRes<ActivityRes>> queryWithText(String content) {
-        Page<Activity> activityPage = activityDao.findByActivityContentContaining(content, PageRequest.of(0, 10, Sort.Direction.DESC, "activityTime"));
+    public ResultResponse<PageRes<ActivityRes>> queryWithText(String content, int page) {
+        Page<Activity> activityPage = activityDao.findByActivityContentContaining(content, PageRequest.of(page, 5, Sort.Direction.DESC, "activityTime"));
         ResultResponse<PageRes<ActivityRes>> response = activityService.convertToAcPage(activityPage);
         return response;
     }

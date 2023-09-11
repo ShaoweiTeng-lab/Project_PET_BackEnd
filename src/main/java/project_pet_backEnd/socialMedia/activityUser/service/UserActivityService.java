@@ -43,7 +43,7 @@ public interface UserActivityService {
     /**
      * 使用者關鍵字搜尋
      */
-    ResultResponse<PageRes<ActivityRes>> queryWithText(String content);
+    ResultResponse<PageRes<ActivityRes>> queryWithText(String content, int page);
 
     //==============================================//
 

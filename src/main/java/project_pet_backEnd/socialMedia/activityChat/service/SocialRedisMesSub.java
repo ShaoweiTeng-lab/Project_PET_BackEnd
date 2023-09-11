@@ -18,7 +18,6 @@ import project_pet_backEnd.socialMedia.util.DateUtils;
 import java.nio.charset.StandardCharsets;
 
 @Service
-@Transactional
 public class SocialRedisMesSub implements MessageListener {
 
 
@@ -40,6 +39,7 @@ public class SocialRedisMesSub implements MessageListener {
 
         String channelStr = new String(channel, StandardCharsets.UTF_8);
         String bodyStr = new String(body, StandardCharsets.UTF_8);
+        System.out.println(bodyStr);
         if (bodyStr.contains("roomId")) {
             try {
                 PubSubMessage pubSubMessage = objectMapper.readValue(message.getBody(), PubSubMessage.class);
@@ -57,9 +57,10 @@ public class SocialRedisMesSub implements MessageListener {
                 e.printStackTrace();
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "伺服器出錯");
             }
-        } else {
+        } else if (bodyStr.contains("已經上線了")) {
             try {
                 NotifyMessage notifyMessage = objectMapper.readValue(message.getBody(), NotifyMessage.class);
+                System.out.println(webSocketHandler);
                 webSocketHandler.sendNotifyMessage(notifyMessage);
             } catch (Exception e) {
                 e.printStackTrace();
