@@ -8,6 +8,8 @@ public class JoinListRes {
     String userName;
     String userPhone;
     String userEmail;
+    Integer joinStatus;
+
     // 活動資訊
     Integer activityId;
     String activityTitle;

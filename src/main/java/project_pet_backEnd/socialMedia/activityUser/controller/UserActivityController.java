@@ -97,8 +97,9 @@ public class UserActivityController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PutMapping("/leave")
-    public ResponseEntity<ResultResponse<String>> leaveActivity(@RequestBody JoinReq joinReq, @RequestAttribute("userId") Integer userId) {
-        ResultResponse<String> response = userActivityService.leaveActivity(userId, joinReq.getActivityId(), joinReq);
+    public ResponseEntity<ResultResponse<String>> leaveActivity(@RequestParam("activityId") Integer activityId, @RequestAttribute("userId") Integer userId) {
+        System.out.println(userId);
+        ResultResponse<String> response = userActivityService.leaveActivity(userId, activityId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
 
     }

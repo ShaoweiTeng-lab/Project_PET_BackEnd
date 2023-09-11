@@ -118,8 +118,7 @@ public class UserAcImpl implements UserActivityService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "已經超過活動報名的人數限制，請注意人數");
         }
         //是否已經參加過活動
-        JoinActivity joinExist = userJoinDao.findByActivityIdAndUserId(userId, activityId);
-
+        JoinActivity joinExist = userJoinDao.findByActivityIdAndUserId(activityId, userId);
         if (joinExist != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "已經報名過，無法再次報名");
         }
@@ -156,8 +155,8 @@ public class UserAcImpl implements UserActivityService {
      * user 退出活動
      */
     @Override
-    public ResultResponse<String> leaveActivity(Integer userId, Integer activityId, JoinReq joinReq) {
-        String leaveResult = activityImplDao.leaveActivity(userId, activityId, joinReq);
+    public ResultResponse<String> leaveActivity(Integer userId, Integer activityId) {
+        String leaveResult = activityImplDao.leaveActivity(userId, activityId);
         ResultResponse<String> response = new ResultResponse<>();
         response.setMessage(leaveResult);
         return response;
@@ -169,7 +168,7 @@ public class UserAcImpl implements UserActivityService {
     @Override
     public ResultResponse<PageRes<JoinListRes>> queryACHistory(Integer userId, Integer page) {
         Page<JoinActivity> joinPage = userJoinDao
-                .findAllByUserId(userId, PageRequest.of(page, 5, Sort.by("enterTime").descending().and(Sort.by("status").descending())));
+                .findAllByUserId(userId, PageRequest.of(page, 10, Sort.by("enterTime").descending().and(Sort.by("status").descending())));
         ResultResponse<PageRes<JoinListRes>> response = activityService.convertToJoinListPage(joinPage);
         return response;
     }

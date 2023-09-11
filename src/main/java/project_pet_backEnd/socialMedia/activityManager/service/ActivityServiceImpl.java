@@ -158,7 +158,7 @@ public class ActivityServiceImpl implements ActivityService {
      * 查詢活動狀態
      */
     @Override
-    public ResultResponse<PageRes<ActivityRes>> getAcByStatus(int status,int page) {
+    public ResultResponse<PageRes<ActivityRes>> getAcByStatus(int status, int page) {
         Page<Activity> activityPage = activityDao.findAllByStatus(status, PageRequest.of(page, 7, Sort.Direction.DESC, "activityId"));
         ResultResponse<PageRes<ActivityRes>> response = convertToAcPage(activityPage);
         return response;
@@ -250,7 +250,7 @@ public class ActivityServiceImpl implements ActivityService {
             joinListRes.setUserName(join.getUser().getUserName());
             joinListRes.setUserEmail(join.getUser().getUserEmail());
             joinListRes.setUserPhone(join.getUser().getUserPhone());
-
+            joinListRes.setJoinStatus(join.getStatus());
             joinListRes.setActivityId(join.getActivityId());
             joinListRes.setActivityTitle(join.getActivity().getActivityTitle());
             joinListRes.setActivityTime(DateUtils.dateTimeSqlToStr(join.getActivity().getActivityTime()));
