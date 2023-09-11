@@ -54,15 +54,15 @@ public class SocialRedisMesSub implements MessageListener {
         String bodyStr = new String(body, StandardCharsets.UTF_8);
         if (bodyStr.contains("roomId")) {
             try {
-                PubSubMessage pubSubMessage = objectMapper.readValue(message.getBody(), PubSubMessage.class);
+                ChatMessage chatMessage = objectMapper.readValue(message.getBody(), ChatMessage.class);
+                PubSubMessage pubSubMessage = new PubSubMessage();
+                pubSubMessage.setUserPic("");
+                pubSubMessage.setUsername(chatMessage.getUsername());
+                pubSubMessage.setContent(chatMessage.getMessage());
+                pubSubMessage.setDate(System.currentTimeMillis());
+                pubSubMessage.setRoomId(chatMessage.getRoomId());
                 //將message儲存到redis中
                 roomDao.saveMessage(pubSubMessage);
-                ChatMessage chatMessage = new ChatMessage();
-                chatMessage.setMessage(pubSubMessage.getContent());
-                chatMessage.setDate(DateUtils.longToString(pubSubMessage.getDate()));
-                chatMessage.setUsername(pubSubMessage.getUsername());
-                chatMessage.setRoomId(pubSubMessage.getRoomId());
-                chatMessage.setUserId(pubSubMessage.getUserId());
                 //透過websocket session 將message及時回傳給使用者
                 sendMessageToRoomChannel(chatMessage);
             } catch (Exception e) {
