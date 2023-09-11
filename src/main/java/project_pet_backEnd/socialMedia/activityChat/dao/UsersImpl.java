@@ -35,13 +35,19 @@ public class UsersImpl implements UserDao {
         // store in redis
         redisTemplate.opsForValue().set(existsUserKey, userIdKey);
         redisTemplate.opsForHash().put(userIdKey, "username", user.getUserNickName());
-        redisTemplate.opsForHash().put(userIdKey, "userPic", ImageUtils.base64Encode(user.getUserPic()));
+        String userPic = ImageUtils.base64Encode(user.getUserPic());
+        if (userPic != null) {
+            redisTemplate.opsForHash().put(userIdKey, "userPic", userPic);
+        } else {
+            redisTemplate.opsForHash().put(userIdKey, "userPic", "");
+        }
+
         return userActivity;
     }
 
     // ================= 查看使用者是否存在聊天室 ================= //
     public boolean checkUserExists(int userId) {
-        boolean key = redisTemplate.hasKey(String.format(EXISTED_USER, userId)) != null;
+        boolean key = Boolean.TRUE.equals(redisTemplate.hasKey(String.format(EXISTED_USER, userId)));
         return key;
     }
 
@@ -61,7 +67,7 @@ public class UsersImpl implements UserDao {
 
     // ================= 查詢使用者目前是否上線 ================= //
     public boolean checkUserOnlineStatus(int userId) {
-        boolean isOnline = redisTemplate.opsForSet().isMember(ONLINE_USERS_KEY, String.valueOf(userId)) != null;
+        boolean isOnline = Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(ONLINE_USERS_KEY, String.valueOf(userId)));
         return isOnline;
     }
 

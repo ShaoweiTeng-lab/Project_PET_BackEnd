@@ -57,7 +57,7 @@ public class RoomsImpl implements RoomDao {
         }
         //聊天室名稱
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
-        redisTemplate.opsForSet().add(roomNameKey, activityName);
+        redisTemplate.opsForValue().set(roomNameKey, activityName);
 
     }
 
@@ -84,9 +84,14 @@ public class RoomsImpl implements RoomDao {
 
         String userRoomsKey = String.format(USER_ROOMS_KEY, userId);
         redisTemplate.opsForSet().add(userRoomsKey, String.valueOf(activityId));
-
+        Boolean member = redisTemplate.opsForSet().isMember(userRoomsKey, String.valueOf(activityId));
         //檢查聊天室資訊新增是否成功
-        return redisTemplate.opsForSet().isMember(userRoomsKey, String.valueOf(activityId)) != null;
+        if (Boolean.TRUE.equals(member)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     // ================= 當活動結束後，使用者移除一筆活動聊天室 ================= //

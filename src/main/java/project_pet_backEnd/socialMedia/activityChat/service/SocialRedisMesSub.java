@@ -61,6 +61,7 @@ public class SocialRedisMesSub implements MessageListener {
                 pubSubMessage.setContent(chatMessage.getMessage());
                 pubSubMessage.setDate(System.currentTimeMillis());
                 pubSubMessage.setRoomId(chatMessage.getRoomId());
+                pubSubMessage.setUserId(chatMessage.getUserId());
                 //將message儲存到redis中
                 roomDao.saveMessage(pubSubMessage);
                 //透過websocket session 將message及時回傳給使用者
