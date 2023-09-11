@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
 import project_pet_backEnd.productMall.mall.dto.ProductPage;
@@ -21,10 +22,8 @@ import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class ProductsManageServiceImp implements ProductsManageService {
@@ -85,6 +84,17 @@ public class ProductsManageServiceImp implements ProductsManageService {
         return page;
     }
 
+    @Override  //後台 修改單一商品列表狀態
+    public ResultResponse<String> updateoneProductStatus(AdjustProductListResponse adjustProductListResponse) {
+        ResultResponse<String> rs = new ResultResponse<>();
+        Product product = productRepository.findByPdNo(adjustProductListResponse.getPdNo());
+        product.setPdStatus(adjustProductListResponse.getPdStatus());
+        productRepository.save(product);
+        rs.setMessage("更新成功");
+        return rs;
+    }
+
+    @Transactional
     @Override  //ok後台 修改商品列表狀態
 //    更新成功
     public ResultResponse<String> updateProductStatus(List<AdjustProductListResponse> adjustProductListResponse) {
@@ -149,7 +159,9 @@ public class ProductsManageServiceImp implements ProductsManageService {
             productRepository.save(product); // 先保存商品，獲取商品編號
             for (ProductPic pic : pics) {
                 pic.setPdNo(product.getPdNo()); // 關聯商品編號
-            }
+                pic.setPdPicNo(productUpdate.getPdPicNo());
+                }
+
 
             productPicDao.batchupdateproductPicByPdNo(pics); // 執行批次修改圖片
             ResultResponse<String> rs = new ResultResponse<>();
@@ -197,6 +209,32 @@ public class ProductsManageServiceImp implements ProductsManageService {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "新增失敗，請檢查是否有空值", e);
         }
+    }
+
+    @Override  //後台 編輯時新增商品圖片
+    public ResultResponse insertProductPic(Integer pdNo, ProductPic productPic) {
+
+        List<ProductPic> existingPics = productPicRepository.findByPdNo(pdNo);
+        int picOrder = existingPics.size() + 1;
+
+        productPic.setPdOrderList(picOrder);
+
+
+
+        productPicRepository.save(productPic);
+        ResultResponse<String> rs = new ResultResponse<>();
+        rs.setMessage("新增成功");
+        return rs;
+    }
+
+    @Transactional
+    @Override  //後台 編輯時刪除商品圖片
+    public ResultResponse deleteProductPic(Integer pdPicNo) {
+        List<ProductPic> picList = productPicRepository.deleteByPdPicNo(pdPicNo);
+
+        ResultResponse<String> rs = new ResultResponse<>();
+        rs.setMessage("刪除成功");
+        return rs;
     }
 
 }

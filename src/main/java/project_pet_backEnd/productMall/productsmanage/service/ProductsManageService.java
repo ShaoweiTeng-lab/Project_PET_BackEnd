@@ -21,6 +21,10 @@ public interface ProductsManageService {
     //後台 商品列表查詢
     Page<List<ProductListResponse>> getAllProductsWithSearch(ProductListQueryParameter productListQueryParameter);
 
+    //後台 修改單一商品列表狀態
+    ResultResponse<String> updateoneProductStatus(AdjustProductListResponse adjustProductListResponse);
+
+
     //後台 修改商品列表狀態
     ResultResponse<String> updateProductStatus(List<AdjustProductListResponse> adjustProductListResponse);
 
@@ -35,6 +39,15 @@ public interface ProductsManageService {
 
     //後台 新增商品(資訊+圖片)
     ResultResponse insertProduct(ProductInfo productInfo, List<ProductPic> pics);
+
+
+    //後台 編輯時新增商品圖片
+    ResultResponse insertProductPic(Integer pdNo, ProductPic productPic);
+
+    //後台 編輯時刪除商品圖片
+    ResultResponse deleteProductPic(Integer pdPicNo);
+
+
 
 }
 

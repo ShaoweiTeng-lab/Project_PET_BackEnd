@@ -3,6 +3,7 @@ package project_pet_backEnd.productMall.productsmanage.vo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Data
@@ -14,7 +15,7 @@ public class ProductPic {
         @Column(name = "PD_PIC_NO")
         private Integer pdPicNo;
 
-        @Column(name = "PD_NO",insertable = false,updatable = false)
+        @Column(name = "PD_NO")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Integer pdNo; // 商品編號 (Foreign Key)
 
@@ -26,7 +27,9 @@ public class ProductPic {
         private Integer pdOrderList;
 
         @ManyToOne
-        @JoinColumn(name = "PD_NO")
+        @JoinColumn(name = "PD_NO",insertable = false,updatable = false)
         private Product product;
 
+        public void setBase64Image(List<String> pics) {
+        }
 }

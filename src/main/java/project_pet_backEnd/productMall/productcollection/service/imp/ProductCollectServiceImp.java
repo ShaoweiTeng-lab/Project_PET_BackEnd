@@ -16,6 +16,7 @@ import project_pet_backEnd.productMall.productcollection.vo.ProductCollect;
 import project_pet_backEnd.productMall.productcollection.vo.ProductCollectPk;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -34,8 +35,13 @@ public class ProductCollectServiceImp implements ProductCollectService {
             primaryKey.setUserId(editProductCollect.getUserId());
             primaryKey.setPdNo(editProductCollect.getPdNo());
 
+            // 創建 java.util.Date 對象並轉換為 java.sql.Date
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
             ProductCollect productCollect = new ProductCollect();
             productCollect.setId(primaryKey);
+            productCollect.setPdcCreated(sqlDate);
 
             productCollectRepository.save(productCollect);
             ResultResponse rs = new ResultResponse<>();

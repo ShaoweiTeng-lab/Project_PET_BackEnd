@@ -11,5 +11,7 @@ public interface ProductPicRepository extends JpaRepository<ProductPic, Integer>
 
     List<ProductPic> findByPdNo(Integer pdNo);
 
+//    List<ProductPic> findByPdPicNo(Integer pdPicNo);
 
+    List<ProductPic> deleteByPdPicNo(Integer pdPicNo);
 }

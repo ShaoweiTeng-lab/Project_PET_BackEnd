@@ -23,7 +23,7 @@ public class ProductCollectDaoImp implements ProductCollectDao {
 
     @Override
     public List<ProductCollectList> getAllCollect(Integer userId) {
-        String sql = "SELECT PC.PD_NO, PC.USER_ID, PC.PDC_CREATED, P.PD_PRICE, PIC.PD_PIC " +
+        String sql = "SELECT PC.PD_NO, PC.USER_ID, PC.PDC_CREATED,P.PD_NAME, P.PD_PRICE, PIC.PD_PIC " +
                     "FROM PRODUCT_COLLECT PC " +
                     "JOIN PRODUCT P ON PC.PD_NO = P.PD_NO " +
                     "JOIN PRODUCT_PIC PIC ON PC.PD_NO = PIC.PD_NO AND PIC.PIC_ORDER = 1  " +
@@ -38,6 +38,7 @@ public class ProductCollectDaoImp implements ProductCollectDao {
                 pc.setPdNo(rs.getInt("PD_NO"));
                 pc.setUserId(rs.getInt("USER_ID"));
                 pc.setPdcCreated(rs.getDate("PDC_CREATED"));
+                pc.setPdName(rs.getString("PD_NAME"));
                 pc.setPdPrice(rs.getInt("PD_PRICE"));
                 pc.setBase64Image(rs.getString("PD_PIC"));
 

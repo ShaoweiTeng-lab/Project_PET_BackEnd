@@ -183,8 +183,8 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
     public void batchupdateproductPicByPdNo(List<ProductPic> pics) {
         String sql = "UPDATE PRODUCT_PIC " +
                 "SET PD_No = :pdNo, " +
-                "PD_PIC = :pdPic, " +
-                "PIC_ORDER = :pdOrderList " +
+                "PD_PIC = :pdPic " +
+//                "PIC_ORDER = :pdOrderList " +
 
                 "WHERE PD_PIC_NO = :pdPicNo";
 
@@ -196,10 +196,9 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
         params.addValue("pdNo", productPic.getPdNo());
         params.addValue("pdPic",productPic.getPdPic());
         params.addValue("pdPicNo", productPic.getPdPicNo());
-        params.addValue("pdOrderList", productPic.getPdOrderList());
+//        params.addValue("pdOrderList", productPic.getPdOrderList());
             batchParams[i] = params;
         }
-
         namedParameterJdbcTemplate.batchUpdate(sql, batchParams);
     }
 
