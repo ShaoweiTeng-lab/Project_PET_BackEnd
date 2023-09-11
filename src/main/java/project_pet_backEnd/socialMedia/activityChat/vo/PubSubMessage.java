@@ -10,7 +10,7 @@ public class PubSubMessage {
     private String username;
     private String content;
     private String userPic;
-    private int date;
+    private long date;
 
 
 }

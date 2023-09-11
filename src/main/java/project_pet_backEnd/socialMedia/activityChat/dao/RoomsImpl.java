@@ -28,7 +28,7 @@ public class RoomsImpl implements RoomDao {
     private static final String ROOM_KEY = "room:%s";
     private static final String ROOM_NAME_KEY = "room:%s:name";
     private static final String ONLINE_USERS_KEY = "online_users";
-    private static final String ACTIVITY_USER_LIST = "activity:%d";
+    private static final String ACTIVITY_USER_LIST = "activity:%s";
 
 
     // ================= 建立活動聊天室 ================= //
@@ -44,19 +44,20 @@ public class RoomsImpl implements RoomDao {
         pubSubMessage.setContent("來自管理員的第一條訊息");
         pubSubMessage.setUsername("社群管理員");
         pubSubMessage.setRoomId(roomId);
-        pubSubMessage.setDate((int)System.currentTimeMillis());
+        pubSubMessage.setDate(System.currentTimeMillis());
+        pubSubMessage.setUserPic("");
         // 社群管理員預設id
         pubSubMessage.setUserId("0");
         String messageFromManager;
         try {
             messageFromManager = objectMapper.writeValueAsString(pubSubMessage);
-            redisTemplate.opsForSet().add(groupRoomKey, messageFromManager);
+            redisTemplate.opsForZSet().add(groupRoomKey, messageFromManager, pubSubMessage.getDate());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         //聊天室名稱
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
-        redisTemplate.opsForSet().add(roomNameKey, activityName);
+        redisTemplate.opsForValue().set(roomNameKey, activityName);
 
     }
 
@@ -83,9 +84,14 @@ public class RoomsImpl implements RoomDao {
 
         String userRoomsKey = String.format(USER_ROOMS_KEY, userId);
         redisTemplate.opsForSet().add(userRoomsKey, String.valueOf(activityId));
-
+        Boolean member = redisTemplate.opsForSet().isMember(userRoomsKey, String.valueOf(activityId));
         //檢查聊天室資訊新增是否成功
-        return redisTemplate.opsForSet().isMember(userRoomsKey, String.valueOf(activityId)) != null;
+        if (Boolean.TRUE.equals(member)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     // ================= 當活動結束後，使用者移除一筆活動聊天室 ================= //
@@ -138,7 +144,9 @@ public class RoomsImpl implements RoomDao {
     @Override
     public Set<String> getMessages(String roomId, int offset, int size) {
         String roomNameKey = String.format(ROOM_KEY, roomId);
-        return redisTemplate.opsForZSet().reverseRange(roomNameKey, offset, offset + size);
+        Set<String> result = redisTemplate.opsForZSet().reverseRange(roomNameKey, offset, size);
+        System.out.println(result);
+        return result;
     }
 
     // ================= 儲存訊息到聊天室 ================= //
@@ -148,7 +156,7 @@ public class RoomsImpl implements RoomDao {
 
         try {
             String jacksonMessage = objectMapper.writeValueAsString(pubSubMessage);
-            redisTemplate.opsForZSet().add(roomKey, objectMapper.writeValueAsString(pubSubMessage), pubSubMessage.getDate());
+            redisTemplate.opsForZSet().add(roomKey, jacksonMessage, pubSubMessage.getDate());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -194,9 +202,8 @@ public class RoomsImpl implements RoomDao {
 
     // ================= 拿到目前聊天室的使用者清單 ================= //
     @Override
-    public List<UserActivity> getCurrentRoomUserOnlineList(int roomId) {
-        String roomIdStr = String.valueOf(roomId);
-        String groupRoomKey = String.format(ROOM_KEY, roomIdStr);
+    public List<UserActivity> getCurrentRoomUserOnlineList(String roomId) {
+        String groupRoomKey = String.format(ACTIVITY_USER_LIST, roomId);
         Set<String> userIdLists = redisTemplate.opsForSet().members(groupRoomKey);
         if (userIdLists == null) {
             return null;
@@ -213,7 +220,7 @@ public class RoomsImpl implements RoomDao {
     // ================= 拿到目前聊天室的使用者Id ================= //
     @Override
     public Set<String> getRoomUserList(String roomId) {
-        String groupRoomKey = String.format(ROOM_KEY, roomId);
+        String groupRoomKey = String.format(ACTIVITY_USER_LIST, roomId);
         Set<String> userIdLists = redisTemplate.opsForSet().members(groupRoomKey);
         return userIdLists;
     }
