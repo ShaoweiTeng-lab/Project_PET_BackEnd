@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomsImpl;
 import project_pet_backEnd.socialMedia.activityChat.dao.UserDao;
 import project_pet_backEnd.socialMedia.activityChat.dto.ChatMessage;
 import project_pet_backEnd.socialMedia.activityChat.dto.NotifyMessage;
@@ -39,6 +40,7 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private RedisMessagePublisher messagePublisher;
 
+
     @Autowired
     private RoomDao roomDao;
 
@@ -58,9 +60,7 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
             String userId = getUserId[1];
             System.out.println(userId);
             //get username username_
-            String userNameString = (String) session.getAttributes().get("sender");
-            String[] getUserName = userNameString.split("_");
-            String userName = getUserName[0];
+            String userName = (String) session.getAttributes().get("sender");
             System.out.println(userName);
             //當使用者上線後使用redis紀錄使用者狀態
             userDao.addUserToOnlineList(userId);
@@ -129,9 +129,12 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
+        System.out.println(session);
+        System.out.println(message);
         PubSubMessage pubSubMessage = objectMapper.readValue((JsonParser) message, PubSubMessage.class);
+        String messageJsonString = objectMapper.writeValueAsString(pubSubMessage);
         //轉換成pub sub到redis處理  傳送給相同頻道的所有使用者
-        messagePublisher.publish(pubSubMessage);
+        messagePublisher.publish(messageJsonString);
     }
 
     /**

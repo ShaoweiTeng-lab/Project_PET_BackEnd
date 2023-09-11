@@ -23,7 +23,7 @@ public class RedisMessagePublisher {
     public RedisMessagePublisher() {
     }
 
-    public void publish(PubSubMessage message) {
+    public void publish(String message) {
         redisTemplate.convertAndSend(topic.getTopic(), message);
     }
 
