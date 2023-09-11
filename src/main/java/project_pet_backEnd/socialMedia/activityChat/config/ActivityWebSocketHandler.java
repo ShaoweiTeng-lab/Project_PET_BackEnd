@@ -14,6 +14,7 @@ import project_pet_backEnd.socialMedia.activityChat.dao.RoomsImpl;
 import project_pet_backEnd.socialMedia.activityChat.dao.UserDao;
 import project_pet_backEnd.socialMedia.activityChat.dto.ChatMessage;
 import project_pet_backEnd.socialMedia.activityChat.dto.NotifyMessage;
+import project_pet_backEnd.socialMedia.activityChat.dto.ReceiveMessage;
 import project_pet_backEnd.socialMedia.activityChat.dto.UserActivity;
 import project_pet_backEnd.socialMedia.activityChat.service.RedisMessagePublisher;
 import project_pet_backEnd.socialMedia.activityChat.vo.PubSubMessage;
@@ -65,9 +66,7 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
             //當使用者上線後使用redis紀錄使用者狀態
             userDao.addUserToOnlineList(userId);
             //放入sessionMap中進行管理
-            System.out.println(acSessionMap);
             acSessionMap.putIfAbsent(userId, session);
-            System.out.println(acSessionMap);
             //發送的訊息格式 不需要儲存，只需顯示
             NotifyMessage notifyMessage = new NotifyMessage();
             notifyMessage.setMessage(userName + "已經上線了");
@@ -132,18 +131,43 @@ public class ActivityWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        PubSubMessage pubSubMessage = objectMapper.readValue(message.getPayload().toString(), PubSubMessage.class);
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setMessage(pubSubMessage.getContent());
-        chatMessage.setUserPic(pubSubMessage.getUserPic());
-        chatMessage.setUsername(pubSubMessage.getUsername());
-        chatMessage.setRoomId(pubSubMessage.getRoomId());
-        chatMessage.setDate(DateUtils.longToString(pubSubMessage.getDate()));
-        chatMessage.setUserId(pubSubMessage.getUserId());
-        //sendMessageToRoomChannel(chatMessage);
-        //轉換成pub sub到redis處理  傳送給相同頻道的所有使用者
-        String jsonString = objectMapper.writeValueAsString(pubSubMessage);
-        messagePublisher.publish(jsonString);
+
+        //get userId  userId_
+        String idString = (String) session.getAttributes().get("connect");
+        if (idString.contains("userId_")) {
+            String[] getUserId = idString.split("_");
+            String userId = getUserId[1];
+            //get username username_
+            String userNameString = (String) session.getAttributes().get("sender");
+            String[] getUserName = userNameString.split("_");
+            String userName = getUserName[0];
+            ReceiveMessage receiveMessage = objectMapper.readValue(message.getPayload().toString(), ReceiveMessage.class);
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setMessage(receiveMessage.getContent());
+            chatMessage.setUserPic("");
+            chatMessage.setUsername(userName);
+            chatMessage.setRoomId(receiveMessage.getRoomId());
+            chatMessage.setDate(DateUtils.dateTimeSqlToStr(new Timestamp(System.currentTimeMillis())));
+            chatMessage.setUserId(userId);
+            //sendMessageToRoomChannel(chatMessage);
+            //轉換成pub sub到redis處理  傳送給相同頻道的所有使用者
+            String jsonString = objectMapper.writeValueAsString(chatMessage);
+            messagePublisher.publish(jsonString);
+        } else if (idString.contains("managerId_")) {
+            ReceiveMessage receiveMessage = objectMapper.readValue(message.getPayload().toString(), ReceiveMessage.class);
+            ChatMessage chatMessage = new ChatMessage();
+            chatMessage.setMessage(receiveMessage.getContent());
+            chatMessage.setUserPic("");
+            chatMessage.setUsername("社群管理員");
+            chatMessage.setRoomId(receiveMessage.getRoomId());
+            chatMessage.setDate(DateUtils.dateTimeSqlToStr(new Timestamp(System.currentTimeMillis())));
+            chatMessage.setUserId("0");
+            //轉換成pub sub到redis處理  傳送給相同頻道的所有使用者
+            String jsonString = objectMapper.writeValueAsString(chatMessage);
+            messagePublisher.publish(jsonString);
+        }
+
+
     }
 
     /**
