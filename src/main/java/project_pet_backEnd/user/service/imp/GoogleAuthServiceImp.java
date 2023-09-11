@@ -66,7 +66,8 @@ public class GoogleAuthServiceImp implements OAuthService {
         parameters.add("code", oauthRequest.getCode());
         parameters.add("client_id", clientId);
         parameters.add("client_secret", clientSecret);
-        parameters.add("redirect_uri", "http://localhost:5500");
+//        parameters.add("redirect_uri", "http://localhost:5500");
+        parameters.add("redirect_uri", "https://yang-hung-fei.github.io");
         parameters.add("grant_type", "authorization_code");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

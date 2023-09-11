@@ -1,5 +1,6 @@
 package project_pet_backEnd.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,8 @@ import project_pet_backEnd.socialMedia.activityChat.service.SocialRedisMesSub;
 public class RedisConfig {
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
+    @Autowired
+    private ObjectMapper objectMapper;
     @Bean
     public RedisTemplate<String, CartItemDTO> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, CartItemDTO> template = new RedisTemplate<>();

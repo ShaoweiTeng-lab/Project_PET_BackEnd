@@ -7,6 +7,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
+import project_pet_backEnd.groomer.pgPushNotify.PgNotifyWebSocketHandler;
 import project_pet_backEnd.interceptor.ProductMallWebSocketHandshakeInterceptor;
 import project_pet_backEnd.productMall.chat.ProductMallWebSocketHandler;
 import project_pet_backEnd.socialMedia.activityChat.config.ActivityWebSocketHandler;
@@ -18,7 +19,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Autowired
     @Qualifier("webSocketHandshakeInterceptor")
     private HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor;
-
+    @Autowired
+    private PgNotifyWebSocketHandler pgNotifyWebSocketHandler;
     @Autowired
     private UserNotifyWebSocketHandler userNotifyWebSocketHandler;
     @Autowired
@@ -36,6 +38,9 @@ public class WebSocketConfig implements WebSocketConfigurer {
                 .setAllowedOrigins("*")
                 .addInterceptors(productMallWebSocketHandshakeInterceptor);
         registry.addHandler(activityWebSocketHandler, "/websocket/activity")// 添加處理器
+                .setAllowedOrigins("*")
+                .addInterceptors(httpSessionHandshakeInterceptor);
+        registry.addHandler(pgNotifyWebSocketHandler, "/websocket/pgNotify")// 添加處理器
                 .setAllowedOrigins("*")
                 .addInterceptors(httpSessionHandshakeInterceptor);
     }
