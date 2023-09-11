@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.socialMedia.activityChat.config.ActivityWebSocketHandler;
 import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomsImpl;
 import project_pet_backEnd.socialMedia.activityChat.dto.ChatMessage;
 import project_pet_backEnd.socialMedia.activityChat.dto.NotifyMessage;
 import project_pet_backEnd.socialMedia.activityChat.vo.PubSubMessage;
@@ -21,15 +23,12 @@ import java.nio.charset.StandardCharsets;
 public class SocialRedisMesSub implements MessageListener {
 
 
-    @Autowired
-    private ActivityWebSocketHandler webSocketHandler;
+    private ActivityWebSocketHandler webSocketHandler = new ActivityWebSocketHandler();
 
     @Autowired
     private RoomDao roomDao;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     //redis接收到訊息後的處理
     @Override
     public void onMessage(Message message, byte[] bytes) {
@@ -42,12 +41,12 @@ public class SocialRedisMesSub implements MessageListener {
         System.out.println(bodyStr);
         if (bodyStr.contains("roomId")) {
             try {
-                PubSubMessage pubSubMessage = objectMapper.readValue(message.getBody(), PubSubMessage.class);
+                PubSubMessage pubSubMessage = objectMapper.readValue(bodyStr, PubSubMessage.class);
                 //將message儲存到redis中
                 roomDao.saveMessage(pubSubMessage);
                 ChatMessage chatMessage = new ChatMessage();
                 chatMessage.setMessage(pubSubMessage.getContent());
-                chatMessage.setDate(DateUtils.intToString(pubSubMessage.getDate()));
+                chatMessage.setDate(DateUtils.longToString(pubSubMessage.getDate()));
                 chatMessage.setUsername(pubSubMessage.getUsername());
                 chatMessage.setRoomId(pubSubMessage.getRoomId());
                 chatMessage.setUserId(pubSubMessage.getUserId());
@@ -59,7 +58,7 @@ public class SocialRedisMesSub implements MessageListener {
             }
         } else if (bodyStr.contains("已經上線了")) {
             try {
-                NotifyMessage notifyMessage = objectMapper.readValue(message.getBody(), NotifyMessage.class);
+                NotifyMessage notifyMessage = objectMapper.readValue(bodyStr, NotifyMessage.class);
                 System.out.println(webSocketHandler);
                 webSocketHandler.sendNotifyMessage(notifyMessage);
             } catch (Exception e) {

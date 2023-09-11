@@ -38,7 +38,7 @@ public class RoomServiceImpl implements RoomService {
                 PubSubMessage pubSubMessage = objectMapper.readValue(message, PubSubMessage.class);
                 chatMessage.setMessage(pubSubMessage.getContent());
                 chatMessage.setUserPic(pubSubMessage.getUserPic());
-                chatMessage.setDate(DateUtils.intToString(pubSubMessage.getDate()));
+                chatMessage.setDate(DateUtils.longToString(pubSubMessage.getDate()));
                 chatMessage.setUsername(pubSubMessage.getUsername());
                 chatMessage.setRoomId(pubSubMessage.getRoomId());
                 chatMessages.add(chatMessage);

@@ -44,10 +44,16 @@ public class RoomsImpl implements RoomDao {
         pubSubMessage.setContent("來自管理員的第一條訊息");
         pubSubMessage.setUsername("社群管理員");
         pubSubMessage.setRoomId(roomId);
-        pubSubMessage.setDate((int) System.currentTimeMillis());
+        pubSubMessage.setDate((int)System.currentTimeMillis());
         // 社群管理員預設id
         pubSubMessage.setUserId("0");
-        redisTemplate.opsForSet().add(groupRoomKey, String.valueOf(pubSubMessage));
+        String messageFromManager;
+        try {
+            messageFromManager = objectMapper.writeValueAsString(pubSubMessage);
+            redisTemplate.opsForSet().add(groupRoomKey, messageFromManager);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         //聊天室名稱
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
         redisTemplate.opsForSet().add(roomNameKey, activityName);
