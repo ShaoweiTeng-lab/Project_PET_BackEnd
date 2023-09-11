@@ -78,7 +78,7 @@ public class RoomServiceImpl implements RoomService {
         ResultResponse<List<UserActivity>> response = new ResultResponse<>();
         List<UserActivity> userOnlineList = new ArrayList<>();
         try {
-            userOnlineList = roomDao.getCurrentRoomUserOnlineList(roomId);
+            userOnlineList = roomDao.getCurrentRoomUserOnlineList(String.valueOf(roomId));
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "伺服器錯誤");

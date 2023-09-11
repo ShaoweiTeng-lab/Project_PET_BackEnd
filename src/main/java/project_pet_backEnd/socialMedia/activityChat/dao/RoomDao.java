@@ -46,7 +46,7 @@ public interface RoomDao {
 
 
     //拿取目前活動上線使用者
-    List<UserActivity> getCurrentRoomUserOnlineList(int roomId);
+    List<UserActivity> getCurrentRoomUserOnlineList(String roomId);
 
 
 }
