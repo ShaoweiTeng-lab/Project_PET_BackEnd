@@ -29,7 +29,7 @@ public class RoomsImpl implements RoomDao {
     private static final String ROOM_NAME_KEY = "room:%s:name";
     private static final String ONLINE_USERS_KEY = "online_users";
     private static final String ACTIVITY_USER_LIST = "activity:%s";
-
+    private static final String ROOM = "room";
 
     // ================= 建立活動聊天室 ================= //
 
@@ -58,14 +58,15 @@ public class RoomsImpl implements RoomDao {
         //聊天室名稱
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
         redisTemplate.opsForValue().set(roomNameKey, activityName);
+        //加入聊天室列表
+        redisTemplate.opsForSet().add(ROOM,roomId);
 
     }
 
     // ================= 拿到所有活動聊天室的Id ================= //
     @Override
     public Set<String> getGroupRoomIds() {
-        String roomKey = "room";
-        Set<String> roomIds = redisTemplate.opsForSet().members(roomKey);
+        Set<String> roomIds = redisTemplate.opsForSet().members(ROOM);
         return roomIds;
     }
 
@@ -145,7 +146,6 @@ public class RoomsImpl implements RoomDao {
     public Set<String> getMessages(String roomId, int offset, int size) {
         String roomNameKey = String.format(ROOM_KEY, roomId);
         Set<String> result = redisTemplate.opsForZSet().reverseRange(roomNameKey, offset, size);
-        System.out.println(result);
         return result;
     }
 
