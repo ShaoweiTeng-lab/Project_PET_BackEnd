@@ -31,7 +31,7 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-//    @Override  //ok商品列表列出全部商品
+//    @Override  //改JPA ok商品列表列出全部商品
 //    public List<ProductListResponse> getAllProduct(Integer pdNo) {
 //        String sql ="SELECT PD_NO, PD_NAME, PD_PRICE, PD_STATUS "+
 //                    "FROM PRODUCT " +
@@ -126,31 +126,18 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
 
     }
 
-    @Override   //ok(可改用JPA就不用寫)新增商品資訊
-    public void insertProductInfo(ProductInfo productInfo) {
-        String sql = "INSERT INTO PRODUCT (PD_NAME, PD_PRICE, PD_STATUS, PD_DESCRIPTION) " +
-                "VALUES (:pdName, :pdPrice, :pdStatus, :pdDescription)";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pdName", productInfo.getPdName());
-        params.addValue("pdPrice", productInfo.getPdPrice());
-        params.addValue("pdStatus", productInfo.getPdStatus());
-        params.addValue("pdDescription", productInfo.getPdDescription());
-
-        namedParameterJdbcTemplate.update(sql, params);
-
-    }
 
     @Override   //ok批次新增商品圖片
     public void batchinsertProductPic(List<ProductPic> pics){
         String sql ="INSERT INTO PRODUCT_PIC (PD_PIC, PD_NO, PIC_ORDER) " +
-                "VALUES(:pdPic, :pdNo, :PdOrderlist)";
+                "VALUES(:pdPic, :pdNo, :pdOrderList)";
         Map<String, Object> [] maps =new HashMap[pics.size()];
         for(int i = 0; i < pics.size(); i++){
             ProductPic productPic = pics.get(i);
             maps[i] = new HashMap<>();
             maps[i].put("pdPic", productPic.getPdPic());
             maps[i].put("pdNo", productPic.getPdNo());
-            maps[i].put("PdOrderlist", productPic.getPdOrderList());
+            maps[i].put("pdOrderList", productPic.getPdOrderList());
         }
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -158,23 +145,23 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
 
     }
 
-    @Override //編輯商品顯示(獲取)商品圖片(pic)
-    public List<ProductPic> getAllProductPic(Integer PdNo) {
-        String sql ="SELECT FROM PRODUCT_PIC WHERE PD_NO = :pdNo";
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("pdNo", PdNo);
-
-        List<ProductPic> pics = namedParameterJdbcTemplate.query(sql, params, new RowMapper<ProductPic>() {
-            @Override
-            public ProductPic mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ProductPic productPic = new ProductPic();
-                productPic.setPdPicNo(rs.getInt("PD_PIC_NO"));
-
-                return productPic;
-            }
-    });
-    return pics;
-}
+//    @Override //編輯商品顯示(獲取)商品圖片(pic)改JPA
+//    public List<ProductPic> getAllProductPic(Integer PdNo) {
+//        String sql ="SELECT FROM PRODUCT_PIC WHERE PD_NO = :pdNo";
+//        MapSqlParameterSource params = new MapSqlParameterSource();
+//        params.addValue("pdNo", PdNo);
+//
+//        List<ProductPic> pics = namedParameterJdbcTemplate.query(sql, params, new RowMapper<ProductPic>() {
+//            @Override
+//            public ProductPic mapRow(ResultSet rs, int rowNum) throws SQLException {
+//                ProductPic productPic = new ProductPic();
+//                productPic.setPdPicNo(rs.getInt("PD_PIC_NO"));
+//
+//                return productPic;
+//            }
+//    });
+//    return pics;
+//}
 
     @Override  //ok批次修改狀態
     public void batchupdateproductstatusByPdNo(List<AdjustProductListResponse> adjustProductListResponse) {
@@ -196,8 +183,8 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
     public void batchupdateproductPicByPdNo(List<ProductPic> pics) {
         String sql = "UPDATE PRODUCT_PIC " +
                 "SET PD_No = :pdNo, " +
-                "PD_PIC = :pdPic, " +
-                "PD_ORDERLIST = :PdOrderlist, " +
+                "PD_PIC = :pdPic " +
+//                "PIC_ORDER = :pdOrderList " +
 
                 "WHERE PD_PIC_NO = :pdPicNo";
 
@@ -209,9 +196,9 @@ public class ProductsManageDaoImp implements ProductsManageDao, ProductPicDao {
         params.addValue("pdNo", productPic.getPdNo());
         params.addValue("pdPic",productPic.getPdPic());
         params.addValue("pdPicNo", productPic.getPdPicNo());
+//        params.addValue("pdOrderList", productPic.getPdOrderList());
             batchParams[i] = params;
         }
-
         namedParameterJdbcTemplate.batchUpdate(sql, batchParams);
     }
 

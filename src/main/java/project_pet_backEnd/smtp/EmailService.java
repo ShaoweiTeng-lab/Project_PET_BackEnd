@@ -2,6 +2,7 @@ package project_pet_backEnd.smtp;
 
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +16,8 @@ import javax.mail.internet.MimeMessage;
 @Data
 public class EmailService {
     private final JavaMailSender mailSender;
+    @Value("${formEmail}")
+    private  String formEmail;
 
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -25,10 +28,17 @@ public class EmailService {
         MimeMessage msg =mailSender.createMimeMessage();
         MimeMessageHelper helper =null;
         try {
+            msg.setFrom(formEmail);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             helper = new MimeMessageHelper(msg, true, "UTF-8");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+
+
         try {
             helper.setTo(emailResponse.getTo());
         } catch (MessagingException e) {

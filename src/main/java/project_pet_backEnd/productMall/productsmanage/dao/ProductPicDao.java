@@ -13,10 +13,10 @@ public interface ProductPicDao {
      */
     void batchinsertProductPic(List<ProductPic> pics);
 
-    /*
-     *編輯商品顯示(獲取)商品圖片(pic)
-     */
-    public List<ProductPic> getAllProductPic(Integer PdNo);
+//    /*
+//     *編輯商品顯示(獲取)商品圖片(pic)改JPA
+//     */
+//    public List<ProductPic> getAllProductPic(Integer PdNo);
 
     /*
      *修改商品圖片
