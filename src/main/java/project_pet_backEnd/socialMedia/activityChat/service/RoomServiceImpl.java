@@ -41,6 +41,7 @@ public class RoomServiceImpl implements RoomService {
                 chatMessage.setDate(DateUtils.longToString(pubSubMessage.getDate()));
                 chatMessage.setUsername(pubSubMessage.getUsername());
                 chatMessage.setRoomId(pubSubMessage.getRoomId());
+                chatMessage.setUserId(pubSubMessage.getUserId());
                 chatMessages.add(chatMessage);
             } catch (Exception e) {
                 e.printStackTrace();

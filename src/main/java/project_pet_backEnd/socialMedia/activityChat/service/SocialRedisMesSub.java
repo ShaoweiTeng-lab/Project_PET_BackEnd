@@ -151,6 +151,8 @@ public class SocialRedisMesSub implements MessageListener {
             String userId = String.valueOf(user.getUserId());
             userIds.add(userId);
         }
+        //這邊加入管理員Id
+        userIds.add("0");
         //通知使用者已經上線 -先透過 userId list 拿到session發送通知
         List<WebSocketSession> sessionList = new ArrayList<>();
         for (String user : userIds) {
