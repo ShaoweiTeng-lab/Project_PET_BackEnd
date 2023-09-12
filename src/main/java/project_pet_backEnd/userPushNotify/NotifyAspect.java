@@ -5,7 +5,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project_pet_backEnd.socialMedia.activityManager.dao.ActivityDao;
 import project_pet_backEnd.socialMedia.activityManager.vo.Activity;
 import project_pet_backEnd.userPushNotify.dao.ActivityRepository;
 import project_pet_backEnd.userPushNotify.dao.PictureInfoRepository;
@@ -43,7 +42,7 @@ public class NotifyAspect {
     public  void  socialMediaUpdateNotify() throws Exception {
         NotifyType notifyType =NotifyType.Activity;
         Activity activity= activityRepository.findTopByOrderByActivityIdDesc();
-        NotifyMsg notifyMsg =new NotifyMsg(notifyType,AllDogCatUtils.base64Encode(activity.getActivityPicture()),"商城有新的商品，趕快來看看喔~");
+        NotifyMsg notifyMsg =new NotifyMsg(notifyType,AllDogCatUtils.base64Encode(activity.getActivityPicture()),"社群有新活動，趕快來看看喔~");
         userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
         // System.out.println("執行 groomerUpdateNotify");userNotifyWebSocketHandler.publicNotifyMsg(notifyMsg);
     }
