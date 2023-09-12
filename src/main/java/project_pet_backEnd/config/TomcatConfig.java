@@ -12,33 +12,33 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TomcatConfig {
 
-    @Value("${server.port}")
-    private Integer serverPort;
-
-    @Bean
-    public TomcatServletWebServerFactory servletContainer() {
-        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(){
-            @Override
-            protected void postProcessContext(Context context){
-                SecurityConstraint securityConstraint = new SecurityConstraint();
-                securityConstraint.setUserConstraint("CONFIDENTIAL");
-                SecurityCollection collection = new SecurityCollection();
-                collection.addPattern("/*");
-                securityConstraint.addCollection(collection);
-                context.addConstraint(securityConstraint);
-
-            }
-        };
-        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
-        return tomcat;
-    }
-
-    private Connector createHttpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-        connector.setScheme("http");
-        connector.setSecure(false);
-        connector.setPort(80);
-        connector.setRedirectPort(serverPort);
-        return connector;
-    }
+//    @Value("${server.port}")
+//    private Integer serverPort;
+//
+//    @Bean
+//    public TomcatServletWebServerFactory servletContainer() {
+//        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory(){
+//            @Override
+//            protected void postProcessContext(Context context){
+//                SecurityConstraint securityConstraint = new SecurityConstraint();
+//                securityConstraint.setUserConstraint("CONFIDENTIAL");
+//                SecurityCollection collection = new SecurityCollection();
+//                collection.addPattern("/*");
+//                securityConstraint.addCollection(collection);
+//                context.addConstraint(securityConstraint);
+//
+//            }
+//        };
+//        tomcat.addAdditionalTomcatConnectors(createHttpConnector());
+//        return tomcat;
+//    }
+//
+//    private Connector createHttpConnector() {
+//        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+//        connector.setScheme("http");
+//        connector.setSecure(false);
+//        connector.setPort(80);
+//        connector.setRedirectPort(serverPort);
+//        return connector;
+//    }
 }
