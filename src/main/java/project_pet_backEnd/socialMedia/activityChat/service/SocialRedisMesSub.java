@@ -37,10 +37,10 @@ public class SocialRedisMesSub implements MessageListener {
     private ObjectMapper objectMapper;
 
 //    這邊等紹偉幫我加上建構子就可以執行了
-//    public SocialRedisMesSub(ObjectMapper objectMapper, RoomDao roomDao) {
-//        this.objectMapper = objectMapper;
-//        this.roomDao = roomDao;
-//    }
+    public SocialRedisMesSub(ObjectMapper objectMapper, RoomDao roomDao) {
+        this.objectMapper = objectMapper;
+        this.roomDao = roomDao;
+    }
 
 
     //redis接收到訊息後的處理

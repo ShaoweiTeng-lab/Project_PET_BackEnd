@@ -14,6 +14,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import project_pet_backEnd.productMall.order.dto.CartItemDTO;
+import project_pet_backEnd.socialMedia.activityChat.dao.RoomDao;
 import project_pet_backEnd.socialMedia.activityChat.service.SocialRedisMesSub;
 
 @Configuration
@@ -22,6 +23,8 @@ public class RedisConfig {
     private RedisConnectionFactory redisConnectionFactory;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private RoomDao roomDao;
     @Bean
     public RedisTemplate<String, CartItemDTO> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, CartItemDTO> template = new RedisTemplate<>();
@@ -46,7 +49,7 @@ public class RedisConfig {
 
     @Bean("activityMessageListenerAdapter")
     MessageListenerAdapter activityMessageListenerAdapter() {
-        return new MessageListenerAdapter(new SocialRedisMesSub(), "onMessage");
+        return new MessageListenerAdapter(new SocialRedisMesSub(objectMapper,roomDao), "onMessage");
     }
 
     @Bean("activityTopic")
