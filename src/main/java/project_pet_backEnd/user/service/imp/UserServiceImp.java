@@ -179,8 +179,7 @@ public class UserServiceImp implements UserService {
         redisTemplate.expire(uuid,10, TimeUnit.MINUTES);//十分鐘後過期
         sendEmail(userEmail,
                 "修改密碼通知",
-                "請點選以下連接更改您的密碼:<br>"+
-                        renewPasswordUrl+"?code="+uuid);
+                "請點選以下連接更改您的密碼:</br> <a href=\"" + renewPasswordUrl + "?code=" + uuid + "\">點擊這裡</a>");
         ResultResponse rs =new ResultResponse();
         rs.setMessage("送出成功");
         return rs;
