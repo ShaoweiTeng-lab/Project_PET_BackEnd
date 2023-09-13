@@ -67,8 +67,8 @@ public class ProductCollectController {
                     required = true, dataType = "string", paramType = "header")})
     @GetMapping("/productcollectlist")
     public ResponseEntity<ResultResponse<List<ProductCollectList>>> getAllCollect(
-            @RequestParam(value = "userId") Integer userId){
-//            @RequestAttribute(name = "userId") Integer userId){
+//            @RequestParam(value = "userId") Integer userId){
+            @RequestAttribute(name = "userId") Integer userId){
         List<ProductCollectList> pclist = productCollectService.getAllCollect(userId);
         ResultResponse<List<ProductCollectList>> rs = new ResultResponse<>();
         rs.setMessage(pclist);
