@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import project_pet_backEnd.productMall.productsmanage.dao.ProductPicRepository;
 import project_pet_backEnd.productMall.productsmanage.dto.*;
 import project_pet_backEnd.productMall.productsmanage.service.ProductsManageService;
 import project_pet_backEnd.productMall.productsmanage.vo.ProductPic;

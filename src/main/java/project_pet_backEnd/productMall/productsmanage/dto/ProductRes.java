@@ -28,9 +28,9 @@ public class ProductRes {
     private String pdDescription; //商品說明 VARCHAR(500)
 
 
-    private Integer pdPicNo;
+    private List<Integer> pdPicNo;
 
-    private Integer PdOrderList;
+    private List<Integer> PdOrderList;
 
     private List<String> base64Image;
 

@@ -140,20 +140,18 @@ public class UserServiceImp implements UserService {
         User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
         if(user==null)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
-        User adjustUser =new User();
-        adjustUser.setUserId(userId);
-        adjustUser.setUserName(adjustUserProfileRequest.getUserName()==null?user.getUserName():adjustUserProfileRequest.getUserName());
-        adjustUser.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
-        adjustUser.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
-        adjustUser.setUserEmail(user.getUserEmail());
-        adjustUser.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
-        adjustUser.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
-        adjustUser.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
-        adjustUser.setUserPoint(user.getUserPoint());
-        adjustUser.setUserPic(adjustUserProfileRequest.getUserPic()==null?user.getUserPic():adjustUserProfileRequest.getUserPic());
-        adjustUser.setIdentityProvider(user.getIdentityProvider());
-        adjustUser.setUserCreated(user.getUserCreated());
-        userRepository.save(adjustUser);
+        user.setUserName(adjustUserProfileRequest.getUserName()==null?user.getUserName():adjustUserProfileRequest.getUserName());
+        user.setUserNickName(adjustUserProfileRequest.getUserNickName()==null?user.getUserNickName():adjustUserProfileRequest.getUserNickName());
+        user.setUserGender(adjustUserProfileRequest.getUserGender()==null?user.getUserGender():adjustUserProfileRequest.getUserGender());
+        user.setUserEmail(user.getUserEmail());
+        user.setUserPhone(adjustUserProfileRequest.getUserPhone()==null?user.getUserPhone():adjustUserProfileRequest.getUserPhone());
+        user.setUserAddress(adjustUserProfileRequest.getUserAddress()==null?user.getUserAddress():adjustUserProfileRequest.getUserAddress());
+        user.setUserBirthday(adjustUserProfileRequest.getUserBirthday()==null?user.getUserBirthday():adjustUserProfileRequest.getUserBirthday());
+        user.setUserPoint(user.getUserPoint());
+        user.setUserPic(adjustUserProfileRequest.getUserPic()==null?user.getUserPic():adjustUserProfileRequest.getUserPic());
+        user.setIdentityProvider(user.getIdentityProvider());
+        user.setUserCreated(user.getUserCreated());
+        userRepository.save(user);
         return  new ResultResponse();
     }
 
@@ -179,8 +177,7 @@ public class UserServiceImp implements UserService {
         redisTemplate.expire(uuid,10, TimeUnit.MINUTES);//十分鐘後過期
         sendEmail(userEmail,
                 "修改密碼通知",
-                "請點選以下連接更改您的密碼:<br>"+
-                        renewPasswordUrl+"?code="+uuid);
+                "請點選以下連接更改您的密碼:</br> <a href=\"" + renewPasswordUrl + "?code=" + uuid + "\">點擊這裡</a>");
         ResultResponse rs =new ResultResponse();
         rs.setMessage("送出成功");
         return rs;
