@@ -21,14 +21,15 @@ public class LineNotifyServiceImpl implements LineNotifyService {
     public String getOAuthCode() {
         StringBuilder sb = new StringBuilder();
         LineOAuthRequest lineOAuthRequest = new LineOAuthRequest();
-        lineOAuthRequest.setClient_id("csOQbpYbnaYhfrESUxRdmx");
+        lineOAuthRequest.setClient_id("client_id");
         lineOAuthRequest.setRedirect_uri("http://localhost:5500/frontend/pages/mall/mall/mall.html");
 
         Map<String,Object> variableParams = lineOAuthRequest.getUriParams();
 
         //組裝GetOAuth URL字串
         sb.append("https://notify-bot.line.me/oauth/authorize").append("?");
-        for(String key:variableParams.keySet()) {                                                          sb.append(key)
+        for(String key:variableParams.keySet()) {
+              sb.append(key)
                 .append("=")
                 .append(String.valueOf(variableParams.get(key)))
                 .append("&");
