@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.ecpay.payment.integration.AllInOne;
 import project_pet_backEnd.ecpay.payment.integration.domain.AioCheckOutALL;
+import project_pet_backEnd.productMall.lineNotify.dto.LineNotifyResponse;
+import project_pet_backEnd.productMall.lineNotify.service.LineNotifyService;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
 import project_pet_backEnd.productMall.order.vo.Orders;
 import project_pet_backEnd.productMall.userPayment.dao.OrderListRepository;
@@ -28,6 +30,8 @@ public class UserPaymentServiceImp implements UserPaymentService {
     @Autowired
     private OrderListRepository orderListRepository;
     private  final  static Logger log= LoggerFactory.getLogger(UserPaymentServiceImp.class);
+    @Autowired
+    private LineNotifyService lineNotifyService;
     @Value("${ecpay-RedirectHttpsUrl}")
     private String ecpayRedirectHttpsUrl;
     @Override
@@ -53,6 +57,10 @@ public class UserPaymentServiceImp implements UserPaymentService {
         orders.setOrdPayStatus(1); //修改為1 完成訂單
         orders.setOrdFinish(LocalDateTime.now());
         ordersRepository.save(orders);
+        String toManagerMessage = "訂單編號為:" + orderId + "->已付款完成,請管理員準備出貨喔!!";
+        LineNotifyResponse lineNotifyResponse = new LineNotifyResponse();
+        lineNotifyResponse.setMessage(toManagerMessage);
+        lineNotifyService.notify(lineNotifyResponse);
     }
 
     @Override
