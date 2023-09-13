@@ -123,13 +123,27 @@ public class ProductsManageServiceImp implements ProductsManageService {
         productRes.setPdStatus(product.getPdStatus());
         productRes.setPdDescription(product.getPdDescription());
 
+        //取出pdPicNo
+        List<Integer> picNo = new ArrayList<>();
+        for(ProductPic productPic : picList){
+            picNo.add(productPic.getPdPicNo());
+        }
+        productRes.setPdPicNo(picNo);
+
+        //取出PdOrderList
+        List<Integer> picOrder = new ArrayList<>();
+        for(ProductPic productPic : picList){
+            picOrder.add(productPic.getPdOrderList());
+        }
+        productRes.setPdOrderList(picOrder);
+
         //圖片轉Base64 - > 放入List
         List<String> pics = new ArrayList<>();
         for (ProductPic productPic : picList) {
             pics.add(AllDogCatUtils.base64Encode(productPic.getPdPic()));
         }
-
         productRes.setBase64Image(pics);
+
         ResultResponse<ProductRes> rs = new ResultResponse<ProductRes>();
         rs.setMessage(productRes);
         return rs;
