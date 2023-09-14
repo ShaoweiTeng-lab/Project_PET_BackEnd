@@ -31,7 +31,8 @@ public class LineNotifyServiceImpl implements LineNotifyService {
 
     //設定表頭參數
     private final String LINE_NOTIFY_API_URL = "https://notify-api.line.me/api/notify";
-    private final String LINE_NOTIFY_TOKEN = "BPN1oT9rCEKJLBLW7HdYCHiZUgyYTWUiiK6QcK6rwXk";
+    @Value("${line.notify.token}")
+    private String LINE_NOTIFY_TOKEN;
 
 
     @Override
