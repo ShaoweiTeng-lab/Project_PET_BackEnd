@@ -17,7 +17,7 @@ import java.io.IOException;
 @Api(tags = "後台商城管理員通知功能")
 @Validated
 @RestController
-@RequestMapping("/manager")
+@RequestMapping("/customer")
 public class ManagerNotifyController {
     @Autowired
     LineNotifyService lineNotifyService;

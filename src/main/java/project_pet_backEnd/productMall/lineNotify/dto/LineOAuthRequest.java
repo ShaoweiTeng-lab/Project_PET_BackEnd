@@ -19,7 +19,7 @@ public class LineOAuthRequest {
     private String response_type = "code";
     private String scope = "notify";
     private String state = "csrfToken";
-    private String response_mode="form_post";
+//    private String response_mode="form_post";
 
     public Map<String, Object> getUriParams(){
         try {
