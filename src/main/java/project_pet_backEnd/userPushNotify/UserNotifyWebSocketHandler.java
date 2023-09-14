@@ -44,17 +44,18 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         //todo 先從redis 拿出有訂閱的userId 再檢查當前上線的session ，若無 則放進history(儲存格式 userNotify:UserId)
         Set<String> notifyKeys = getKeys("userNotify:*");
         String jsNotifyMsg = objectMapper.writeValueAsString(notifyMsg);
-        if (sessionMap.keySet().size() == 0) {
-            //代表沒人上線 將所有推撥存入history
-            notifyKeys.forEach(notifyKey -> {
-                redisTemplate.opsForList().leftPush(notifyKey, jsNotifyMsg);
-            });
-        }
-
+//        if (sessionMap.keySet().size() == 0) {
+//            //代表沒人上線 將所有推撥存入history
+//            notifyKeys.forEach(notifyKey -> {
+//                redisTemplate.opsForList().leftPush(notifyKey, jsNotifyMsg);
+//            });
+//        }
+        notifyKeys.forEach(notifyKey -> {
+            redisTemplate.opsForList().leftPush(notifyKey, jsNotifyMsg);
+        });
         for (String key : sessionMap.keySet()) {
             String connector = key.split("-")[0]; //拿到userId_num
-            if (!notifyKeys.contains(connector))
-                redisTemplate.opsForList().leftPush("userNotify:" + connector, jsNotifyMsg);
+            System.out.println("得到connector 為:"+connector);
             TextMessage textMessage = new TextMessage(message);
             sessionMap.get(key).sendMessage(textMessage);
         }
