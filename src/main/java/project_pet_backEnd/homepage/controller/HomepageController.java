@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project_pet_backEnd.homepage.service.HomepageService;
 import project_pet_backEnd.homepage.vo.NewsPic;
+import project_pet_backEnd.homepage.vo.PicRot;
+import project_pet_backEnd.homepageManage.dto.HomepageNewsRes;
+import project_pet_backEnd.homepageManage.dto.NewsRes;
+import project_pet_backEnd.homepageManage.service.HomepageManageService;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
 import java.util.List;
@@ -20,12 +24,8 @@ public class HomepageController {
     @Autowired
     private HomepageService homepageService;
 
-    @GetMapping("/getRotePic")
-    public ResponseEntity<List<String>> getRotePic(){
-        return ResponseEntity.status(200).body(homepageService.getRotePic());
-    }
-
-
+    @Autowired
+    private HomepageManageService homepageManageService;
 
     /**
      * 取得最新消息
@@ -36,12 +36,6 @@ public class HomepageController {
         return ResponseEntity.status(200).body(rs);
     }
 
-    /**
-     * 取得最新消息圖片
-     * */
-
-    @GetMapping("/getNewsPic")
-    public List<NewsPic> getNewsPic(){ return homepageService.getNewsPic();}
 
     /**
      * 取得Google Map Api key
@@ -52,5 +46,49 @@ public class HomepageController {
         rs.setMessage(homepageService.getGoogleMapApiKey());
         return rs;
     }
+
+    /**
+     * 查詢最新消息圖片
+     **/
+    @GetMapping("/getNewsPic")
+    public ResponseEntity<ResultResponse<List<NewsPic>>> getAllNewsPic() {
+        List<NewsPic> newsPic = homepageManageService.getAllNewsPic();
+        ResultResponse<List<NewsPic>> rs = new ResultResponse<>();
+        rs.setMessage(newsPic);
+        return ResponseEntity.status(200).body(rs);
+    }
+
+    /**
+     * 查詢首頁最新消息
+     **/
+    @GetMapping("/getHomepageNewsPic")
+    public ResponseEntity<ResultResponse<List<HomepageNewsRes>>> getHomepageNews() {
+        ResultResponse<List<HomepageNewsRes>> rs = homepageManageService.getHomePageNews();
+        return ResponseEntity.status(200).body(rs);
+    }
+
+    /**
+     * 查詢輪播圖
+     **/
+
+    @GetMapping("/getRotePic")
+    public ResponseEntity<ResultResponse<List<PicRot>>> getAllRotePic() {
+        List<PicRot> rotePics = homepageManageService.getAllRotePic();
+        ResultResponse<List<PicRot>> rs = new ResultResponse<>();
+        rs.setMessage(rotePics);
+        return ResponseEntity.status(200).body(rs);
+    }
+    /**
+     * 查詢最新消息列表
+     **/
+    @GetMapping("/getAllNews")
+    public ResponseEntity<ResultResponse<List<NewsRes>>> getAllNews() {
+        List<NewsRes> newsRes = homepageManageService.getAllNews();
+        ResultResponse<List<NewsRes>> rs = new ResultResponse<>();
+        rs.setMessage(newsRes);
+        return ResponseEntity.status(200).body(rs);
+    }
+
+
 
 }

@@ -1,6 +1,8 @@
 package project_pet_backEnd.homepage.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,6 +20,8 @@ public class News {
     @Column(name = "NEWS_STATUS")
     private Integer newsStatus;
     @Column(name = "UPDATE_TIME")
+    @UpdateTimestamp
     private Date updateTime;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm",timezone = "Asia/Taipei")
 
 }

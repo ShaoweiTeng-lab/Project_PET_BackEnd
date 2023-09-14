@@ -1,6 +1,5 @@
 package project_pet_backEnd.homepageManage.service;
 
-import project_pet_backEnd.homepage.vo.News;
 import project_pet_backEnd.homepage.vo.NewsPic;
 import project_pet_backEnd.homepage.vo.PicRot;
 import project_pet_backEnd.homepageManage.dto.*;
@@ -10,32 +9,45 @@ import java.util.List;
 
 public interface HomepageManageService {
 
-        List<PicRot> getAllRotePic();
-        ResultResponse editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest);
-        void deleteRotePicByPicNo(Integer picNo);
-        void addRotePic(AddRotePicRequest addRotePicRequest);
+    List<PicRot> getAllRotePic();
 
-        //===================================================
+    ResultResponse editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest);
 
-        ResultResponse addNews(AddNewsRequest addNewsRequest);
+    void deleteRotePicByPicNo(Integer picNo);
 
-        ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);
+    void addRotePic(AddRotePicRequest addRotePicRequest);
 
-        void deleteNewsByNewsNo(Integer newsNo);
+    //===================================================
 
+    ResultResponse addNews(AddNewsRequest addNewsRequest);
 
-        List<News> getAllNews();
+    ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);
 
-        //===========================================
-
-        ResultResponse addNewsPic(AddNewsPicRequest addNewsPicRequest);
-        ResultResponse editNewsPicByPicNo(AdjustNewsPicRequest adjustNewsPicRequest);
-
-        void deleteNewsPicByPicNo(Integer newsPicNo);
-        List<NewsPic> getAllNewsPic();
+    void deleteNewsByNewsNo(Integer newsNo);
+    ResultResponse<PicRotRes> getOneRotePic(int picNo);
 
 
-        ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest);
+    List<NewsRes> getAllNews();
+
+    ResultResponse getOneNews(Integer newsNo);
+    //===========================================
+
+    ResultResponse addNewsPic(AddNewsPicRequest addNewsPicRequest);
+
+    ResultResponse editNewsPicByPicNo(AdjustNewsPicRequest adjustNewsPicRequest);
+
+    void deleteNewsPicByPicNo(Integer newsPicNo);
+
+    List<NewsPic> getAllNewsPic();
+
+
+    ResultResponse addNewsPicWithNews(AddNewsPicWithNewsRequest addNewsPicWithNewsRequest);
+
+    ResultResponse<NewsPicRes> getOneNewsPicByNewsNo(Integer newsNo);
+
+    // 首頁上架最新消息(sort by time and status)
+
+    ResultResponse<List<HomepageNewsRes>> getHomePageNews();
 
 
 }
