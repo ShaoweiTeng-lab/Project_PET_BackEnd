@@ -80,14 +80,6 @@ public class ActivityDaoImpl {
             return "你已經超過可以退出活動的時間";
         } else {
 
-            //改變使用者參加狀態
-            String userStatusUpdate = "update activity_participation set enter_status = 1\n" +
-                    "where activity_id = :activityId AND user_id = :userId";
-            Map<String, Object> userMap = new HashMap<>();
-            userMap.put("activityId", activityId);
-            userMap.put("userId", userId);
-            template.update(userStatusUpdate, userMap);
-
             //查詢user參加活動清單人數
 
             String enrollCountSql = "select * FROM activity_participation\n" +
@@ -109,6 +101,15 @@ public class ActivityDaoImpl {
             if (queryJoinData.getStatus() == 1) {
                 return "你已經退出活動，無法再退出一次!";
             }
+
+            //改變使用者參加狀態
+            String userStatusUpdate = "update activity_participation set enter_status = 1\n" +
+                    "where activity_id = :activityId AND user_id = :userId";
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("activityId", activityId);
+            userMap.put("userId", userId);
+            template.update(userStatusUpdate, userMap);
+
 
             //改變參加活動人數的數量
             String activityCountUpdate = "update activity set enrollment_count = enrollment_count - :leaveCount\n" +
