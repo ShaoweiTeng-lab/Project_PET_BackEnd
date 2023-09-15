@@ -12,24 +12,30 @@ public interface HomepageManageDao {
     void addRotePic(AddRotePicRequest addRotePicRequest);
 
 
-
-
     //更新輪播圖
-    void editRotePicByPicNo (AdjustRotePicRequest adjustRotePicRequest);
+    void editRotePicByPicNo(AdjustRotePicRequest adjustRotePicRequest);
 
     //刪除輪播圖
     void deleteRotePicByPicNo(Integer picNo);
+
     List<PicRot> getAllRotePic();
+
+    //查詢單一輪播圖
+    PicRot getOneRotePic(Integer picNo);
 
 
     //增加最新消息
-    void addNews(AddNewsRequest addNewsRequest);
+    Integer addNews(AddNewsRequest addNewsRequest);
+
     //編輯最新消息
     void editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest);
+
     //刪除最新消息
     void deleteNewsByNewsNo(Integer newsNo);
+
     List<News> getAllNews();
-    List<News> getOneNews(Integer newsNo);
+
+    News getOneNews(Integer newsNo);
 
 
     //新增最新消息圖片
@@ -41,6 +47,11 @@ public interface HomepageManageDao {
 
     //刪除最新消息圖片
     void deleteNewsPicByNewsNo(Integer newsNo);
+
+    //查詢所有最新消息圖片
     List<NewsPic> getAllNewsPic();
 
+    //查詢單一最新消息圖片
+    NewsPic getOneNewsPic(Integer newsNo);
+    //因為用newsNo抓newsPic, 所以參數放newsNo
 }

@@ -63,7 +63,7 @@ public class HomepageManageController {
      **/
 
     @PutMapping("/editRotePicByPicNo")
-    public ResponseEntity<ResultResponse<String>> editRotePicByPicNo(@ModelAttribute @Valid AdjustRotePicRequest adjustRotePicRequest) {
+    public ResponseEntity<ResultResponse<String>> editRotePicByPicNo(@RequestBody @Valid AdjustRotePicRequest adjustRotePicRequest) {
         ResultResponse rs = homepageManageService.editRotePicByPicNo(adjustRotePicRequest);
         return ResponseEntity.status(201).body(rs);
     }
@@ -72,7 +72,7 @@ public class HomepageManageController {
      * 刪除輪播圖
      **/
 
-    @GetMapping("/deleteRotePicByPicNo")
+    @DeleteMapping("/deleteRotePicByPicNo")
     public ResponseEntity<ResultResponse<String>> deleteRotePicByPicNo(@RequestParam("picNo") int picNo) {
         homepageManageService.deleteRotePicByPicNo(picNo);
         ResultResponse rs = new ResultResponse();
@@ -93,13 +93,23 @@ public class HomepageManageController {
     }
 
     /**
+     * 查詢單一輪播圖
+     **/
+    @GetMapping("/getOneRotePic")
+    public ResponseEntity<ResultResponse<PicRotRes>> getOneRotePic(@RequestParam("picNo") int picNo) {
+        ResultResponse<PicRotRes> rs = homepageManageService.getOneRotePic(picNo);
+        return ResponseEntity.status(200).body(rs);
+
+    }
+
+    /**
      * 新增最新消息
      **/
     @PostMapping("/addNews")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
-    public ResponseEntity<ResultResponse<String>> addNews(@RequestBody @Valid AddNewsRequest addNewsRequest) {
+    public ResponseEntity<ResultResponse<Integer>> addNews(@RequestBody @Valid AddNewsRequest addNewsRequest) {
         ResultResponse rs = homepageManageService.addNews(addNewsRequest);
         return ResponseEntity.status(200).body(rs);
     }
@@ -116,7 +126,7 @@ public class HomepageManageController {
     /**
      * 刪除最新消息
      **/
-    @GetMapping("/deleteNewsByNewsNo")
+    @DeleteMapping("/deleteNewsByNewsNo")
     public ResponseEntity<ResultResponse<String>> deleteNewsByPicNo(@RequestParam("newsNo") int newsNo) {
         homepageManageService.deleteNewsByNewsNo(newsNo);
         ResultResponse rs = new ResultResponse();
@@ -124,19 +134,34 @@ public class HomepageManageController {
         return ResponseEntity.status(201).body(rs);
     }
 
-
     /**
      * 查詢最新消息列表
      **/
-    @GetMapping("/getNews")
-    public ResponseEntity<ResultResponse<List<News>>> getAllNews() {
-        List<News> news = homepageManageService.getAllNews();
-        ResultResponse<List<News>> rs = new ResultResponse<>();
-        rs.setMessage(news);
+    @GetMapping("/getAllNews")
+    public ResponseEntity<ResultResponse<List<NewsRes>>> getAllNews() {
+        List<NewsRes> newsRes = homepageManageService.getAllNews();
+        ResultResponse<List<NewsRes>> rs = new ResultResponse<>();
+        rs.setMessage(newsRes);
         return ResponseEntity.status(200).body(rs);
     }
 
+    /**
+     * 查詢單一最新消息
+     **/
+    @GetMapping("/getOneNews")
+    public ResponseEntity<ResultResponse<News>> getOneNews(@RequestParam("newsNo") int newsNo) {
+        ResultResponse<News> rs = homepageManageService.getOneNews(newsNo);
+        return ResponseEntity.status(200).body(rs);
+    }
 
+    /**
+     * 查詢首頁最新消息
+     **/
+    @GetMapping("/getHomepageNewsPic")
+    public ResponseEntity<ResultResponse<List<HomepageNewsRes>>> getHomepageNews() {
+        ResultResponse<List<HomepageNewsRes>> rs = homepageManageService.getHomePageNews();
+        return ResponseEntity.status(200).body(rs);
+    }
 
     /**
      * 新增最新消息圖片
@@ -145,8 +170,8 @@ public class HomepageManageController {
     public ResponseEntity<ResultResponse<String>> addNewsPic(
             @RequestParam @NotNull Integer newsNo,
             @RequestParam @NotNull MultipartFile pic
-             ) {
-        AddNewsPicRequest addNewsPicRequest =new AddNewsPicRequest();
+    ) {
+        AddNewsPicRequest addNewsPicRequest = new AddNewsPicRequest();
         addNewsPicRequest.setNewsNo(newsNo);
         addNewsPicRequest.setPic(AllDogCatUtils.convertMultipartFileToByteArray(pic));
         ResultResponse rs = homepageManageService.addNewsPic(addNewsPicRequest);
@@ -160,10 +185,6 @@ public class HomepageManageController {
     @PutMapping("/editNewsPic")
     public ResponseEntity<ResultResponse<String>> editNewsPicByPicNo(@ModelAttribute AdjustNewsPicRequest adjustNewsPicRequest) {
         ResultResponse rs = homepageManageService.editNewsPicByPicNo(adjustNewsPicRequest);
-        NewsPic newsPic = new NewsPic();
-        newsPic.setNewsPicNo(adjustNewsPicRequest.getNewsPicNo());
-        newsPic.setNewsNo(adjustNewsPicRequest.getNewsNo());
-        newsPic.setPic(AllDogCatUtils.convertMultipartFileToByteArray(adjustNewsPicRequest.getPic()));
         rs.setMessage("修改成功");
         return ResponseEntity.status(201).body(rs);
     }
@@ -172,7 +193,7 @@ public class HomepageManageController {
     /**
      * 刪除最新消息圖片
      **/
-    @GetMapping("/deleteNewsPicByPicNo")
+    @DeleteMapping("/deleteNewsPicByPicNo")
     public ResponseEntity<ResultResponse<String>> deleteNewsPicByPicNo(@RequestParam("newsPicNo") int newsPicNo) {
         homepageManageService.deleteNewsPicByPicNo(newsPicNo);
         ResultResponse rs = new ResultResponse();
@@ -181,16 +202,16 @@ public class HomepageManageController {
     }
 
 
-    /**
-     * 查詢最新消息圖片
-     **/
-    @GetMapping("/getNewsPic")
-    public ResponseEntity<ResultResponse<List<NewsPic>>> getAllNewsPic() {
-        List<NewsPic> newsPic = homepageManageService.getAllNewsPic();
-        ResultResponse<List<NewsPic>> rs = new ResultResponse<>();
-        rs.setMessage(newsPic);
-        return ResponseEntity.status(200).body(rs);
-    }
 
+
+    /**
+     * 查詢單一最新消息圖片
+     **/
+    @GetMapping("/getOneNewsPic")
+    public ResponseEntity<ResultResponse<NewsPicRes>> getOneNewsPic(@RequestParam("newsNo") int newsNo) {
+        ResultResponse<NewsPicRes> rs = homepageManageService.getOneNewsPicByNewsNo(newsNo);
+        return ResponseEntity.status(200).body(rs);
+
+    }
 
 }
