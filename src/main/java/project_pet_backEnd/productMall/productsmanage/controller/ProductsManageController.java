@@ -92,7 +92,7 @@ public class ProductsManageController {
     }
 
     //後台 修改商品列表狀態
-    @ApiOperation("商品管理員修改商品狀態")
+    @ApiOperation("商品管理員修改單一商品狀態")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
