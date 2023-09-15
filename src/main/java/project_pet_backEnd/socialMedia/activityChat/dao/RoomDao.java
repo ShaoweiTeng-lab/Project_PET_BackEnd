@@ -48,5 +48,8 @@ public interface RoomDao {
     //拿取目前活動上線使用者
     List<UserActivity> getCurrentRoomUserOnlineList(String roomId);
 
+    //修改聊天室名稱
+    void changeRoomName(String roomId, String activityName);
+
 
 }
