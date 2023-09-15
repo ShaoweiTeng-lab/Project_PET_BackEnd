@@ -92,7 +92,7 @@ public class ProductsManageController {
     }
 
     //後台 修改商品列表狀態
-    @ApiOperation("商品管理員修改商品狀態")
+    @ApiOperation("商品管理員修改單一商品狀態")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
     })
@@ -126,12 +126,14 @@ public class ProductsManageController {
         List<ProductPic> pics = new ArrayList<>();
         List<MultipartFile> multipartFileList = productUpdate.getPicFiles();
         // 將上傳的圖片轉換成 byte[] 格式並添加到商品圖片列表中
-        for (MultipartFile picFile : multipartFileList) {
-            byte[] picData = convertMultipartFileToByteArray(picFile);
-            if (picData != null) {
-                ProductPic pic = new ProductPic();
-                pic.setPdPic(picData);
-                pics.add(pic);
+        if(multipartFileList!=null){
+            for (MultipartFile picFile : multipartFileList) {
+                byte[] picData = convertMultipartFileToByteArray(picFile);
+                if (picData != null) {
+                    ProductPic pic = new ProductPic();
+                    pic.setPdPic(picData);
+                    pics.add(pic);
+                }
             }
         }
         productsManageService.updateProduct(productUpdate, pics);
@@ -206,5 +208,34 @@ public class ProductsManageController {
         productsManageService.deleteProductPic(pdPicNo);
         rs.setMessage("刪除成功");
         return ResponseEntity.status(200).body(rs);
+    }
+
+    //後台 更換商品圖片
+    @ApiOperation("商品管理員更換商品圖片")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization_M", value = "Manager Access Token", required = true, dataType = "string", paramType = "header")
+    })
+    @PutMapping("/changePic")
+    public ResponseEntity<ResultResponse> changeProductPic(
+            @RequestParam Integer pdNo,
+            @RequestParam Integer pdPicNo,
+            @RequestParam Integer pdOrderList,
+            @RequestParam("pdPic") MultipartFile pdPic) throws IOException {
+
+        ResultResponse rs = new ResultResponse();
+
+        // 將上傳的圖片轉換成 byte[] 格式
+        byte[] pic = AllDogCatUtils.convertMultipartFileToByteArray(pdPic);
+
+        ProductPic productPic = new ProductPic();
+        productPic.setPdNo(pdNo);
+        productPic.setPdPicNo(pdPicNo);
+        productPic.setPdOrderList(pdOrderList);
+        productPic.setPdPic(pic);
+        productsManageService.changeProductPic(pdNo, pdPicNo, pdOrderList, productPic);
+
+        rs.setMessage("更換成功");
+        return ResponseEntity.status(200).body(rs);
+
     }
 }

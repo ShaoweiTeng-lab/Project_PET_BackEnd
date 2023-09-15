@@ -47,8 +47,9 @@ public interface ProductsManageService {
     //後台 編輯時刪除商品圖片
     ResultResponse deleteProductPic(Integer pdPicNo);
 
-
-
+    @Transactional
+        //後台 編輯時更換商品圖片
+    ResultResponse changeProductPic(Integer pdNo, Integer pdPicNo,Integer pdOrderList, ProductPic productPic);
 }
 
 
