@@ -37,7 +37,7 @@ public class ProductCollectController {
     @PostMapping("/addproductcollect")
     public ResponseEntity<ResultResponse<String>> insertProductCollect(
             @RequestParam @NotNull Integer pdNo,
-            @RequestParam @NotNull Integer userId
+            @RequestAttribute(name = "userId") Integer userId
     ){
         EditProductCollect editProductCollect = new EditProductCollect();
         editProductCollect.setPdNo(pdNo);
@@ -54,7 +54,7 @@ public class ProductCollectController {
                     required = true, dataType = "string", paramType = "header")})
     @DeleteMapping("/deleteproductcollect")
     public ResponseEntity<ResultResponse<String>> deleteProductCollect(
-            @RequestParam(value = "userId") Integer userId,
+            @RequestAttribute(name = "userId") Integer userId,
             @RequestParam(value = "pdNo") Integer pdNo) {
         ResultResponse<String> rs = productCollectService.deleteProductCollect(userId, pdNo);
         return ResponseEntity.status(200).body(rs);
@@ -67,7 +67,6 @@ public class ProductCollectController {
                     required = true, dataType = "string", paramType = "header")})
     @GetMapping("/productcollectlist")
     public ResponseEntity<ResultResponse<List<ProductCollectList>>> getAllCollect(
-//            @RequestParam(value = "userId") Integer userId){
             @RequestAttribute(name = "userId") Integer userId){
         List<ProductCollectList> pclist = productCollectService.getAllCollect(userId);
         ResultResponse<List<ProductCollectList>> rs = new ResultResponse<>();
