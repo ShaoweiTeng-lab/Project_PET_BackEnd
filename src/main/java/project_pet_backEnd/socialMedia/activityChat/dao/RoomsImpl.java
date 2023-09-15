@@ -59,7 +59,7 @@ public class RoomsImpl implements RoomDao {
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
         redisTemplate.opsForValue().set(roomNameKey, activityName);
         //加入聊天室列表
-        redisTemplate.opsForSet().add(ROOM,roomId);
+        redisTemplate.opsForSet().add(ROOM, roomId);
 
     }
 
@@ -188,15 +188,11 @@ public class RoomsImpl implements RoomDao {
     public void removeGroupRoom(int roomId) {
         String roomIdStr = String.valueOf(roomId);
         String groupRoomKey = String.format(ROOM_KEY, roomIdStr);
-        Set<String> userIdLists = redisTemplate.opsForSet().members(groupRoomKey);
+        Set<String> userIdLists = redisTemplate.opsForZSet().range(groupRoomKey, 0, -1);
         String roomNameKey = String.format(ROOM_NAME_KEY, roomIdStr);
-        Set<String> roomNames = redisTemplate.opsForSet().members(roomNameKey);
-
-        for (String roomName : roomNames) {
-            redisTemplate.opsForSet().remove(roomNameKey, roomName);
-        }
+        Boolean delete = redisTemplate.opsForValue().getOperations().delete(roomNameKey);
         for (String userId : userIdLists) {
-            redisTemplate.opsForSet().remove(groupRoomKey, userId);
+            redisTemplate.opsForZSet().remove(groupRoomKey, userId);
         }
     }
 
@@ -223,6 +219,13 @@ public class RoomsImpl implements RoomDao {
         String groupRoomKey = String.format(ACTIVITY_USER_LIST, roomId);
         Set<String> userIdLists = redisTemplate.opsForSet().members(groupRoomKey);
         return userIdLists;
+    }
+
+    // ================= 修改聊天室名稱 ================= //
+    @Override
+    public void changeRoomName(String roomId, String activityName) {
+        String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
+        redisTemplate.opsForValue().set(roomNameKey, activityName);
     }
 
 

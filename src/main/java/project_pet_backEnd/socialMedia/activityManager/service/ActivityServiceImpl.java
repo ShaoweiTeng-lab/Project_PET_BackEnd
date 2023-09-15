@@ -101,6 +101,7 @@ public class ActivityServiceImpl implements ActivityService {
 
         try {
             updateResult = activityDao.save(activity);
+            roomDao.changeRoomName(String.valueOf(activityId), activityReq.getTitle());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "更新失敗");
         }
@@ -133,6 +134,7 @@ public class ActivityServiceImpl implements ActivityService {
             roomDao.removeGroupRoom(activityId);
             response.setMessage("活動取消成功");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "活動取消失敗");
         }
 
