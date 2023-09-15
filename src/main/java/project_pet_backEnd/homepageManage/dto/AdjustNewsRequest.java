@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 @Data
 public class AdjustNewsRequest {
+    private Integer newsNo;
     @NotBlank
     private String newsTitle;
     @NotBlank
