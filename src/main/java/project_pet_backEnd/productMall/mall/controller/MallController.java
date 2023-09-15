@@ -1,5 +1,6 @@
 package project_pet_backEnd.productMall.mall.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 
+@Api(tags = "前台商城")
 @RestController
 @Validated
 public class MallController {
@@ -42,7 +44,7 @@ public class MallController {
     public ResponseEntity<ResultResponse<Page<List<GetAllMall>>>> getMallProducts(
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "sort", required = false, defaultValue = "desc") Sort sort,
-            @RequestParam(value = "limit", defaultValue = "10") @Max(50) @Min(0) Integer limit,
+            @RequestParam(value = "limit", defaultValue = "50") @Max(50) @Min(0) Integer limit,
             @RequestParam(value = "offset", defaultValue = "0") @Min(0) Integer offset) {
         MallQueryParameter mallQueryParameter = new MallQueryParameter();
         mallQueryParameter.setSearch(search);

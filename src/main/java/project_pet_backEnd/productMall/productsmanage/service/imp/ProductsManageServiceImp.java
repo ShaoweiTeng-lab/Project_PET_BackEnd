@@ -5,11 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
-import project_pet_backEnd.productMall.mall.dto.ProductPage;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicDao;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductPicRepository;
 import project_pet_backEnd.productMall.productsmanage.dao.ProductRepository;
@@ -22,7 +18,6 @@ import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -123,13 +118,27 @@ public class ProductsManageServiceImp implements ProductsManageService {
         productRes.setPdStatus(product.getPdStatus());
         productRes.setPdDescription(product.getPdDescription());
 
+        //取出pdPicNo
+        List<Integer> picNo = new ArrayList<>();
+        for(ProductPic productPic : picList){
+            picNo.add(productPic.getPdPicNo());
+        }
+        productRes.setPdPicNo(picNo);
+
+        //取出PdOrderList
+        List<Integer> picOrder = new ArrayList<>();
+        for(ProductPic productPic : picList){
+            picOrder.add(productPic.getPdOrderList());
+        }
+        productRes.setPdOrderList(picOrder);
+
         //圖片轉Base64 - > 放入List
         List<String> pics = new ArrayList<>();
         for (ProductPic productPic : picList) {
             pics.add(AllDogCatUtils.base64Encode(productPic.getPdPic()));
         }
-
         productRes.setBase64Image(pics);
+
         ResultResponse<ProductRes> rs = new ResultResponse<ProductRes>();
         rs.setMessage(productRes);
         return rs;
@@ -144,7 +153,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
 //            if (productRepository.existsByPdName(productInfo.getPdName())) {
 //                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "修改的商品名稱已存在");
 //            }
-
+            System.out.println(productUpdate);
             Product product = new Product();
             product.setPdNo(productUpdate.getPdNo());
             if (!productUpdate.getPdName().isBlank())
@@ -157,6 +166,7 @@ public class ProductsManageServiceImp implements ProductsManageService {
 
 
             productRepository.save(product); // 先保存商品，獲取商品編號
+
             for (ProductPic pic : pics) {
                 pic.setPdNo(product.getPdNo()); // 關聯商品編號
                 pic.setPdPicNo(productUpdate.getPdPicNo());
@@ -216,12 +226,10 @@ public class ProductsManageServiceImp implements ProductsManageService {
 
         List<ProductPic> existingPics = productPicRepository.findByPdNo(pdNo);
         int picOrder = existingPics.size() + 1;
-
         productPic.setPdOrderList(picOrder);
 
-
-
         productPicRepository.save(productPic);
+
         ResultResponse<String> rs = new ResultResponse<>();
         rs.setMessage("新增成功");
         return rs;
@@ -236,6 +244,21 @@ public class ProductsManageServiceImp implements ProductsManageService {
         rs.setMessage("刪除成功");
         return rs;
     }
+
+
+
+    @Transactional
+    @Override  //後台 編輯時更換商品圖片
+    public ResultResponse changeProductPic(Integer pdNo, Integer pdPicNo, Integer pdOrderList, ProductPic productPic) {
+        List<ProductPic> picList = productPicRepository.findByPdPicNo(pdPicNo);
+//        productPic.setPdNo(pdNo);
+        productPicRepository.save(productPic);
+        System.out.println(productPic);
+        ResultResponse<String> rs = new ResultResponse<>();
+        rs.setMessage("更換成功");
+        return rs;
+    }
+
 
 }
 

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import project_pet_backEnd.productMall.lineNotify.dto.LineNotifyResponse;
+import project_pet_backEnd.productMall.lineNotify.service.LineNotifyService;
 import project_pet_backEnd.productMall.order.dao.OrdersDao;
 import project_pet_backEnd.productMall.order.dao.OrdersDetailRepository;
 import project_pet_backEnd.productMall.order.dao.OrdersRepository;
@@ -38,6 +40,8 @@ public class OrdersServiceImpl implements OrdersService {
     UserRepository userRepository;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private LineNotifyService lineNotifyService;
 
 
     /**
@@ -81,6 +85,7 @@ public class OrdersServiceImpl implements OrdersService {
         User user = userRepository.findById(userID).orElse(null);
         Integer usePoint = orders.getUserPoint();
         Integer currentPoint = user.getUserPoint();
+        String userName = user.getUserName();
         String userEmail = user.getUserEmail();
         Integer newPoint = currentPoint - usePoint;
         if(newPoint >= 0 ){
@@ -92,14 +97,19 @@ public class OrdersServiceImpl implements OrdersService {
                 + "<p>付款狀態為: <strong>尚未付款</strong></p>"
                 + "<p>訂單狀態為: <strong>備貨中</strong></p>"
                 + "<p>若要付款至訂單詳情，請點擊以下按鈕：</p>"
-                + "<a href=\"http://localhost:5500/frontend/pages/mall/order/memberCenterOrders.html\" "
+                + "<a href=\"https://yang-hung-fei.github.io/frontend/pages/mall/order/memberCenterOrders.html\" "
                 + "style=\"display: block; text-align: center; text-decoration: none;\">"
                 + "<button id=\"checkDetail\" style=\"background-color: #D9AE94; color: white; border: none; border-radius: 5px; "
                 + "cursor: pointer; font-size: 16px; padding: 10px 20px;\">訂單詳情</button>"
-                + "</a></div>";
+                + "</a><br><span>※請記得前往<strong>查看訂單詳情付款</strong>，將於付款後3天內出貨！</span>"
+                + "</div>";
 
         sendEmailToCustomer(userEmail, subject, body);
 
+        LineNotifyResponse lineMessage = new LineNotifyResponse();
+        String toLineString = "會員名稱:" + userName + "已成功下訂單嚕!!";
+        lineMessage.setMessage(toLineString);
+        lineNotifyService.notify(lineMessage);
     }
 
     public  void  sendEmailToCustomer(String to, String subject, String body){
