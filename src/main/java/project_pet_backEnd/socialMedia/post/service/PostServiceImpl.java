@@ -50,19 +50,29 @@ public class PostServiceImpl implements PostService {
 
     // ==================== user發布貼文 ====================//
     @Override
-    public ResultResponse<String> create(Integer userId, PostReq postReq) {
+    public ResultResponse<PostRes> create(Integer userId, PostReq postReq) {
         POST post = new POST();
         post.setUserId(userId);
         post.setPostContent(postReq.getContent());
         //預設狀態為0
         post.setPostStatus(0);
         POST savePost = null;
-        ResultResponse<String> resultResponse = new ResultResponse<>();
+        ResultResponse<PostRes> resultResponse = new ResultResponse<>();
         try {
             savePost = postDao.save(post);
-            resultResponse.setMessage("發布成功");
+            PostRes postRes = new PostRes();
+            postRes.setPostContent(savePost.getPostContent());
+            postRes.setPostId(post.getPostId());
+            postRes.setPostStatus(post.getPostStatus());
+            postRes.setCreateTime(DateUtils.dateTimeSqlToStr(post.getCreateTime()));
+            postRes.setUserPic("");
+            postRes.setUserId(postRes.getUserId());
+            postRes.setUpdateTime(DateUtils.dateTimeSqlToStr(post.getUpdateTime()));
+            postRes.setUserName("");
+            resultResponse.setMessage(postRes);
         } catch (Exception e) {
-            resultResponse.setMessage("發布失敗");
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"發布失敗");
         }
         return resultResponse;
     }
