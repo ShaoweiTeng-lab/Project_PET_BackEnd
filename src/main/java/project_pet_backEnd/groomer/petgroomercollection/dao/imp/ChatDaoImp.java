@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.petgroomercollection.dao.impl;
+package project_pet_backEnd.groomer.petgroomercollection.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,7 +6,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomercollection.dao.ChatDao;
+import project_pet_backEnd.groomer.petgroomercollection.dao.UserRowMapper;
 import project_pet_backEnd.groomer.petgroomercollection.vo.Chat;
+import project_pet_backEnd.user.vo.User;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -73,19 +76,20 @@ public class ChatDaoImp implements ChatDao {
     public List<Chat> list(PGQueryParameter PGQueryParameter) {
         String sql = "SELECT CHAT_NO, USER_ID, PG_ID, CHAT_TEXT, CHAT_STATUS, CHAT_CREATED FROM GROOMER_CHAT ";
         Map<String, Object> map = new HashMap<>();
-        sql += " WHERE USER_ID = :userId ";
-        map.put("userId", PGQueryParameter.getUserId());
-        sql += " AND PG_ID = :pgId ";
-        map.put("pgId", PGQueryParameter.getPgId());
+        sql += " WHERE 1 = 1 ";
+        if (PGQueryParameter.getUserId() != null) {
+            sql += " AND USER_ID = :userId ";
+            map.put("userId", PGQueryParameter.getUserId());
+        }
+        if (PGQueryParameter.getPgId() != null) {
+            sql += " AND PG_ID = :pgId ";
+            map.put("pgId", PGQueryParameter.getPgId());
+        }
         if (PGQueryParameter.getSearch() != null) {
             sql += " AND CHAT_TEXT LIKE :search ";
             map.put("search", "%" + PGQueryParameter.getSearch() + "%");
         }
         sql += "ORDER BY CHAT_CREATED ASC ";
-        // Limit and Offset
-        sql += "LIMIT :limit OFFSET :offset ";
-        map.put("limit", PGQueryParameter.getLimit());
-        map.put("offset", PGQueryParameter.getOffset());
 
         List<Chat> list = namedParameterJdbcTemplate.query(sql, map, new RowMapper<Chat>() {
             @Override
@@ -108,10 +112,15 @@ public class ChatDaoImp implements ChatDao {
         String sql = "SELECT COUNT(*) AS total_count " +
                 "FROM GROOMER_CHAT ";
         Map<String, Object> map = new HashMap<>();
-        sql += " WHERE USER_ID = :userId ";
-        map.put("userId", PGQueryParameter.getUserId());
-        sql += " AND PG_ID = :pgId ";
-        map.put("pgId", PGQueryParameter.getPgId());
+        sql += " WHERE 1 = 1 ";
+        if (PGQueryParameter.getUserId() != null) {
+            sql += " AND USER_ID = :userId ";
+            map.put("userId", PGQueryParameter.getUserId());
+        }
+        if (PGQueryParameter.getPgId() != null) {
+            sql += " AND PG_ID = :pgId ";
+            map.put("pgId", PGQueryParameter.getPgId());
+        }
         if (PGQueryParameter.getSearch() != null) {
             sql += " AND CHAT_TEXT LIKE :search ";
             map.put("search", "%" + PGQueryParameter.getSearch() + "%");
@@ -125,4 +134,12 @@ public class ChatDaoImp implements ChatDao {
         return total;
     }
 
+    public User getUserById(Integer id){
+        String sql ="select * from USER where USER_ID =:id";
+        Map<String ,Object> map =new HashMap<>();
+        map.put("id",id);
+        User user=namedParameterJdbcTemplate.queryForObject(sql, map,new UserRowMapper());
+        return  user;
+    }
 }
+

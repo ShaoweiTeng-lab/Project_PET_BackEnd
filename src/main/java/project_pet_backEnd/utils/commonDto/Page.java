@@ -12,4 +12,5 @@ public class Page<T>{
 
     private  Integer total;//總查詢數，可用於頁數顯示 total/limit
     private  T rs;
+    private Integer page;
 }

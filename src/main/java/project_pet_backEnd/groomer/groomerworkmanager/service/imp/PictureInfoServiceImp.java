@@ -14,7 +14,6 @@ import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
     PictureInfoDao dao;
 
     /**
-     * 新增作品圖片
+     * 新增作品图片
      * @param rest
      * @return
      */
@@ -35,6 +34,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
             dao.insert(rest);
             ResultResponse rs = new ResultResponse();
             rs.setMessage("操作成功");
+            rs.setCode(200);
             return rs;
         } catch (DataAccessException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "操作失敗，請稍後重試", e);
@@ -42,7 +42,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
     }
 
     /**
-     * 更新作品圖片
+     * 更新作品图片
      * @param rest
      * @return
      */
@@ -52,6 +52,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
             dao.update(rest);
             ResultResponse rs = new ResultResponse();
             rs.setMessage("操作成功");
+            rs.setCode(200);
             return rs;
         } catch (DataAccessException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "操作失敗，請稍後重試", e);
@@ -59,7 +60,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
     }
 
     /**
-     * 删除作品圖片
+     * 删除作品图片
      * @param rest
      * @return
      */
@@ -76,7 +77,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
     }
 
     /**
-     * 查询作品圖片
+     * 查询作品图片
      *
      * @param rest
      * @return
@@ -92,7 +93,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
             res.setPiNo(portfolio.getPiNo());
             res.setPorId(portfolio.getPorId());
             res.setPiPicture(AllDogCatUtils.base64Encode(portfolio.getPiPicture()));
-            res.setPiDate(AllDogCatUtils.timestampToSqlDateFormat((Date) portfolio.getPiDate()));
+            res.setPiDate(AllDogCatUtils.timestampToDateFormat(portfolio.getPiDate()));
             return res;
         } catch (DataAccessException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "操作失敗，請稍後重試", e);
@@ -100,7 +101,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
     }
 
     /**
-     * 作品圖片列表
+     * 作品图片列表
      * @param PGQueryParameter
      * @return
      */
@@ -116,7 +117,7 @@ public class PictureInfoServiceImp implements PictureInfoService {
             res.setPiNo(portfolio.getPiNo());
             res.setPorId(portfolio.getPorId());
             res.setPiPicture(AllDogCatUtils.base64Encode(portfolio.getPiPicture()));
-            res.setPiDate(AllDogCatUtils.timestampToSqlDateFormat((Date) portfolio.getPiDate()));
+            res.setPiDate(AllDogCatUtils.timestampToDateFormat(portfolio.getPiDate()));
             rsList.add(res);
         }
         Page page = new Page<>();
@@ -129,3 +130,4 @@ public class PictureInfoServiceImp implements PictureInfoService {
         return page;
     }
 }
+

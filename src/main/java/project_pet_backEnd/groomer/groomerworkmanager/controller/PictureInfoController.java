@@ -14,9 +14,6 @@ import project_pet_backEnd.groomer.groomerworkmanager.vo.PictureInfo;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
 import project_pet_backEnd.groomer.petgroomer.dto.orderby.PGOrderBy;
 import project_pet_backEnd.groomer.petgroomer.dto.response.PictureInfoRes;
-import project_pet_backEnd.groomer.petgroomer.dto.response.PortfolioCollectRes;
-import project_pet_backEnd.groomer.petgroomercollection.service.PortfolioCollectService;
-import project_pet_backEnd.groomer.petgroomercollection.vo.PortfolioCollect;
 import project_pet_backEnd.userManager.dto.Sort;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.Page;
@@ -36,13 +33,13 @@ public class PictureInfoController {
     PictureInfoService service;
 
     /**
-     * 新增作品圖片
+     * 新增作品图片
      * @param porId
      * @param piPicture
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/manager/picture/insert")
+    @PostMapping("/portfolio/addNewsPic")
     public ResponseEntity<?> insert(
             @RequestParam @NotNull Integer porId,
             @RequestParam @NotNull MultipartFile piPicture
@@ -50,26 +47,24 @@ public class PictureInfoController {
         PictureInfo rest = new PictureInfo();
         rest.setPorId(porId);
         rest.setPiPicture(AllDogCatUtils.convertMultipartFileToByteArray(piPicture));
+        rest.setPiDate(new Date());
         ResultResponse resultResponse = service.insert(rest);
         return ResponseEntity.status(HttpStatus.OK).body(resultResponse);
     }
 
     /**
-     * 修改作品圖片
-     * @param piNo
+     * 修改作品图片
      * @param porId
      * @param piPicture
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/manager/picture/update")
+    @PostMapping("/portfolio/updateNewsPic")
     public ResponseEntity<?> update(
-            @RequestParam @NotNull Integer piNo,
             @RequestParam @NotNull Integer porId,
             @RequestParam @NotNull MultipartFile piPicture
     ) {
         PictureInfo rest = new PictureInfo();
-        rest.setPiNo(piNo);
         rest.setPorId(porId);
         rest.setPiPicture(AllDogCatUtils.convertMultipartFileToByteArray(piPicture));
         rest.setPiDate(new Date());
@@ -78,12 +73,12 @@ public class PictureInfoController {
     }
 
     /**
-     * 删除作品圖片
+     * 删除作品图片
      * @param piNo
      * @return
      */
     //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/manager/picture/delete")
+    @PostMapping("/portfolio/deleteNewsPic")
     public ResponseEntity<?> delete(
             @RequestParam @NotNull Integer piNo
     ) {
@@ -94,12 +89,12 @@ public class PictureInfoController {
     }
 
     /**
-     * 查询作品圖片
+     * 查询作品图片
      * @param piNo
      * @return
      */
 //    @PreAuthorize("hasAnyAuthority('美容師管理')")
-    @PostMapping("/manager/picture/findById")
+    @PostMapping("/portfolio/findNewsPic")
     public ResponseEntity<?> findById(
             @RequestParam @NotNull Integer piNo
     ) {
@@ -110,7 +105,7 @@ public class PictureInfoController {
     }
 
     /**
-     * 作品圖片列表
+     * 作品图片列表
      * @param porId
      * @param search
      * @param orderBy
@@ -119,7 +114,7 @@ public class PictureInfoController {
      * @param offset
      * @return
      */
-    @GetMapping("/manager/picture/list")
+    @GetMapping("/picture/list")
     public ResponseEntity<Page<List<PictureInfoRes>>> list(
             @RequestParam(value = "porId", required = false) Integer porId,
             @RequestParam(value = "search", required = false) String search,

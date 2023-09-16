@@ -8,6 +8,10 @@ import org.springframework.util.CollectionUtils;
 import project_pet_backEnd.groomer.groomerworkmanager.dao.PictureInfoDao;
 import project_pet_backEnd.groomer.groomerworkmanager.vo.PictureInfo;
 import project_pet_backEnd.groomer.petgroomer.dto.PGQueryParameter;
+import project_pet_backEnd.groomer.petgroomer.vo.PetGroomer;
+import project_pet_backEnd.groomer.petgroomercollection.dao.PortfolioDao;
+import project_pet_backEnd.groomer.petgroomercollection.vo.Portfolio;
+import project_pet_backEnd.groomer.petgroomercollection.vo.PortfolioCollect;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,12 +45,10 @@ public class PictureInfoDaoImp implements PictureInfoDao {
     @Override
     public void update(PictureInfo rest) {
         String sql = "UPDATE PICTURE_INFO SET " +
-                "POR_ID = :porId, " +
                 "PI_PICTURE = :piPicture, " +
                 "PI_DATE = :piDate " +
-                "WHERE PI_NO = :piNo";
+                "WHERE POR_ID = :porId";
         Map<String, Object> map = new HashMap<>();
-        map.put("piNo", rest.getPorId());
         map.put("porId", rest.getPorId());
         map.put("piPicture", rest.getPiPicture());
         map.put("piDate", rest.getPiDate());
@@ -114,6 +116,24 @@ public class PictureInfoDaoImp implements PictureInfoDao {
     }
 
     @Override
+    public List<PictureInfo> getAllPicture() {
+        String sql = "select PI_NO, POR_ID, PI_PICTURE, PI_DATE from PICTURE_INFO";
+        Map map = new HashMap<>();
+        List<PictureInfo> petGroomerAllList = namedParameterJdbcTemplate.query(sql, map, new RowMapper<PictureInfo>() {
+            @Override
+            public PictureInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                PictureInfo rest = new PictureInfo();
+                rest.setPiNo(rs.getInt("PI_NO"));
+                rest.setPorId(rs.getInt("POR_ID"));
+                rest.setPiPicture(rs.getBytes("PI_PICTURE"));
+                rest.setPiDate(rs.getDate("PI_DATE"));
+                return rest;
+            }
+        });
+        return petGroomerAllList;
+    }
+
+    @Override
     public Integer count(PGQueryParameter PGQueryParameter) {
         String sql = "SELECT COUNT(*) AS total_count " +
                 "FROM PICTURE_INFO ";
@@ -132,3 +152,4 @@ public class PictureInfoDaoImp implements PictureInfoDao {
     }
 
 }
+

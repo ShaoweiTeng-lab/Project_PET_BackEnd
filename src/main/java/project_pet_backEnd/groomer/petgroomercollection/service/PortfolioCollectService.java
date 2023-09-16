@@ -29,10 +29,11 @@ public interface PortfolioCollectService {
     /**
      * 查询
      */
-    PortfolioCollectRes findById(PortfolioCollect rest);
+    PortfolioCollectRes detail(PortfolioCollect rest);
 
     /**
      * 列表
      */
     Page<List<PortfolioCollectRes>> list(PGQueryParameter PGQueryParameter);
 }
+

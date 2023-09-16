@@ -20,7 +20,7 @@ public class Portfolio {
     @Column(name = "POR_TEXT")
     private String porText;
     @Column(name = "POR_UPLOAD")
-    private java.sql.Date porUpload;//util.date
+    private java.util.Date porUpload;//util.date
 
     // 此處省略建構子、Getter 和 Setter 方法
 }

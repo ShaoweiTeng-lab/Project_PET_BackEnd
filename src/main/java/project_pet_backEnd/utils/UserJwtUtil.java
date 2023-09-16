@@ -75,7 +75,7 @@ public class UserJwtUtil {
 
     public String createJwt(String sub){
         return Jwts.builder()
-                .setSubject(sub)
+                .claim("userId", sub)
                 .setExpiration( new Date( Instant.now().toEpochMilli() + EXPIRATION_TIME  ) )
                 .signWith(SignatureAlgorithm.HS256, secret )
                 .compact();

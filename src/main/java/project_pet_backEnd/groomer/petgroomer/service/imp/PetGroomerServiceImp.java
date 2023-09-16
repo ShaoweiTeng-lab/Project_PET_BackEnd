@@ -293,7 +293,7 @@ public class PetGroomerServiceImp implements PetGroomerService {
             portfolioRes.setPgId(portfolio.getPgId());
             portfolioRes.setPorTitle(portfolio.getPorTitle());
             portfolioRes.setPorText(portfolio.getPorText());
-            portfolioRes.setPorUpload(AllDogCatUtils.timestampToSqlDateFormat(portfolio.getPorUpload()));
+            portfolioRes.setPorUpload(AllDogCatUtils.timestampToDateFormat(portfolio.getPorUpload()));
 
             return portfolioRes;
         }).toList();

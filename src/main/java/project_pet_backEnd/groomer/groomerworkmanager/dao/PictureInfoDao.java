@@ -48,4 +48,5 @@ public interface PictureInfoDao {
      */
     Integer count(PGQueryParameter PGQueryParameter);
 
+    List<PictureInfo> getAllPicture();
 }

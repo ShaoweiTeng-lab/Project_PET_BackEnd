@@ -1,4 +1,4 @@
-package project_pet_backEnd.groomer.petgroomercollection.dao.impl;
+package project_pet_backEnd.groomer.petgroomercollection.dao.imp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -90,7 +90,7 @@ public class PortfolioCollectDaoImp implements PortfolioCollectDao {
     public List<PortfolioCollect> list(PGQueryParameter PGQueryParameter) {
         String sql = "select PC_NO, USER_ID, POR_ID, PC_CREATED from PORTFOLIO_COLLECT ";
         Map<String, Object> map = new HashMap<>();
-        sql += "WHERE 1 = 1 ";
+        sql += "WHERE 1 = 1 AND USER_ID is not null ";
         if (PGQueryParameter.getUserId() != null) {
             sql += " AND USER_ID = :userId ";
             map.put("userId", PGQueryParameter.getUserId());

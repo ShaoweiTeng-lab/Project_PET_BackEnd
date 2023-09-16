@@ -30,4 +30,6 @@ public interface ChatService {
      * 取得美容師列表 for 管理員
      */
     Page<List<ChatRes>> list(PGQueryParameter PGQueryParameter);
+
+    Page<List<ChatRes>> userList(PGQueryParameter PGQueryParameter);
 }

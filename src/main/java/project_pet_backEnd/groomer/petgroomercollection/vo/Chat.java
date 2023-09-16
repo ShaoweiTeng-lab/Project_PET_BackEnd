@@ -13,7 +13,7 @@ public class Chat {
     private Integer pgId;
     private String chatText;
     private String chatStatus;
-    private java.sql.Date chatCreated;//util.date
+    private java.util.Date chatCreated;//util.date
 
     // 此處省略建構子、Getter 和 Setter 方法
 }

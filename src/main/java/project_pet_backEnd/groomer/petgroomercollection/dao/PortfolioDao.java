@@ -22,7 +22,7 @@ public interface PortfolioDao {
     void delete(Portfolio rest);
 
     /**
-     * 查询詳情
+     * 查询详情
      * @param rest
      * @return
      */
@@ -35,8 +35,12 @@ public interface PortfolioDao {
      */
     List<Portfolio> list(PGQueryParameter PGQueryParameter);
 
+    List<Portfolio> listAllPortfolio();
+
+    Portfolio findLastestPortfolio();
+
     /**
-     * 統計數量
+     * 统计数量
      * @param PGQueryParameter
      * @return
      */
