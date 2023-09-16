@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 import org.springframework.web.server.ResponseStatusException;
 import project_pet_backEnd.homepage.vo.News;
 import project_pet_backEnd.homepage.vo.NewsPic;
@@ -17,9 +22,14 @@ import project_pet_backEnd.socialMedia.util.DateUtils;
 import project_pet_backEnd.utils.AllDogCatUtils;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class HomepageManageServiceImp implements HomepageManageService {
@@ -86,10 +96,26 @@ public class HomepageManageServiceImp implements HomepageManageService {
         rs.setMessage(id);
         return rs;
     }
-
+    @Transactional
     @Override
     public ResultResponse editNewsByNewsNo(AdjustNewsRequest adjustNewsRequest) {
         homepageManageDao.editNewsByNewsNo(adjustNewsRequest);
+        NewsPic newsPic= homepageManageDao.getOneNewsPic(adjustNewsRequest.getNewsNo());
+        if(newsPic.getNewsNo()==null){
+            AddNewsPicRequest addNewsPicRequest =new AddNewsPicRequest();
+            addNewsPicRequest.setNewsNo(adjustNewsRequest.getNewsNo());
+            addNewsPicRequest.setPic(AllDogCatUtils.base64Decode(adjustNewsRequest.getNewsPic()));
+            homepageManageDao.addNewsPic(addNewsPicRequest);
+            ResultResponse rs = new ResultResponse();
+            rs.setMessage("修改成功");
+            return rs;
+        }
+        AdjustNewsPicRequest adjustNewsPicRequest =new AdjustNewsPicRequest();
+        adjustNewsPicRequest.setNewsPicNo(newsPic.getNewsPicNo());
+        adjustNewsPicRequest.setNewsNo(adjustNewsRequest.getNewsNo());
+        adjustNewsPicRequest.setPic(AllDogCatUtils.base64Decode(adjustNewsRequest.getNewsPic()));
+
+        homepageManageDao.editNewsPic(adjustNewsPicRequest);
         ResultResponse rs = new ResultResponse();
         rs.setMessage("修改成功");
         return rs;

@@ -13,6 +13,7 @@ public class AdjustNewsRequest {
     @NotBlank
     private String newsCont;
     private Integer newsStatus;
+    String newsPic;
 
   //  private Date updateTime;
 
