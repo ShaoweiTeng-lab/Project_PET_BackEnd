@@ -205,7 +205,7 @@ public class HomepageManageServiceImp implements HomepageManageService {
         List<News> allNewsList = newsRepository.findAllByNewsStatus(1, Sort.by("updateTime").descending());
         List<News> newsList = new ArrayList<>();
         for (News news : allNewsList) {
-            if (newsList.size() < 3) {
+            if (newsList.size() < 4) {
                 newsList.add(news);
             }
         }
@@ -216,6 +216,8 @@ public class HomepageManageServiceImp implements HomepageManageService {
             homepageNewsRes.setNewsNo(news.getNewsNo());
             homepageNewsRes.setNewsTitle(news.getNewsTitle());
             NewsPic newsPic = newsPicRepository.findByNewsNo(news.getNewsNo());
+            if(newsPic==null)
+                continue;
             homepageNewsRes.setPic(AllDogCatUtils.base64Encode(newsPic.getPic()));
             newsResList.add(homepageNewsRes);
         }
