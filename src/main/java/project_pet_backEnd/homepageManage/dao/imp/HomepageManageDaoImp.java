@@ -257,7 +257,7 @@ public class HomepageManageDaoImp implements HomepageManageDao {
         Map<String, Object> map = new HashMap<>();
         map.put("newsNo", adjustNewsPicRequest.getNewsNo());
         map.put("newsPicNo", adjustNewsPicRequest.getNewsPicNo());
-        map.put("pic", AllDogCatUtils.convertMultipartFileToByteArray(adjustNewsPicRequest.getPic()));
+        map.put("pic",adjustNewsPicRequest.getPic());
         //此處寫在service較佳，因service司業務邏輯。Dao則是要用另一個物件
         namedParameterJdbcTemplate.update(sql, map);
 
