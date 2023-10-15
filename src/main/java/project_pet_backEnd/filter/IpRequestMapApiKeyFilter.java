@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class IpRequestMapApiKeyFilter extends OncePerRequestFilter implements  ITask {
-    //todo 針對特定url 而不是整體
     private static final int MAX_REQUESTS_PER_DAY = 1000;//設定 map api 一天內不可被呼叫次數
     private Map<String, Integer> ipRequestCountMap = new ConcurrentHashMap<>();
     @Autowired
@@ -35,6 +34,7 @@ public class IpRequestMapApiKeyFilter extends OncePerRequestFilter implements  I
             filterChain.doFilter(request,response);
             return;
         }
+        //限制當日 api 請求次數 防止 google map key 訪問過多
         String clientIp = request.getRemoteAddr();
         ipAddCount(clientIp);
         if(isIpBlocked(clientIp)) {
@@ -62,7 +62,9 @@ public class IpRequestMapApiKeyFilter extends OncePerRequestFilter implements  I
         }
         return false;
     }
-
+    /**
+     * 每次訪問記錄一次
+     * */
     public void ipAddCount(String clientIp) {
         if(!ipRequestCountMap.containsKey(clientIp)){
             ipRequestCountMap.put(clientIp,1);

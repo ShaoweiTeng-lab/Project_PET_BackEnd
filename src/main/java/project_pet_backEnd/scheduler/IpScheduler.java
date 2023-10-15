@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 @Data
 public class IpScheduler {
-    private List<ITask> taskObserver=new ArrayList<>();
+    private List<ITask> taskObserver=new ArrayList<>();//觀察者模式
     @Scheduled(cron = "0 0 0 * * *") // 每天半夜十二點執行
     public void myScheduledTask() {
         if(taskObserver.size()==0)

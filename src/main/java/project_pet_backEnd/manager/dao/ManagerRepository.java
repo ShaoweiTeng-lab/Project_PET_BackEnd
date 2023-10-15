@@ -29,18 +29,15 @@ public interface  ManagerRepository   extends JpaRepository<Manager, Integer> {
             "WHERE m.MANAGER_ACCOUNT = ?1", nativeQuery = true)
     List<String> findManagerFunctionsByAccount(String account);
 
+    /**
+     * 如果 :account為NULL，則所有的"Manager"資料都會被選擇。
+     * 如果 :account 不為NULL，則"Manager"資料中的"managerAccount"必須包含":account"的值（不區分大小寫）。
+     * */
     @Query("SELECT m FROM Manager m WHERE (:account IS NULL OR m.managerAccount LIKE CONCAT('%', :account, '%'))")
     Page<Manager> findByManagerAccount(@Param("account") String account, Pageable pageable);
 
     @Modifying
     @Query(value = "delete from permission p where p.MANAGER_ID = ?1", nativeQuery = true)
     void deleteAllAuthoritiesById(Integer manager_id);
-
-//     @Modifying
-//    @Query(value= "INSERT INTO permission (MANAGER_ID, FUNCTION_ID) " +
-//            "SELECT ?1, f.FUNCTION_ID " +
-//            "FROM `function` f " +
-//            "WHERE f.FUNCTION_NAME IN :?2", nativeQuery = true)
-//    void batchUpdatePermission(Integer managerId,  List<String> functionNames);
 }
 

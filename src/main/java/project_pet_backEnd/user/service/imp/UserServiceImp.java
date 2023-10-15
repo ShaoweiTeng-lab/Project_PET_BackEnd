@@ -39,7 +39,9 @@ public class UserServiceImp implements UserService {
 
     @Value("${renewPasswordUrl}")
     private  String renewPasswordUrl;
-
+    /**
+     * 本地註冊
+     * */
     public  void  localSignUp(UserSignUpRequest userSignUpRequest){
         if(userRepository.findByUserEmail(userSignUpRequest.getUserEmail())!=null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"已經有人註冊此帳號");//確認有無此帳號
@@ -61,30 +63,35 @@ public class UserServiceImp implements UserService {
         user.setIdentityProvider(userSignUpRequest.getIdentityProvider());
         userRepository.save(user);
     }
-
+    /**
+     * 本地登入
+     * */
     public ResultResponse localSignIn(UserLoginRequest userLoginRequest){
         User validUser=userRepository.findByUserEmail(userLoginRequest.getEmail());
         if(validUser==null || validUser.getIdentityProvider()!=IdentityProvider.Local)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號 或帳號屬於
-        boolean isPasswordMatch  =bCryptPasswordEncoder.matches(userLoginRequest.getPassword(),validUser.getUserPassword());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"查無此帳號");//確認有無此帳號 或帳號屬於 第三方登入
+        boolean isPasswordMatch  =bCryptPasswordEncoder.matches(userLoginRequest.getPassword(),validUser.getUserPassword());//認證帳號密碼
         if(!isPasswordMatch)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"密碼錯誤");//驗證錯誤
-        String jwt=userJwtUtil.createJwt(validUser.getUserId().toString());
+        String jwt=userJwtUtil.createJwt(validUser.getUserId().toString()); //生成TOKEN
         ResultResponse responseResult=new ResultResponse();
 
         responseResult.setMessage(jwt);
         return  responseResult;
 
     }
-
+    /**
+     * 驗證認證碼
+     * */
     public boolean  validatedCaptcha(String email,String captcha){
         String redisCapt= redisTemplate.opsForValue().get("MEMBER:"+ email);
         if(redisCapt==null || !redisCapt.equals(captcha))
             return  false;
         return  true;
     }
-
-
+    /**
+     * 生成認證碼
+     * */
     public ResultResponse generateCaptcha(String email){
         //先判斷有無註冊過
         User user =userRepository.findByUserEmail(email);
@@ -95,17 +102,17 @@ public class UserServiceImp implements UserService {
         redisTemplate.opsForValue().set(key,authCode);
         redisTemplate.expire(key,10, TimeUnit.MINUTES);//十分鐘後過期
         ResultResponse rs=new ResultResponse();
+        //Email回傳
         sendEmail(email,"請確認驗證碼","您的驗證碼為 : <br><p>"+authCode+"</p><br>請於十分鐘內輸入");
         rs.setMessage("generate_success");
         System.out.println(authCode);
         return  rs;
     }
 
-    public  void  sendEmail(String to, String subject, String body){
-        EmailResponse emailResponse =new EmailResponse(to,subject,body);
-        emailService.sendEmail(emailResponse);
-    }
 
+    /**
+     * 得到使用者資訊
+     * */
     public UserProfileResponse getUserProfile(Integer userId){
 
         User user=userRepository.findById(userId).orElse(null);
@@ -135,6 +142,9 @@ public class UserServiceImp implements UserService {
         userProfileResponse.setUserCreated(AllDogCatUtils.timestampToDateFormat(user.getUserCreated()));
         return  userProfileResponse;
     }
+    /**
+     * 修改使用者資訊
+     * */
     @Override
     public   ResultResponse adjustUserProfile(Integer userId,AdjustUserProfileRequest adjustUserProfileRequest){
         User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
@@ -154,7 +164,9 @@ public class UserServiceImp implements UserService {
         userRepository.save(user);
         return  new ResultResponse();
     }
-
+    /**
+     * 修改密碼
+     * */
     @Override
     public void adjustPassword(Integer userId, String password) {
         User user =userRepository.findById(userId).orElse(null);//先檢查有無此使用者
@@ -166,12 +178,16 @@ public class UserServiceImp implements UserService {
         user.setUserPassword(pwd);
         userRepository.save(user);
     }
-
+    /**
+     * 忘記密碼 寄信
+     * */
     @Override
     public ResultResponse forgetPassword(String userEmail) {
         User user= userRepository.findByUserEmail(userEmail);
+        //判斷有無此使用者 或 使用本地註冊
         if(user==null||user.getIdentityProvider()!=IdentityProvider.Local)
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此使用者");
+        //使用uuid 當key 存redis
         String uuid= AllDogCatUtils.generateUUID();
         redisTemplate.opsForValue().set(uuid,userEmail);
         redisTemplate.expire(uuid,10, TimeUnit.MINUTES);//十分鐘後過期
@@ -182,6 +198,9 @@ public class UserServiceImp implements UserService {
         rs.setMessage("送出成功");
         return rs;
     }
+    /**
+     * 忘記密碼 修改
+     * */
     @Transactional
     @Override
     public ResultResponse forgetRenewPassword(String code, String newPassword) {
@@ -199,12 +218,19 @@ public class UserServiceImp implements UserService {
         rs.setMessage("修改成功");
         return rs;
     }
-
+    /**
+     * 檢查帳號是否存在
+     * */
     @Override
     public String checkUserIsSingUp(String email) {
         User user =userRepository.findByUserEmail(email);
         if(user==null)
             return ("此帳號可以註冊");
         return ("此帳號已有人註冊");
+    }
+
+    public  void  sendEmail(String to, String subject, String body){
+        EmailResponse emailResponse =new EmailResponse(to,subject,body);
+        emailService.sendEmail(emailResponse);
     }
 }

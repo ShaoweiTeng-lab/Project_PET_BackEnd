@@ -33,6 +33,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         String connector = (String) session.getAttributes().get("connect");
+        //首次創建帳號者 先推入一個空字串
         if (!redisTemplate.hasKey("userNotify:" + connector))
             redisTemplate.opsForList().leftPush("userNotify:" + connector, "");
         sessionMap.put(connector + "-" + session.getId(), session);
@@ -41,18 +42,13 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
     //全部人推播消息
     public void publicNotifyMsg(NotifyMsg notifyMsg) throws Exception {
         String message = objectMapper.writeValueAsString(notifyMsg);
-        //todo 先從redis 拿出有訂閱的userId 再檢查當前上線的session ，若無 則放進history(儲存格式 userNotify:UserId)
         Set<String> notifyKeys = getKeys("userNotify:*");
         String jsNotifyMsg = objectMapper.writeValueAsString(notifyMsg);
-//        if (sessionMap.keySet().size() == 0) {
-//            //代表沒人上線 將所有推撥存入history
-//            notifyKeys.forEach(notifyKey -> {
-//                redisTemplate.opsForList().leftPush(notifyKey, jsNotifyMsg);
-//            });
-//        }
+        //儲存訊息(沒上線也儲存)
         notifyKeys.forEach(notifyKey -> {
             redisTemplate.opsForList().leftPush(notifyKey, jsNotifyMsg);
         });
+        //對所有人推播
         for (String key : sessionMap.keySet()) {
             String connector = key.split("-")[0]; //拿到userId_num
             System.out.println("得到connector 為:"+connector);
@@ -72,6 +68,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         }
         TextMessage textMessage = new TextMessage(jsNotifyMsg);
         Set<String> notifyKeys = getKeys("userNotify:userId_*");
+        //判斷使用者當前有無上線
         if (!notifyKeys.contains("userNotify:userId_"+userId))
             redisTemplate.opsForList().leftPush("userNotify:userId_" + userId, jsNotifyMsg);
 
@@ -95,8 +92,9 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         String userId = AllDogCatUtils.getKeyByValue(sessionMap, session).split("-")[0];
         Long lsSize= redisTemplate.opsForList().size("userNotify:" + userId);
         for(long i =0; i<lsSize;i++){
-            if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個不移除
+            if(redisTemplate.opsForList().index("userNotify:" + userId,0).equals(""))//最後一個(空字串部分)不移除 ，以便未來存入訊息
                 continue;
+            //傳輸消息
             String msg =redisTemplate.opsForList().leftPop("userNotify:" + userId);
             session.sendMessage(new TextMessage(msg));
         }
@@ -115,6 +113,7 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        //拿回key
         String key =AllDogCatUtils.getKeyByValue(sessionMap,session);
         sessionMap.remove(key);
     }

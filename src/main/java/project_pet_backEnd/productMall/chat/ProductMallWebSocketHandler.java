@@ -36,9 +36,9 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         if(connector.contains("userId")){
             String userNickName =(String) session.getAttributes().get("sender");
             //格式 userId_1-姓名
+            //儲存 nickName 方便管理員存取列表
             mallRedisHandleMessageService.saveNickName(connector,userNickName);
             sessionMap.put(connector + "-" + userNickName, session);
-            System.out.println("連接: "+connector + "-" + userNickName);
             return;
         }
         //連線者為Manager
@@ -52,10 +52,11 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         // 解析訊息
         // 當連線後先去 redis 拿對應的 history
-        String senderKey = AllDogCatUtils.getKeyByValue(sessionMap, session);
+        String senderKey = AllDogCatUtils.getKeyByValue(sessionMap, session);//拿到當前websocket 的key
         ChatMessage  chatMessage = objectMapper.readValue(message.getPayload().toString(), ChatMessage.class);
 
         if(senderKey.contains("user")){
+            //如果傳訊息的人是 user
             chatMessage.setReceiver("商城管理員");
             //格式 userId_1-姓名
             UserHandleMessage(senderKey,session,message,chatMessage);
@@ -70,7 +71,7 @@ public class ProductMallWebSocketHandler extends TextWebSocketHandler {
         String userId=senderKey.split("-")[0];
         String receiver = "PdManager";//商城只固定跟管理員聊天
         if ("getIdentity".equals(chatMessage.getType())){
-            //得到個人訊息
+            //得到個人訊息 根據發送者是自己還是對方，以達到訊息左右區分
             ChatMessage cmIdentity = new ChatMessage("getIdentity", userId,receiver, sender);
             String msg =objectMapper.writeValueAsString(cmIdentity);
             TextMessage textMessage = new TextMessage(msg);

@@ -33,19 +33,24 @@ public class GoogleAuthServiceImp implements OAuthService {
 
     @Autowired
     private UserJwtUtil userJwtUtil;
+    /**
+     * 第三方登入
+     * */
     public ResultResponse oAuthLogin(OAuthRequest oauthRequest){
-
+        //拿到 access Token
         OAuthResponse OAuthResponse =getGoogleToken(oauthRequest);
-
+        //拿到 user Profile
         UserInfoResponse userInfoResponse=getUserInfo(OAuthResponse.getAccess_token());
+        //驗證有無此使用者
         User user= userRepository.findByUserEmail(userInfoResponse.getEmail());
         ResultResponse rs =new ResultResponse();
         if(user!=null){
-            //若有此使用者
+            //若有此使用者 生成token
             String token=generateLoginToken(user.getUserId().toString());
             rs.setMessage(token);
             return  rs;
         }
+        //註冊一個 並登入
         UserSignUpRequest userSignUpRequest =new UserSignUpRequest();
         userSignUpRequest.setUserEmail(userInfoResponse.getEmail());
         userSignUpRequest.setUserName(userInfoResponse.getName());
@@ -54,26 +59,29 @@ public class GoogleAuthServiceImp implements OAuthService {
         userSignUpRequest.setUserPic(userPic);
         userSignUpRequest.setIdentityProvider(IdentityProvider.Google);
         userSignUpRequest.setUserGender(2);
-        Integer userId=googleSignUp(userSignUpRequest);
+        Integer userId=oAuthSignUp(userSignUpRequest);
         String token=generateLoginToken(userId.toString());
         rs.setMessage(token);
         return  rs;
     }
+    /**
+     * 使用授權碼向Auth Server 拿 Auth Token
+     * */
     public OAuthResponse getGoogleToken(OAuthRequest oauthRequest){
         RestTemplate restTemplate = new RestTemplate();
-
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        //帶入授權碼 secret clientId
         parameters.add("code", oauthRequest.getCode());
         parameters.add("client_id", clientId);
         parameters.add("client_secret", clientSecret);
-//        parameters.add("redirect_uri", "http://localhost:5500");
-        parameters.add("redirect_uri", "https://yang-hung-fei.github.io");
+        parameters.add("redirect_uri", "http://localhost:5500");
+//        parameters.add("redirect_uri", "https://yang-hung-fei.github.io");
         parameters.add("grant_type", "authorization_code");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(parameters, headers);
 
-
+        //送出Request
         ResponseEntity<OAuthResponse> responseEntity = restTemplate.exchange(
                 "https://oauth2.googleapis.com/token",
                 HttpMethod.POST,
@@ -84,7 +92,9 @@ public class GoogleAuthServiceImp implements OAuthService {
         OAuthResponse oauthResponse = responseEntity.getBody();
         return oauthResponse;
     }
-
+    /**
+     * 使用 Auth Token 向 Resource Server 拿 user Profile
+     * */
 
     public UserInfoResponse getUserInfo(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
@@ -108,12 +118,18 @@ public class GoogleAuthServiceImp implements OAuthService {
         return userInfoResponse;
     }
 
-    private String generateLoginToken(String sub){
+    /**
+     *生成登入token
+     * */
+
+    public String generateLoginToken(String sub){
         return userJwtUtil.createJwt(sub);
     }
 
-
-    private  Integer googleSignUp(UserSignUpRequest userSignUpRequest){
+    /**
+     * 使用google 資訊註冊
+     * */
+    public  Integer oAuthSignUp(UserSignUpRequest userSignUpRequest){
         User user =new User();
         user.setUserName(userSignUpRequest.getUserName());
         user.setUserNickName(userSignUpRequest.getUserNickName());

@@ -34,7 +34,9 @@ public class UserManagerServiceImp implements UserManagerService {
                 sort = Sort.by(Sort.Order.desc(userQueryParameter.getOrder().name()));
                 break;
         }
+        //創建Pageable   頁碼從0開始
         Pageable pageable = PageRequest.of(userQueryParameter.getPage()-1, userQueryParameter.getSize(), sort);
+        //執行查詢返回 Page
         Page userPage = userRepository.findByUserAccount(userQueryParameter.getSearch(), pageable);
         List<User> userList=userPage.getContent();
         List<UserDetailProfileResponse> rsList=new ArrayList<>();
@@ -69,6 +71,7 @@ public class UserManagerServiceImp implements UserManagerService {
         ResponsePage rsPage =new ResponsePage();
         rsPage.setPage(userQueryParameter.getPage());
         rsPage.setSize(pageable.getPageSize());
+        //返回查詢總筆數
         rsPage.setTotal((int)userPage.getTotalElements());
         rsPage.setBody(rsList);
         return rsPage;

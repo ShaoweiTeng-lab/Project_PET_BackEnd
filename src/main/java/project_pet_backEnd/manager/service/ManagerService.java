@@ -1,5 +1,6 @@
 package project_pet_backEnd.manager.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import project_pet_backEnd.manager.dto.*;
 import project_pet_backEnd.utils.commonDto.ResponsePage;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface ManagerService {
     ResultResponse createManager(CreateManagerRequest createManagerRequest);
-    ResultResponse managerLogin(ManagerLoginRequest managerLoginRequest);
+    ResultResponse managerLogin(ManagerLoginRequest managerLoginRequest) throws JsonProcessingException;
     ResultResponse adjustPermission(AdjustPermissionRequest adjustPermissionRequest);
     ResultResponse getManagerAuthoritiesById(Integer managerId);
     ResultResponse getManagerAuthoritiesByAccount(String account);

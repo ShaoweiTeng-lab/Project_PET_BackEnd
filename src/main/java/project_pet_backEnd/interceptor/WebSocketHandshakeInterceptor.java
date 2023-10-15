@@ -23,9 +23,11 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
         HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
         String token=req.getParameter("access_token");
         Map<String ,Object> attribute=websocketIdentityValid.validSession(token);
+        //若不是帶token的 回傳false 擋掉 websocket 連線
         if(attribute==null)
             return  false;
         attributes.putAll(attribute);
+        //傳入attribute
         return  super.beforeHandshake(request, response, wsHandler, attributes);
     }
     @Override

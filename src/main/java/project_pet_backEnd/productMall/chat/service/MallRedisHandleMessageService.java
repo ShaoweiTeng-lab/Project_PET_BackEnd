@@ -26,7 +26,7 @@ public class MallRedisHandleMessageService {
         redisTemplate.opsForList().rightPush(senderKey, message);
         redisTemplate.opsForList().rightPush(receiverKey, message);
     }
-
+    //如果有設定nickName
     public  void saveNickName(String  userId,String nickName){
         String nickNameKey = new StringBuilder(root).append(":").append("userNickName").append(":").append(userId).toString();
         redisTemplate.opsForValue().set(nickNameKey,nickName);

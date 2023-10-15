@@ -19,19 +19,21 @@ public class ManagerDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username)  {
-
+        //查詢管理員
         Manager manager =managerRepository.findByManagerAccount(username);
 
         if (manager == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"無此管理員");
         }
         List<String> functions=managerRepository.findManagerFunctionsById(manager.getManagerId());
+        //查權限
         List<String> permissionsList=new ArrayList();
         if(functions.size()>0){
             for (String function: functions) {
                 permissionsList.add(function);
             }
         }
+        //回傳一個 userDetails
         return new ManagerDetailsImp(manager,permissionsList);
     }
 }

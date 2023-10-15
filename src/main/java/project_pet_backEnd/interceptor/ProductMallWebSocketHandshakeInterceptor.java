@@ -33,6 +33,7 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
         Map<String ,Object> attribute=websocketIdentityValid.validSession(token);
         if(attribute==null)
             return  false;
+        //驗證權限(如果是 user放行)
         if(!validManagerPermission(attribute))
             return  false;
         attributes.putAll(attribute);
@@ -55,6 +56,7 @@ public class ProductMallWebSocketHandshakeInterceptor extends HttpSessionHandsha
         ManagerDetailsImp managerDetail=null;
         //判斷權限有無 商品管理
         managerDetail=objectMapper.readValue(managerLoginJson,ManagerDetailsImp.class);
+        //獲得 該管理員權限列表
         List<String> permissionList= managerDetail.getPermissionsList();
         if(permissionList.contains("商品管理"))
             return  true;

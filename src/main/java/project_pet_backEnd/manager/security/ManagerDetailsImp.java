@@ -22,12 +22,15 @@ public class ManagerDetailsImp implements UserDetails {
     private List<SimpleGrantedAuthority>authorities;
     public ManagerDetailsImp(Manager manager, List<String> permissionsList) {
         this.manager = manager;
+        //注入權限列表
         this.permissionsList = permissionsList;
+
     }
     public ManagerDetailsImp() {
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        //管理員權限
         if(authorities!=null)//
             return  authorities;
         authorities =new ArrayList<>();
@@ -35,16 +38,19 @@ public class ManagerDetailsImp implements UserDetails {
             SimpleGrantedAuthority simpleAuthority =new SimpleGrantedAuthority(permission);
             authorities.add(simpleAuthority);
         }
+        // 須返回上界為 GrantedAuthority的類 ，Spring Security 有實作  SimpleGrantedAuthority
         return authorities;
     }
 
     @Override
     public String getPassword() {
+        //返回使用者密碼 ，在 ProviderManager 跟使用者輸入進行比對
         return manager.getManagerPassword();
     }
 
     @Override
     public String getUsername() {
+        //返回使用者帳戶 ，在 ProviderManager 跟使用者輸入進行比對
         return manager.getManagerAccount();
     }
 

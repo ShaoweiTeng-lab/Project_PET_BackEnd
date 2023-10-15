@@ -33,14 +33,14 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(userNotifyWebSocketHandler, "/websocket/userNotify")// 添加處理器
                 .setAllowedOrigins("*")
-                .addInterceptors(httpSessionHandshakeInterceptor);
-        registry.addHandler(productMallWebSocketHandler, "/websocket/productMallChat")// 添加處理器
+                .addInterceptors(httpSessionHandshakeInterceptor);//設置攔截器
+        registry.addHandler(productMallWebSocketHandler, "/websocket/productMallChat")
                 .setAllowedOrigins("*")
                 .addInterceptors(productMallWebSocketHandshakeInterceptor);
-        registry.addHandler(activityWebSocketHandler, "/websocket/activity")// 添加處理器
+        registry.addHandler(activityWebSocketHandler, "/websocket/activity")
                 .setAllowedOrigins("*")
                 .addInterceptors(httpSessionHandshakeInterceptor);
-        registry.addHandler(pgNotifyWebSocketHandler, "/websocket/pgNotify")// 添加處理器
+        registry.addHandler(pgNotifyWebSocketHandler, "/websocket/pgNotify")
                 .setAllowedOrigins("*")
                 .addInterceptors(httpSessionHandshakeInterceptor);
     }

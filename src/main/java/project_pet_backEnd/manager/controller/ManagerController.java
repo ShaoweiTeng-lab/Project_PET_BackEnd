@@ -1,5 +1,6 @@
 package project_pet_backEnd.manager.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ManagerController {
      * */
     @ApiOperation("管理員登入")
     @PostMapping("/login")
-    public ResponseEntity<ResultResponse<String>> managerLogin(@RequestBody @Valid ManagerLoginRequest managerLoginRequest){
+    public ResponseEntity<ResultResponse<String>> managerLogin(@RequestBody @Valid ManagerLoginRequest managerLoginRequest) throws JsonProcessingException {
         ResultResponse rs =managerService.managerLogin(managerLoginRequest);
         return  ResponseEntity.status(200).body(rs);
     }
