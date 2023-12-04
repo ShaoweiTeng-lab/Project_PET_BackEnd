@@ -21,7 +21,7 @@ import java.util.Set;
 
 public interface PostService {
 
-    ResultResponse<String> create(Integer userId, PostReq postReq);
+    ResultResponse<PostRes> create(Integer userId, PostReq postReq);
 
     ResultResponse<PostRes> update(int userId, int postId, PostReq postReq);
 

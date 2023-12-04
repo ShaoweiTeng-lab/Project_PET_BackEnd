@@ -51,5 +51,7 @@ public interface RoomDao {
     //修改聊天室名稱
     void changeRoomName(String roomId, String activityName);
 
+    void removeRoomIdAfterCancelAC(String roomId);
+
 
 }

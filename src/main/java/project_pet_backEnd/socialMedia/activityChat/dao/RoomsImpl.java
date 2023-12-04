@@ -227,6 +227,10 @@ public class RoomsImpl implements RoomDao {
         String roomNameKey = String.format(ROOM_NAME_KEY, roomId);
         redisTemplate.opsForValue().set(roomNameKey, activityName);
     }
-
+    // ================= 取消活動後移除聊天室ID ================= //
+    @Override
+    public void removeRoomIdAfterCancelAC(String roomId) {
+        redisTemplate.opsForSet().remove(ROOM,roomId);
+    }
 
 }
