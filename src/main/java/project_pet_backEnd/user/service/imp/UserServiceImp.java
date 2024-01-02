@@ -1,5 +1,6 @@
 package project_pet_backEnd.user.service.imp;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class UserServiceImp implements UserService {
 
     @Value("${renewPasswordUrl}")
     private  String renewPasswordUrl;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     /**
      * 本地註冊
      * */
@@ -230,7 +234,8 @@ public class UserServiceImp implements UserService {
     }
 
     public  void  sendEmail(String to, String subject, String body){
+
         EmailResponse emailResponse =new EmailResponse(to,subject,body);
-        emailService.sendEmail(emailResponse);
+        rabbitTemplate.convertAndSend("EMAIL_TOPIC", "Email.SignUp", emailResponse);
     }
 }

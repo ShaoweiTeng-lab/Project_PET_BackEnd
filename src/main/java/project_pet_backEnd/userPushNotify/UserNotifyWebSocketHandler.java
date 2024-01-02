@@ -50,8 +50,6 @@ public class UserNotifyWebSocketHandler extends TextWebSocketHandler {
         });
         //對所有人推播
         for (String key : sessionMap.keySet()) {
-            String connector = key.split("-")[0]; //拿到userId_num
-            System.out.println("得到connector 為:"+connector);
             TextMessage textMessage = new TextMessage(message);
             sessionMap.get(key).sendMessage(textMessage);
         }

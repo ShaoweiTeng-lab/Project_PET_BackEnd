@@ -16,4 +16,8 @@ public class Function {
     private  Integer functionId;
     @Column(name = "FUNCTION_NAME")
     private  String functionName;
+
+    public Function() {
+
+    }
 }

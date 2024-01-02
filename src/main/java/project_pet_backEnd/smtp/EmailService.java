@@ -2,6 +2,7 @@ package project_pet_backEnd.smtp;
 
 
 import lombok.Data;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -24,6 +25,7 @@ public class EmailService {
     }
 
     //格式為html 渲染
+    @RabbitListener(queues = "EmailQueue")
     public  void sendEmail(EmailResponse emailResponse){
         MimeMessage msg =mailSender.createMimeMessage();
         MimeMessageHelper helper =null;
