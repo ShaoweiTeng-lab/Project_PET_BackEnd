@@ -23,6 +23,8 @@
 
 ### * 角色驗證方式 : Json Web Token (JWT)
 
+### * 消息佇列 : Rabbit MQ
+
 ## 使用版本:
 ### * Spring boot 2.7.13
 ### * Spring boot Starter Security 2.7.13
