@@ -17,6 +17,7 @@ import project_pet_backEnd.socialMedia.post.dto.req.PostReq;
 import project_pet_backEnd.socialMedia.post.dto.res.VideoRes;
 import project_pet_backEnd.socialMedia.post.service.PostService;
 import project_pet_backEnd.socialMedia.post.vo.MediaData;
+import project_pet_backEnd.socialMedia.post.vo.POST;
 import project_pet_backEnd.socialMedia.util.PageRes;
 import project_pet_backEnd.utils.commonDto.ResultResponse;
 
@@ -43,8 +44,8 @@ public class PostController {
             @ApiImplicitParam(name = "Authorization_U", value = "User Access Token", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping
-    public ResponseEntity<ResultResponse<String>> create(@Valid @RequestBody PostReq postReq, @RequestAttribute("userId") Integer userId) {
-        ResultResponse<String> response = postService.create(userId, postReq);
+    public ResponseEntity<ResultResponse<PostRes>> create(@Valid @RequestBody PostReq postReq, @RequestAttribute("userId") Integer userId) {
+        ResultResponse<PostRes> response = postService.create(userId, postReq);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

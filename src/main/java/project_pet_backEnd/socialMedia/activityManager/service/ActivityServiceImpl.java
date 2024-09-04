@@ -132,6 +132,7 @@ public class ActivityServiceImpl implements ActivityService {
             activityDao.save(activity);
             //刪除聊天室
             roomDao.removeGroupRoom(activityId);
+            roomDao.removeRoomIdAfterCancelAC(String.valueOf(activityId));
             response.setMessage("活動取消成功");
         } catch (Exception e) {
             e.printStackTrace();
