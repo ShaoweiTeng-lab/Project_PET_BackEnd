@@ -1,9 +1,5 @@
-# Project_PET_BackEnd
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
-
-## 專題說明:
-<H3>寵物美容平台</H3>
+# 寵物美容平台後端 
+<H3>專題說明:</H3>
 
 ### * 採用前後端分離架構
 ### * 前端佈屬 GitHub Pages
